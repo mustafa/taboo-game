@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Taboo! Family Edition</title>
+<style>
+  :root {
+    --bg: #0f0f1a;
+    --card-bg: #1a1a2e;
+    --accent: #e94560;
+    --accent2: #0f3460;
+    --green: #16c79a;
+    --yellow: #f5a623;
+    --blue: #4a90d9;
+    --text: #eaeaea;
+    --text-dim: #888;
+    --radius: 16px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  #app { min-height: 100vh; }
+
+  /* SCREENS */
+  .screen { display: none; flex-direction: column; align-items: center; min-height: 100vh; padding: 24px 16px; }
+  .screen.active { display: flex; }
+
+  /* TITLE SCREEN */
+  #screen-title {
+    justify-content: center;
+    gap: 24px;
+    background: radial-gradient(ellipse at 50% 30%, #1a0830 0%, var(--bg) 70%);
+  }
+  .title-logo {
+    font-size: clamp(48px, 15vw, 80px);
+    font-weight: 900;
+    letter-spacing: -2px;
+    background: linear-gradient(135deg, var(--accent) 0%, #ff8c42 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    line-height: 1;
+  }
+  .title-sub {
+    font-size: 18px;
+    color: var(--text-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .title-emoji { font-size: 60px; animation: bounce 2s infinite; }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 18px 32px;
+    border: none; border-radius: var(--radius);
+    font-size: 18px; font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s, opacity 0.1s;
+    width: 100%; max-width: 340px;
+    letter-spacing: 0.5px;
+  }
+  .btn:active { transform: scale(0.96); }
+  .btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 20px rgba(233,69,96,0.4); }
+  .btn-primary:hover { box-shadow: 0 6px 24px rgba(233,69,96,0.6); }
+  .btn-secondary { background: var(--accent2); color: white; box-shadow: 0 4px 20px rgba(15,52,96,0.4); }
+  .btn-green { background: var(--green); color: #0f0f1a; box-shadow: 0 4px 20px rgba(22,199,154,0.4); }
+  .btn-yellow { background: var(--yellow); color: #0f0f1a; box-shadow: 0 4px 20px rgba(245,166,35,0.4); }
+  .btn-ghost { background: rgba(255,255,255,0.08); color: var(--text); border: 1px solid rgba(255,255,255,0.15); }
+  .btn-sm { padding: 12px 20px; font-size: 15px; max-width: none; }
+  .btn-xs { padding: 8px 14px; font-size: 13px; max-width: none; }
+  .btn:disabled { opacity: 0.4; pointer-events: none; }
+
+  /* SETUP SCREEN */
+  #screen-setup { gap: 20px; justify-content: flex-start; padding-top: 40px; }
+  .setup-section { width: 100%; max-width: 420px; }
+  .setup-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+  }
+  .team-input {
+    width: 100%; padding: 14px 16px;
+    background: var(--card-bg); border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px; color: var(--text); font-size: 16px; font-weight: 600;
+    outline: none; transition: border-color 0.2s;
+  }
+  .team-input:focus { border-color: var(--accent); }
+  .timer-options { display: flex; gap: 8px; }
+  .timer-btn {
+    flex: 1; padding: 12px 8px;
+    background: var(--card-bg); border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 12px; color: var(--text-dim); font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+  }
+  .timer-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(233,69,96,0.1); }
+  .screen-title { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+
+  /* CATEGORY SCREEN */
+  #screen-categories { gap: 16px; }
+  .category-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 10px; width: 100%; max-width: 420px;
+  }
+  .cat-card {
+    background: var(--card-bg); border: 2px solid rgba(255,255,255,0.08);
+    border-radius: 14px; padding: 16px 12px;
+    text-align: center; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cat-card.selected { border-color: var(--accent); background: rgba(233,69,96,0.1); }
+  .cat-card.selected .cat-check { opacity: 1; }
+  .cat-icon { font-size: 28px; display: block; margin-bottom: 6px; }
+  .cat-name { font-size: 13px; font-weight: 700; }
+  .cat-check { opacity: 0; font-size: 16px; color: var(--accent); }
+  .select-all-row { display: flex; gap: 8px; width: 100%; max-width: 420px; }
+
+  /* GAME SCREEN */
+  #screen-game {
+    padding: 0;
+    justify-content: space-between;
+    gap: 0;
+  }
+  .game-header {
+    width: 100%; padding: 12px 16px;
+    background: rgba(0,0,0,0.3);
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .score-pill {
+    background: var(--card-bg); border-radius: 20px;
+    padding: 6px 14px; font-size: 14px; font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .score-pill .team-name { color: var(--text-dim); font-size: 11px; display: block; }
+  .score-pill .score-val { font-size: 20px; color: var(--accent); }
+  .round-info { font-size: 12px; color: var(--text-dim); text-align: center; }
+  .round-num { font-size: 16px; font-weight: 700; color: var(--text); display: block; }
+
+  .game-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; width: 100%; }
+
+  .timer-ring-wrap { position: relative; width: 100px; height: 100px; margin-bottom: 16px; }
+  .timer-ring-wrap svg { transform: rotate(-90deg); }
+  circle.ring-bg { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 6; }
+  circle.ring-fill { fill: none; stroke: var(--accent); stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.5s; }
+  .timer-text {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px; font-weight: 900;
+  }
+
+  .turn-badge {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+
+  .word-card {
+    background: linear-gradient(135deg, #1e1e3a 0%, #16213e 100%);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 20px; padding: 24px 20px;
+    width: 100%; max-width: 360px;
+    box-shadow: var(--shadow);
+    position: relative; overflow: hidden;
+  }
+  .word-card::before {
+    content: ''; position: absolute; top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(ellipse at center, rgba(233,69,96,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .card-category { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+  .card-main-word {
+    font-size: clamp(32px, 10vw, 48px); font-weight: 900;
+    line-height: 1.1; margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 0%, #ccc 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .taboo-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .taboo-label::before, .taboo-label::after {
+    content: ''; flex: 1; height: 1px; background: rgba(233,69,96,0.3);
+  }
+  .taboo-words { display: flex; flex-direction: column; gap: 6px; }
+  .taboo-word {
+    background: rgba(233,69,96,0.1); border: 1px solid rgba(233,69,96,0.2);
+    border-radius: 8px; padding: 8px 12px;
+    font-size: 16px; font-weight: 600; color: #ff8fa3;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .taboo-word::before { content: '🚫'; font-size: 14px; }
+
+  .card-counter { position: absolute; top: 12px; right: 14px; font-size: 11px; color: var(--text-dim); font-weight: 700; }
+
+  .game-actions {
+    width: 100%; padding: 16px;
+    display: flex; gap: 10px;
+    background: rgba(0,0,0,0.2);
+  }
+  .action-btn {
+    flex: 1; padding: 18px 8px;
+    border: none; border-radius: 14px;
+    font-size: 16px; font-weight: 800;
+    cursor: pointer; transition: all 0.1s;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .action-btn:active { transform: scale(0.94); }
+  .action-btn .btn-label { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; opacity: 0.8; }
+  .btn-correct { background: var(--green); color: #0f0f1a; }
+  .btn-skip { background: var(--yellow); color: #0f0f1a; }
+  .btn-taboo { background: var(--accent); color: white; }
+  .skip-remaining { font-size: 9px; }
+
+  .pause-bar {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px;
+    background: rgba(15,15,26,0.95);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex; justify-content: center; gap: 10px;
+    z-index: 100;
+  }
+
+  /* OVERLAY */
+  .overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center;
+    padding: 24px;
+  }
+  .overlay.show { display: flex; }
+  .overlay-card {
+    background: var(--card-bg); border-radius: 24px;
+    padding: 32px 24px; width: 100%; max-width: 360px;
+    text-align: center; box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .overlay-icon { font-size: 56px; margin-bottom: 12px; display: block; }
+  .overlay-title { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+  .overlay-sub { color: var(--text-dim); margin-bottom: 24px; font-size: 15px; }
+  .overlay-btns { display: flex; flex-direction: column; gap: 10px; }
+
+  /* ROUND END */
+  .round-summary { width: 100%; margin-bottom: 16px; }
+  .summary-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: rgba(255,255,255,0.04);
+    border-radius: 10px; margin-bottom: 6px; font-size: 14px;
+  }
+  .summary-row .label { color: var(--text-dim); }
+  .summary-row .val { font-weight: 700; }
+  .summary-row .val.green { color: var(--green); }
+  .summary-row .val.red { color: var(--accent); }
+  .summary-row .val.yellow { color: var(--yellow); }
+
+  /* WIN SCREEN */
+  #screen-win {
+    justify-content: center; gap: 24px;
+    background: radial-gradient(ellipse at 50% 50%, #1a0830 0%, var(--bg) 70%);
+  }
+  .win-emoji { font-size: 80px; animation: spin-bounce 1s ease-out; }
+  @keyframes spin-bounce {
+    0% { transform: scale(0) rotate(-180deg); }
+    80% { transform: scale(1.2) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+  .win-title { font-size: 36px; font-weight: 900; text-align: center; }
+  .win-subtitle { color: var(--text-dim); font-size: 16px; text-align: center; }
+  .final-scores {
+    width: 100%; max-width: 320px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .final-score-row {
+    background: var(--card-bg); border-radius: 16px;
+    padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;
+    border: 2px solid rgba(255,255,255,0.06);
+  }
+  .final-score-row.winner { border-color: var(--yellow); background: rgba(245,166,35,0.1); }
+  .final-team { font-size: 18px; font-weight: 700; }
+  .final-pts { font-size: 32px; font-weight: 900; color: var(--accent); }
+  .final-score-row.winner .final-pts { color: var(--yellow); }
+
+  /* CONFETTI */
+  .confetti-piece {
+    position: fixed; width: 10px; height: 10px;
+    top: -20px; z-index: 999;
+    animation: confetti-fall linear forwards;
+  }
+  @keyframes confetti-fall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* PAUSE OVERLAY */
+  .paused-indicator {
+    position: fixed; inset: 0; z-index: 150;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    display: none; align-items: center; justify-content: center;
+    flex-direction: column; gap: 16px;
+  }
+  .paused-indicator.show { display: flex; }
+  .paused-indicator .pause-text { font-size: 48px; font-weight: 900; color: var(--accent); }
+
+  /* ANIMATIONS */
+  .flash-green { animation: flash-g 0.3s; }
+  .flash-red { animation: flash-r 0.3s; }
+  .flash-yellow { animation: flash-y 0.3s; }
+  @keyframes flash-g { 0%,100%{background:var(--card-bg)} 50%{background:rgba(22,199,154,0.3)} }
+  @keyframes flash-r { 0%,100%{background:var(--card-bg)} 50%{background:rgba(233,69,96,0.3)} }
+  @keyframes flash-y { 0%,100%{background:var(--card-bg)} 50%{background:rgba(245,166,35,0.3)} }
+
+  /* UTIL */
+  .text-center { text-align: center; }
+  .gap-sm { gap: 12px; }
+  .w-full { width: 100%; max-width: 420px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TITLE SCREEN -->
+  <div id="screen-title" class="screen active">
+    <div class="title-emoji">🎯</div>
+    <div class="title-logo">TABOO!</div>
+    <div class="title-sub">Family Edition</div>
+    <div style="color:var(--text-dim);font-size:14px;text-align:center;max-width:280px;">Describe the word without saying the forbidden words!</div>
+    <button class="btn btn-primary" onclick="showScreen('setup')" style="margin-top:16px;">
+      🚀 Start Game
+    </button>
+    <button class="btn btn-ghost btn-sm" onclick="showScreen('howto')" style="max-width:340px;">
+      ❓ How to Play
+    </button>
+  </div>
+
+  <!-- HOW TO PLAY -->
+  <div id="screen-howto" class="screen" style="gap:16px;padding-top:40px;">
+    <div class="screen-title">How to Play</div>
+    <div style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:12px;">
+      <div style="background:var(--card-bg);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="font-size:28px;">👥</div>
+        <div><strong>Two Teams</strong><br><span style="color:var(--text-dim);font-size:14px;">Take turns describing words to your team. The other team watches for cheating!</span></div>
+      </div>
+      <div style="background:var(--card-bg);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="font-size:28px;">🚫</div>
+        <div><strong>Taboo Words</strong><br><span style="color:var(--text-dim);font-size:14px;">Never say the 5 forbidden words on the card! Get caught = point for the other team.</span></div>
+      </div>
+      <div style="background:var(--card-bg);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="font-size:28px;">⏭️</div>
+        <div><strong>3 Skips</strong><br><span style="color:var(--text-dim);font-size:14px;">Each round you get 3 skips. Use them wisely — skipped cards don't count against you!</span></div>
+      </div>
+      <div style="background:var(--card-bg);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="font-size:28px;">🏆</div>
+        <div><strong>Winning</strong><br><span style="color:var(--text-dim);font-size:14px;">Play 3 rounds each. Team with the most points wins!</span></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="showScreen('setup')">Let's Play!</button>
+    <button class="btn btn-ghost btn-sm" onclick="showScreen('title')" style="max-width:340px;">Back</button>
+  </div>
+
+  <!-- SETUP SCREEN -->
+  <div id="screen-setup" class="screen">
+    <div class="screen-title">Game Setup</div>
+    <div class="setup-section">
+      <div class="setup-label">Team 1 Name</div>
+      <input class="team-input" id="team1-name" type="text" placeholder="Team Rockets 🚀" maxlength="20" value="Team Rockets">
+    </div>
+    <div class="setup-section">
+      <div class="setup-label">Team 2 Name</div>
+      <input class="team-input" id="team2-name" type="text" placeholder="Team Stars ⭐" maxlength="20" value="Team Stars">
+    </div>
+    <div class="setup-section">
+      <div class="setup-label">Timer Per Turn</div>
+      <div class="timer-options">
+        <div class="timer-btn" data-time="30" onclick="selectTimer(30)">30s</div>
+        <div class="timer-btn active" data-time="60" onclick="selectTimer(60)">60s</div>
+        <div class="timer-btn" data-time="90" onclick="selectTimer(90)">90s</div>
+        <div class="timer-btn" data-time="120" onclick="selectTimer(120)">2min</div>
+      </div>
+    </div>
+    <div class="setup-section">
+      <div class="setup-label">Rounds Per Team</div>
+      <div class="timer-options">
+        <div class="timer-btn" data-rounds="2" onclick="selectRounds(2)">2</div>
+        <div class="timer-btn active" data-rounds="3" onclick="selectRounds(3)">3</div>
+        <div class="timer-btn" data-rounds="4" onclick="selectRounds(4)">4</div>
+        <div class="timer-btn" data-rounds="5" onclick="selectRounds(5)">5</div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="showScreen('categories')">Next: Pick Categories →</button>
+    <button class="btn btn-ghost btn-sm" onclick="showScreen('title')" style="max-width:340px;">Back</button>
+  </div>
+
+  <!-- CATEGORY SCREEN -->
+  <div id="screen-categories" class="screen">
+    <div class="screen-title">Choose Categories</div>
+    <div style="color:var(--text-dim);font-size:13px;margin-bottom:8px;">Pick at least 2 (or all!)</div>
+    <div class="select-all-row">
+      <button class="btn btn-ghost btn-xs flex-1" onclick="selectAllCategories(true)">✅ Select All</button>
+      <button class="btn btn-ghost btn-xs flex-1" onclick="selectAllCategories(false)">❌ Clear All</button>
+    </div>
+    <div class="category-grid" id="category-grid"></div>
+    <button class="btn btn-primary" onclick="startGame()" id="start-game-btn">🎮 Start Playing!</button>
+    <button class="btn btn-ghost btn-sm" onclick="showScreen('setup')" style="max-width:340px;">Back</button>
+  </div>
+
+  <!-- GAME SCREEN -->
+  <div id="screen-game" class="screen">
+    <div class="game-header">
+      <div class="score-pill">
+        <div>
+          <span class="team-name" id="hdr-team1-name">Team 1</span>
+          <span class="score-val" id="hdr-score1">0</span>
+        </div>
+      </div>
+      <div class="round-info">
+        <span class="round-num" id="hdr-round">Round 1</span>
+        <span id="hdr-turn">Turn 1</span>
+      </div>
+      <div class="score-pill">
+        <div>
+          <span class="team-name" id="hdr-team2-name">Team 2</span>
+          <span class="score-val" id="hdr-score2">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="game-center">
+      <div class="timer-ring-wrap">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle class="ring-bg" cx="50" cy="50" r="44"/>
+          <circle class="ring-fill" id="timer-ring" cx="50" cy="50" r="44" stroke-dasharray="276.46" stroke-dashoffset="0"/>
+        </svg>
+        <div class="timer-text" id="timer-display">60</div>
+      </div>
+
+      <div class="turn-badge" id="turn-badge">TEAM 1's TURN</div>
+
+      <div class="word-card" id="word-card">
+        <div class="card-counter" id="card-counter">#1</div>
+        <div class="card-category" id="card-category">Animals</div>
+        <div class="card-main-word" id="card-main-word">Loading...</div>
+        <div class="taboo-label">Don't Say</div>
+        <div class="taboo-words" id="taboo-words"></div>
+      </div>
+    </div>
+
+    <div class="game-actions">
+      <button class="action-btn btn-correct" onclick="cardCorrect()">
+        <span>✅</span>
+        <span class="btn-label">Got It!</span>
+      </button>
+      <button class="action-btn btn-skip" id="skip-btn" onclick="cardSkip()">
+        <span>⏭️</span>
+        <span class="btn-label">Skip</span>
+        <span class="skip-remaining" id="skip-remaining">3 left</span>
+      </button>
+      <button class="action-btn btn-taboo" onclick="cardTaboo()">
+        <span>🚫</span>
+        <span class="btn-label">Taboo!</span>
+      </button>
+    </div>
+
+    <div style="width:100%;display:flex;justify-content:center;padding:8px 16px 12px;">
+      <button class="btn btn-ghost btn-xs" onclick="togglePause()">⏸ Pause</button>
+    </div>
+  </div>
+
+  <!-- WIN SCREEN -->
+  <div id="screen-win" class="screen">
+    <div class="win-emoji" id="win-emoji">🏆</div>
+    <div class="win-title" id="win-title">Team Rockets Win!</div>
+    <div class="win-subtitle" id="win-subtitle">Amazing game! 🎉</div>
+    <div class="final-scores" id="final-scores"></div>
+    <button class="btn btn-primary" onclick="showScreen('setup')">Play Again!</button>
+    <button class="btn btn-ghost btn-sm" onclick="showScreen('title')" style="max-width:340px;">Back to Menu</button>
+  </div>
+
+</div>
+
+<!-- ROUND END OVERLAY -->
+<div class="overlay" id="overlay-roundend">
+  <div class="overlay-card">
+    <span class="overlay-icon" id="re-icon">⏰</span>
+    <div class="overlay-title" id="re-title">Time's Up!</div>
+    <div class="overlay-sub" id="re-sub">Here's how that round went</div>
+    <div class="round-summary" id="re-summary"></div>
+    <div class="overlay-btns">
+      <button class="btn btn-primary" onclick="nextTurn()" id="re-next-btn">Next Turn →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAUSE OVERLAY -->
+<div class="paused-indicator" id="pause-overlay">
+  <div style="font-size:64px;">⏸️</div>
+  <div class="pause-text">PAUSED</div>
+  <button class="btn btn-primary" onclick="togglePause()">▶ Resume</button>
+</div>
+
+<script>
+// ===================== CARD DATA =====================
+const CATEGORIES = [
+  { id: 'animals', name: 'Animals', icon: '🐾' },
+  { id: 'food', name: 'Food', icon: '🍕' },
+  { id: 'sports', name: 'Sports', icon: '⚽' },
+  { id: 'movies', name: 'Movies & TV', icon: '🎬' },
+  { id: 'school', name: 'School', icon: '📚' },
+  { id: 'science', name: 'Science', icon: '🔬' },
+  { id: 'geography', name: 'Geography', icon: '🌍' },
+  { id: 'toys', name: 'Games & Toys', icon: '🎮' },
+  { id: 'music', name: 'Music', icon: '🎵' },
+  { id: 'holidays', name: 'Holidays', icon: '🎉' },
+];
+
+const CARDS = {
+  animals: [
+    { word: 'Elephant', taboo: ['trunk', 'big', 'Africa', 'gray', 'tusk'] },
+    { word: 'Dolphin', taboo: ['ocean', 'swim', 'smart', 'fish', 'water'] },
+    { word: 'Giraffe', taboo: ['neck', 'tall', 'Africa', 'spots', 'long'] },
+    { word: 'Penguin', taboo: ['cold', 'ice', 'bird', 'black', 'Antarctica'] },
+    { word: 'Tiger', taboo: ['stripes', 'orange', 'cat', 'jungle', 'India'] },
+    { word: 'Kangaroo', taboo: ['pouch', 'jump', 'Australia', 'baby', 'hop'] },
+    { word: 'Panda', taboo: ['black', 'white', 'China', 'bear', 'bamboo'] },
+    { word: 'Crocodile', taboo: ['teeth', 'swamp', 'snap', 'green', 'water'] },
+    { word: 'Parrot', taboo: ['talk', 'colorful', 'bird', 'feathers', 'cage'] },
+    { word: 'Cheetah', taboo: ['fast', 'spots', 'run', 'Africa', 'cat'] },
+    { word: 'Octopus', taboo: ['eight', 'arms', 'tentacles', 'ocean', 'ink'] },
+    { word: 'Flamingo', taboo: ['pink', 'leg', 'bird', 'stand', 'one'] },
+    { word: 'Hippo', taboo: ['fat', 'water', 'Africa', 'river', 'big'] },
+    { word: 'Polar Bear', taboo: ['Arctic', 'white', 'snow', 'ice', 'cold'] },
+    { word: 'Peacock', taboo: ['feathers', 'colorful', 'tail', 'bird', 'blue'] },
+    { word: 'Rhino', taboo: ['horn', 'gray', 'big', 'Africa', 'charge'] },
+    { word: 'Sea Turtle', taboo: ['shell', 'ocean', 'slow', 'green', 'swim'] },
+    { word: 'Wolf', taboo: ['howl', 'pack', 'dog', 'forest', 'moon'] },
+    { word: 'Koala', taboo: ['Australia', 'tree', 'eucalyptus', 'cute', 'gray'] },
+    { word: 'Chameleon', taboo: ['color', 'change', 'lizard', 'tongue', 'skin'] },
+  ],
+  food: [
+    { word: 'Pizza', taboo: ['cheese', 'Italy', 'round', 'slice', 'pepperoni'] },
+    { word: 'Sushi', taboo: ['Japan', 'rice', 'fish', 'roll', 'raw'] },
+    { word: 'Hamburger', taboo: ['bun', 'beef', 'McDonald\'s', 'fast', 'patty'] },
+    { word: 'Ice Cream', taboo: ['cold', 'sweet', 'cone', 'scoop', 'frozen'] },
+    { word: 'Taco', taboo: ['Mexico', 'shell', 'cheese', 'meat', 'tortilla'] },
+    { word: 'Pancakes', taboo: ['syrup', 'breakfast', 'flat', 'stack', 'maple'] },
+    { word: 'Watermelon', taboo: ['seeds', 'green', 'summer', 'red', 'fruit'] },
+    { word: 'Popcorn', taboo: ['movie', 'corn', 'butter', 'salty', 'kernel'] },
+    { word: 'Hot Dog', taboo: ['sausage', 'bun', 'mustard', 'ketchup', 'barbecue'] },
+    { word: 'Chocolate', taboo: ['sweet', 'candy', 'brown', 'cocoa', 'bar'] },
+    { word: 'Spaghetti', taboo: ['pasta', 'Italy', 'sauce', 'noodles', 'meatballs'] },
+    { word: 'Strawberry', taboo: ['red', 'berry', 'sweet', 'seeds', 'jam'] },
+    { word: 'Cheese', taboo: ['yellow', 'milk', 'pizza', 'mouse', 'dairy'] },
+    { word: 'Cookie', taboo: ['sweet', 'bake', 'chocolate chip', 'Monster', 'dough'] },
+    { word: 'Banana', taboo: ['yellow', 'monkey', 'peel', 'fruit', 'curved'] },
+    { word: 'Donut', taboo: ['hole', 'round', 'frosting', 'police', 'glazed'] },
+    { word: 'Sandwich', taboo: ['bread', 'lunch', 'filling', 'toast', 'sub'] },
+    { word: 'Avocado', taboo: ['green', 'guacamole', 'healthy', 'toast', 'seed'] },
+    { word: 'Pretzel', taboo: ['twisted', 'salt', 'knot', 'crunchy', 'dough'] },
+    { word: 'Pineapple', taboo: ['tropical', 'yellow', 'spiky', 'fruit', 'Hawaii'] },
+  ],
+  sports: [
+    { word: 'Basketball', taboo: ['hoop', 'ball', 'dribble', 'NBA', 'court'] },
+    { word: 'Swimming', taboo: ['water', 'pool', 'stroke', 'laps', 'dive'] },
+    { word: 'Soccer', taboo: ['ball', 'goal', 'kick', 'football', 'team'] },
+    { word: 'Tennis', taboo: ['racket', 'ball', 'court', 'serve', 'net'] },
+    { word: 'Gymnastics', taboo: ['flip', 'balance', 'beam', 'tumble', 'Olympic'] },
+    { word: 'Baseball', taboo: ['bat', 'pitch', 'home run', 'diamond', 'glove'] },
+    { word: 'Skiing', taboo: ['snow', 'mountain', 'slope', 'poles', 'winter'] },
+    { word: 'Volleyball', taboo: ['net', 'spike', 'serve', 'ball', 'beach'] },
+    { word: 'Skateboarding', taboo: ['board', 'trick', 'ramp', 'wheels', 'skate'] },
+    { word: 'Archery', taboo: ['bow', 'arrow', 'target', 'aim', 'quiver'] },
+    { word: 'Ice Skating', taboo: ['rink', 'blade', 'ice', 'spin', 'cold'] },
+    { word: 'Rock Climbing', taboo: ['wall', 'rope', 'hold', 'cliff', 'harness'] },
+    { word: 'Bowling', taboo: ['pins', 'lane', 'strike', 'ball', 'gutter'] },
+    { word: 'Track & Field', taboo: ['run', 'race', 'jump', 'sprint', 'hurdles'] },
+    { word: 'Surfing', taboo: ['wave', 'board', 'ocean', 'beach', 'ride'] },
+    { word: 'Cycling', taboo: ['bike', 'pedal', 'wheel', 'ride', 'helmet'] },
+    { word: 'Wrestling', taboo: ['mat', 'pin', 'grapple', 'fight', 'hold'] },
+    { word: 'Golf', taboo: ['club', 'hole', 'putt', 'course', 'green'] },
+    { word: 'Karate', taboo: ['kick', 'punch', 'belt', 'Japanese', 'chop'] },
+    { word: 'Badminton', taboo: ['shuttle', 'racket', 'birdie', 'net', 'feather'] },
+  ],
+  movies: [
+    { word: 'Dinosaur', taboo: ['Jurassic', 'T-Rex', 'extinct', 'park', 'prehistoric'] },
+    { word: 'Superhero', taboo: ['cape', 'power', 'Marvel', 'DC', 'comic'] },
+    { word: 'Cartoon', taboo: ['animated', 'drawing', 'funny', 'kid', 'Saturday'] },
+    { word: 'Wizard', taboo: ['magic', 'wand', 'Harry', 'spell', 'robe'] },
+    { word: 'Robot', taboo: ['metal', 'machine', 'program', 'beep', 'Transformer'] },
+    { word: 'Dragon', taboo: ['fire', 'fly', 'scales', 'breathe', 'fantasy'] },
+    { word: 'Princess', taboo: ['castle', 'crown', 'Disney', 'fairy', 'prince'] },
+    { word: 'Mermaid', taboo: ['sea', 'fish', 'tail', 'Little', 'ocean'] },
+    { word: 'Pirate', taboo: ['ship', 'treasure', 'sword', 'parrot', 'eye patch'] },
+    { word: 'Alien', taboo: ['space', 'planet', 'UFO', 'green', 'galaxy'] },
+    { word: 'Zombie', taboo: ['dead', 'brain', 'walking', 'undead', 'shuffle'] },
+    { word: 'Ninja', taboo: ['Japan', 'sword', 'sneak', 'black', 'kick'] },
+    { word: 'Vampire', taboo: ['blood', 'bat', 'neck', 'castle', 'coffin'] },
+    { word: 'Unicorn', taboo: ['horse', 'horn', 'rainbow', 'magic', 'sparkle'] },
+    { word: 'Spy', taboo: ['secret', 'agent', 'James Bond', 'mission', 'disguise'] },
+    { word: 'Witch', taboo: ['broom', 'cauldron', 'spell', 'hat', 'magic'] },
+    { word: 'Cowboy', taboo: ['horse', 'hat', 'lasso', 'ranch', 'western'] },
+    { word: 'Astronaut', taboo: ['space', 'suit', 'moon', 'rocket', 'NASA'] },
+    { word: 'Fairy', taboo: ['wings', 'magic', 'wand', 'tiny', 'Tinker Bell'] },
+    { word: 'Clown', taboo: ['circus', 'funny', 'makeup', 'balloon', 'nose'] },
+  ],
+  school: [
+    { word: 'Backpack', taboo: ['carry', 'school', 'bag', 'books', 'strap'] },
+    { word: 'Pencil', taboo: ['write', 'eraser', 'sharp', 'draw', 'yellow'] },
+    { word: 'Homework', taboo: ['school', 'assignment', 'study', 'teacher', 'work'] },
+    { word: 'Library', taboo: ['books', 'quiet', 'borrow', 'reading', 'shelf'] },
+    { word: 'Cafeteria', taboo: ['lunch', 'food', 'tray', 'school', 'eat'] },
+    { word: 'Calculator', taboo: ['math', 'numbers', 'add', 'button', 'answer'] },
+    { word: 'Recess', taboo: ['playground', 'play', 'break', 'school', 'outside'] },
+    { word: 'Ruler', taboo: ['measure', 'straight', 'inches', 'line', 'centimeter'] },
+    { word: 'Locker', taboo: ['school', 'lock', 'combination', 'hall', 'store'] },
+    { word: 'Eraser', taboo: ['pencil', 'mistake', 'rub', 'pink', 'erase'] },
+    { word: 'Notebook', taboo: ['write', 'lined', 'paper', 'school', 'notes'] },
+    { word: 'Scissors', taboo: ['cut', 'paper', 'sharp', 'blades', 'craft'] },
+    { word: 'Globe', taboo: ['world', 'earth', 'spin', 'map', 'round'] },
+    { word: 'Alarm Clock', taboo: ['wake', 'morning', 'ring', 'time', 'sleep'] },
+    { word: 'Field Trip', taboo: ['bus', 'class', 'museum', 'outside', 'permission'] },
+    { word: 'Spelling Bee', taboo: ['spell', 'contest', 'word', 'letter', 'school'] },
+    { word: 'Whiteboard', taboo: ['marker', 'erase', 'classroom', 'white', 'board'] },
+    { word: 'Grade', taboo: ['A', 'score', 'report', 'teacher', 'test'] },
+    { word: 'Bully', taboo: ['mean', 'push', 'tease', 'school', 'hurt'] },
+    { word: 'Science Fair', taboo: ['experiment', 'project', 'school', 'volcano', 'ribbon'] },
+  ],
+  science: [
+    { word: 'Volcano', taboo: ['lava', 'erupt', 'mountain', 'fire', 'Hawaii'] },
+    { word: 'Rainbow', taboo: ['colors', 'rain', 'sun', 'arc', 'sky'] },
+    { word: 'Lightning', taboo: ['thunder', 'storm', 'bolt', 'electric', 'flash'] },
+    { word: 'Magnet', taboo: ['attract', 'metal', 'stick', 'pull', 'iron'] },
+    { word: 'Tornado', taboo: ['wind', 'spin', 'funnel', 'storm', 'twister'] },
+    { word: 'Eclipse', taboo: ['sun', 'moon', 'shadow', 'dark', 'cover'] },
+    { word: 'Microscope', taboo: ['tiny', 'look', 'zoom', 'lens', 'lab'] },
+    { word: 'Fossil', taboo: ['dinosaur', 'rock', 'old', 'ancient', 'bone'] },
+    { word: 'Gravity', taboo: ['fall', 'pull', 'earth', 'Newton', 'weight'] },
+    { word: 'Crystal', taboo: ['grow', 'clear', 'mineral', 'sparkle', 'cave'] },
+    { word: 'Photosynthesis', taboo: ['plant', 'sunlight', 'chlorophyll', 'leaf', 'oxygen'] },
+    { word: 'Black Hole', taboo: ['space', 'suck', 'gravity', 'star', 'dark'] },
+    { word: 'DNA', taboo: ['gene', 'double helix', 'cell', 'biology', 'inherit'] },
+    { word: 'Atom', taboo: ['tiny', 'proton', 'electron', 'neutron', 'nucleus'] },
+    { word: 'Earthquake', taboo: ['shake', 'ground', 'fault', 'Richter', 'plates'] },
+    { word: 'Thermometer', taboo: ['temperature', 'hot', 'cold', 'measure', 'mercury'] },
+    { word: 'Evaporation', taboo: ['water', 'heat', 'steam', 'vapor', 'boil'] },
+    { word: 'Solar System', taboo: ['planets', 'sun', 'orbit', 'space', 'galaxy'] },
+    { word: 'Tide', taboo: ['ocean', 'moon', 'beach', 'pull', 'wave'] },
+    { word: 'Metamorphosis', taboo: ['butterfly', 'caterpillar', 'change', 'cocoon', 'transform'] },
+  ],
+  geography: [
+    { word: 'Ocean', taboo: ['water', 'sea', 'waves', 'deep', 'salt'] },
+    { word: 'Mountain', taboo: ['tall', 'peak', 'climb', 'snow', 'Everest'] },
+    { word: 'Desert', taboo: ['sand', 'hot', 'dry', 'cactus', 'Sahara'] },
+    { word: 'Island', taboo: ['water', 'surrounded', 'tropical', 'palm', 'Hawaii'] },
+    { word: 'Rainforest', taboo: ['trees', 'Amazon', 'rain', 'jungle', 'tropical'] },
+    { word: 'Waterfall', taboo: ['fall', 'water', 'Niagara', 'drop', 'splash'] },
+    { word: 'Canyon', taboo: ['Grand', 'rock', 'deep', 'Arizona', 'river'] },
+    { word: 'Glacier', taboo: ['ice', 'cold', 'melt', 'Antarctica', 'move'] },
+    { word: 'Sahara', taboo: ['desert', 'Africa', 'sand', 'hot', 'biggest'] },
+    { word: 'Amazon River', taboo: ['Brazil', 'longest', 'jungle', 'fish', 'South America'] },
+    { word: 'North Pole', taboo: ['Arctic', 'cold', 'Santa', 'ice', 'compass'] },
+    { word: 'Great Wall', taboo: ['China', 'long', 'ancient', 'wall', 'brick'] },
+    { word: 'Eiffel Tower', taboo: ['Paris', 'France', 'iron', 'tall', 'tourist'] },
+    { word: 'Paris', taboo: ['France', 'Eiffel', 'tower', 'capital', 'Europe'] },
+    { word: 'Australia', taboo: ['continent', 'kangaroo', 'Down Under', 'Sydney', 'Outback'] },
+    { word: 'Antarctica', taboo: ['cold', 'penguins', 'ice', 'south', 'continent'] },
+    { word: 'Mississippi', taboo: ['river', 'America', 'long', 'USA', 'south'] },
+    { word: 'Pyramids', taboo: ['Egypt', 'ancient', 'triangle', 'pharaoh', 'Giza'] },
+    { word: 'Niagara Falls', taboo: ['waterfall', 'Canada', 'big', 'border', 'USA'] },
+    { word: 'Everest', taboo: ['tallest', 'mountain', 'Nepal', 'climb', 'Himalaya'] },
+  ],
+  toys: [
+    { word: 'LEGO', taboo: ['bricks', 'build', 'plastic', 'connect', 'set'] },
+    { word: 'Minecraft', taboo: ['blocks', 'build', 'dig', 'Steve', 'Creeper'] },
+    { word: 'Monopoly', taboo: ['money', 'board game', 'properties', 'jail', 'dice'] },
+    { word: 'Rubik\'s Cube', taboo: ['colors', 'twist', 'solve', 'puzzle', 'squares'] },
+    { word: 'Playing Cards', taboo: ['deck', 'shuffle', 'suit', 'poker', 'ace'] },
+    { word: 'Chess', taboo: ['king', 'queen', 'board', 'checkmate', 'knight'] },
+    { word: 'Jenga', taboo: ['blocks', 'stack', 'pull', 'tower', 'fall'] },
+    { word: 'Frisbee', taboo: ['throw', 'catch', 'disc', 'flying', 'plastic'] },
+    { word: 'Jump Rope', taboo: ['jump', 'swing', 'skip', 'double dutch', 'spin'] },
+    { word: 'Yo-Yo', taboo: ['string', 'spin', 'throw', 'trick', 'up-down'] },
+    { word: 'Hula Hoop', taboo: ['spin', 'hips', 'circle', 'ring', 'waist'] },
+    { word: 'Kite', taboo: ['fly', 'wind', 'string', 'sky', 'tail'] },
+    { word: 'Puzzle', taboo: ['piece', 'fit', 'jigsaw', 'picture', 'solve'] },
+    { word: 'Scrabble', taboo: ['letters', 'words', 'tiles', 'board', 'points'] },
+    { word: 'Nintendo Switch', taboo: ['gaming', 'portable', 'Mario', 'console', 'controller'] },
+    { word: 'Slip n Slide', taboo: ['water', 'slide', 'wet', 'backyard', 'summer'] },
+    { word: 'Nerf Gun', taboo: ['foam', 'dart', 'shoot', 'battle', 'soft'] },
+    { word: 'Slinky', taboo: ['spring', 'stairs', 'metal', 'coil', 'bounce'] },
+    { word: 'Play-Doh', taboo: ['sculpt', 'squish', 'clay', 'shape', 'mold'] },
+    { word: 'Dominoes', taboo: ['tiles', 'knock', 'chain', 'dots', 'fall'] },
+  ],
+  music: [
+    { word: 'Guitar', taboo: ['strings', 'strum', 'rock', 'acoustic', 'play'] },
+    { word: 'Piano', taboo: ['keys', 'black', 'white', 'notes', 'classical'] },
+    { word: 'Drum Set', taboo: ['bang', 'sticks', 'beat', 'rhythm', 'hit'] },
+    { word: 'Microphone', taboo: ['sing', 'speak', 'stage', 'amplify', 'concert'] },
+    { word: 'Concert', taboo: ['live', 'stadium', 'music', 'tickets', 'band'] },
+    { word: 'Headphones', taboo: ['listen', 'ears', 'music', 'wireless', 'noise'] },
+    { word: 'Violin', taboo: ['bow', 'strings', 'classical', 'orchestra', 'fiddle'] },
+    { word: 'Trumpet', taboo: ['blow', 'brass', 'jazz', 'horn', 'valve'] },
+    { word: 'DJ', taboo: ['turntable', 'mix', 'dance', 'club', 'records'] },
+    { word: 'Pop Star', taboo: ['famous', 'sing', 'celebrity', 'stage', 'fan'] },
+    { word: 'Chorus', taboo: ['repeat', 'song', 'verse', 'memorable', 'sing'] },
+    { word: 'Beat', taboo: ['rhythm', 'drum', 'tap', 'music', 'tempo'] },
+    { word: 'Flute', taboo: ['blow', 'wind', 'holes', 'wooden', 'high'] },
+    { word: 'Karaoke', taboo: ['sing', 'lyrics', 'screen', 'microphone', 'bar'] },
+    { word: 'Playlist', taboo: ['songs', 'order', 'shuffle', 'Spotify', 'listen'] },
+    { word: 'Bass', taboo: ['low', 'guitar', 'deep', 'music', 'four strings'] },
+    { word: 'Xylophone', taboo: ['bars', 'mallet', 'notes', 'colorful', 'hit'] },
+    { word: 'Lullaby', taboo: ['baby', 'sleep', 'soft', 'quiet', 'night'] },
+    { word: 'Rap', taboo: ['rhyme', 'hip hop', 'flow', 'beat', 'words'] },
+    { word: 'Orchestra', taboo: ['conductor', 'classical', 'symphony', 'instruments', 'baton'] },
+  ],
+  holidays: [
+    { word: 'Christmas', taboo: ['Santa', 'presents', 'tree', 'December', 'winter'] },
+    { word: 'Halloween', taboo: ['candy', 'costume', 'spooky', 'October', 'trick'] },
+    { word: 'Easter', taboo: ['eggs', 'bunny', 'spring', 'hunt', 'chocolate'] },
+    { word: 'Thanksgiving', taboo: ['turkey', 'feast', 'pilgrims', 'November', 'harvest'] },
+    { word: 'New Year\'s', taboo: ['countdown', 'midnight', 'fireworks', 'January', 'resolution'] },
+    { word: 'Birthday', taboo: ['cake', 'candles', 'wish', 'party', 'present'] },
+    { word: 'Fourth of July', taboo: ['fireworks', 'independence', 'America', 'summer', 'July'] },
+    { word: 'Valentine\'s Day', taboo: ['heart', 'love', 'chocolate', 'February', 'roses'] },
+    { word: 'St. Patrick\'s Day', taboo: ['green', 'Ireland', 'shamrock', 'March', 'luck'] },
+    { word: 'Mother\'s Day', taboo: ['mom', 'flowers', 'brunch', 'May', 'appreciate'] },
+    { word: 'Father\'s Day', taboo: ['dad', 'June', 'barbecue', 'tie', 'appreciate'] },
+    { word: 'Hanukkah', taboo: ['menorah', 'candles', 'Jewish', 'eight', 'dreidel'] },
+    { word: 'Diwali', taboo: ['lights', 'India', 'Hindu', 'festival', 'lamp'] },
+    { word: 'Cinco de Mayo', taboo: ['Mexico', 'May', 'celebration', 'fiesta', 'tacos'] },
+    { word: 'Mardi Gras', taboo: ['beads', 'New Orleans', 'parade', 'costume', 'Louisiana'] },
+    { word: 'Snow Day', taboo: ['school', 'canceled', 'winter', 'cold', 'blizzard'] },
+    { word: 'Summer Vacation', taboo: ['school', 'break', 'beach', 'summer', 'July'] },
+    { word: 'April Fools', taboo: ['prank', 'joke', 'trick', 'funny', 'April'] },
+    { word: 'Christmas Tree', taboo: ['decorate', 'ornament', 'pine', 'green', 'Christmas'] },
+    { word: 'Fireworks', taboo: ['Fourth', 'July', 'explosion', 'sky', 'colorful'] },
+  ],
+};
+
+// ===================== GAME STATE =====================
+let state = {
+  team1: 'Team Rockets',
+  team2: 'Team Stars',
+  timerSeconds: 60,
+  roundsPerTeam: 3,
+  selectedCategories: Object.keys(CARDS),
+  scores: [0, 0],
+  currentTeam: 0,   // 0 or 1
+  round: 1,
+  totalRounds: 6,
+  skipsLeft: 3,
+  cardIndex: 0,
+  deck: [],
+  timerInterval: null,
+  timeLeft: 60,
+  isPaused: false,
+  roundCorrect: 0,
+  roundTaboo: 0,
+  roundSkipped: 0,
+  circumference: 2 * Math.PI * 44,
+};
+
+// ===================== AUDIO =====================
+const AudioCtx = window.AudioContext || window.webkitAudioContext;
+let audioCtx = null;
+function getAudio() {
+  if (!audioCtx) audioCtx = new AudioCtx();
+  return audioCtx;
+}
+
+function playTone(freq, type, duration, vol=0.3) {
+  try {
+    const ctx = getAudio();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.type = type; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(vol, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+    osc.start(ctx.currentTime); osc.stop(ctx.currentTime + duration);
+  } catch(e) {}
+}
+
+function soundCorrect() {
+  playTone(523, 'sine', 0.1, 0.4);
+  setTimeout(()=>playTone(659, 'sine', 0.1, 0.4), 100);
+  setTimeout(()=>playTone(784, 'sine', 0.15, 0.4), 200);
+}
+
+function soundTaboo() {
+  playTone(200, 'sawtooth', 0.3, 0.5);
+  setTimeout(()=>playTone(150, 'sawtooth', 0.3, 0.5), 150);
+}
+
+function soundSkip() {
+  playTone(400, 'triangle', 0.12, 0.3);
+}
+
+function soundTick() {
+  playTone(880, 'square', 0.05, 0.1);
+}
+
+function soundTimeUp() {
+  for (let i = 0; i < 5; i++) {
+    setTimeout(()=>playTone(440, 'sawtooth', 0.15, 0.3), i * 200);
+  }
+}
+
+function soundWarning() {
+  playTone(660, 'triangle', 0.15, 0.2);
+}
+
+// ===================== SCREEN NAV =====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+// ===================== SETUP =====================
+function selectTimer(secs) {
+  state.timerSeconds = secs;
+  document.querySelectorAll('[data-time]').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.time) === secs);
+  });
+}
+
+function selectRounds(n) {
+  state.roundsPerTeam = n;
+  state.totalRounds = n * 2;
+  document.querySelectorAll('[data-rounds]').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.rounds) === n);
+  });
+}
+
+// ===================== CATEGORIES =====================
+function initCategoryGrid() {
+  const grid = document.getElementById('category-grid');
+  grid.innerHTML = '';
+  CATEGORIES.forEach(cat => {
+    const div = document.createElement('div');
+    div.className = 'cat-card selected';
+    div.dataset.id = cat.id;
+    div.onclick = () => toggleCategory(cat.id);
+    div.innerHTML = `
+      <span class="cat-icon">${cat.icon}</span>
+      <div class="cat-name">${cat.name}</div>
+      <div class="cat-check">✓</div>
+    `;
+    grid.appendChild(div);
+  });
+  state.selectedCategories = Object.keys(CARDS);
+}
+
+function toggleCategory(id) {
+  const card = document.querySelector(`.cat-card[data-id="${id}"]`);
+  const idx = state.selectedCategories.indexOf(id);
+  if (idx >= 0) {
+    if (state.selectedCategories.length <= 1) return; // keep at least 1
+    state.selectedCategories.splice(idx, 1);
+    card.classList.remove('selected');
+  } else {
+    state.selectedCategories.push(id);
+    card.classList.add('selected');
+  }
+  updateStartBtn();
+}
+
+function selectAllCategories(select) {
+  state.selectedCategories = select ? Object.keys(CARDS) : [Object.keys(CARDS)[0]];
+  document.querySelectorAll('.cat-card').forEach(card => {
+    const should = state.selectedCategories.includes(card.dataset.id);
+    card.classList.toggle('selected', should);
+  });
+  updateStartBtn();
+}
+
+function updateStartBtn() {
+  document.getElementById('start-game-btn').disabled = state.selectedCategories.length === 0;
+}
+
+// ===================== DECK =====================
+function buildDeck() {
+  let deck = [];
+  state.selectedCategories.forEach(catId => {
+    const cards = CARDS[catId];
+    cards.forEach(card => deck.push({ ...card, category: catId }));
+  });
+  // Shuffle
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+}
+
+// ===================== GAME START =====================
+function startGame() {
+  state.team1 = document.getElementById('team1-name').value || 'Team 1';
+  state.team2 = document.getElementById('team2-name').value || 'Team 2';
+  state.scores = [0, 0];
+  state.currentTeam = 0;
+  state.round = 1;
+  state.deck = buildDeck();
+  state.cardIndex = 0;
+
+  updateHeader();
+  startTurn();
+  showScreen('game');
+}
+
+function startTurn() {
+  state.skipsLeft = 3;
+  state.timeLeft = state.timerSeconds;
+  state.isPaused = false;
+  state.roundCorrect = 0;
+  state.roundTaboo = 0;
+  state.roundSkipped = 0;
+
+  // Ensure deck has cards
+  if (state.cardIndex >= state.deck.length) {
+    state.deck = buildDeck();
+    state.cardIndex = 0;
+  }
+
+  updateHeader();
+  updateSkipBtn();
+  showCard();
+  startTimer();
+  hidePause();
+}
+
+function updateHeader() {
+  const names = [state.team1, state.team2];
+  document.getElementById('hdr-team1-name').textContent = state.team1;
+  document.getElementById('hdr-team2-name').textContent = state.team2;
+  document.getElementById('hdr-score1').textContent = state.scores[0];
+  document.getElementById('hdr-score2').textContent = state.scores[1];
+
+  const turnNum = Math.ceil(((state.round - 1) + 1));
+  document.getElementById('hdr-round').textContent = `Round ${state.round} of ${state.totalRounds}`;
+  document.getElementById('hdr-turn').textContent = `${names[state.currentTeam]}'s turn`;
+  document.getElementById('turn-badge').textContent = `${names[state.currentTeam].toUpperCase()}'S TURN`;
+}
+
+// ===================== CARD DISPLAY =====================
+function showCard() {
+  if (state.cardIndex >= state.deck.length) {
+    state.deck = [...state.deck, ...buildDeck()];
+  }
+  const card = state.deck[state.cardIndex];
+  const catInfo = CATEGORIES.find(c => c.id === card.category);
+
+  document.getElementById('card-category').textContent = `${catInfo ? catInfo.icon : ''} ${catInfo ? catInfo.name : card.category}`;
+  document.getElementById('card-main-word').textContent = card.word;
+  document.getElementById('card-counter').textContent = `#${state.cardIndex + 1}`;
+
+  const tabooDiv = document.getElementById('taboo-words');
+  tabooDiv.innerHTML = '';
+  card.taboo.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'taboo-word';
+    div.textContent = t;
+    tabooDiv.appendChild(div);
+  });
+}
+
+// ===================== TIMER =====================
+function startTimer() {
+  clearInterval(state.timerInterval);
+  updateTimerDisplay();
+
+  state.timerInterval = setInterval(() => {
+    if (state.isPaused) return;
+    state.timeLeft--;
+    updateTimerDisplay();
+
+    if (state.timeLeft <= 10 && state.timeLeft > 0) soundWarning();
+    if (state.timeLeft === 0) {
+      clearInterval(state.timerInterval);
+      soundTimeUp();
+      setTimeout(showRoundEnd, 500);
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  document.getElementById('timer-display').textContent = state.timeLeft;
+  const ring = document.getElementById('timer-ring');
+  const progress = state.timeLeft / state.timerSeconds;
+  const offset = state.circumference * (1 - progress);
+  ring.style.strokeDashoffset = offset;
+
+  // Color shift
+  if (progress > 0.5) ring.style.stroke = 'var(--green)';
+  else if (progress > 0.25) ring.style.stroke = 'var(--yellow)';
+  else ring.style.stroke = 'var(--accent)';
+
+  if (state.timeLeft <= 5) soundTick();
+}
+
+// ===================== ACTIONS =====================
+function cardCorrect() {
+  state.scores[state.currentTeam]++;
+  state.roundCorrect++;
+  state.cardIndex++;
+  soundCorrect();
+  flashCard('green');
+  updateHeader();
+  showCard();
+}
+
+function cardSkip() {
+  if (state.skipsLeft <= 0) return;
+  state.skipsLeft--;
+  state.roundSkipped++;
+  state.cardIndex++;
+  soundSkip();
+  flashCard('yellow');
+  updateSkipBtn();
+  showCard();
+}
+
+function cardTaboo() {
+  state.scores[state.currentTeam] = Math.max(0, state.scores[state.currentTeam] - 1);
+  state.roundTaboo++;
+  state.cardIndex++;
+  soundTaboo();
+  flashCard('red');
+  updateHeader();
+  showCard();
+}
+
+function updateSkipBtn() {
+  const btn = document.getElementById('skip-btn');
+  const rem = document.getElementById('skip-remaining');
+  rem.textContent = `${state.skipsLeft} left`;
+  btn.disabled = state.skipsLeft <= 0;
+}
+
+function flashCard(color) {
+  const card = document.getElementById('word-card');
+  card.classList.remove('flash-green', 'flash-red', 'flash-yellow');
+  void card.offsetWidth; // reflow
+  card.classList.add(`flash-${color}`);
+}
+
+// ===================== PAUSE =====================
+function togglePause() {
+  state.isPaused = !state.isPaused;
+  if (state.isPaused) {
+    document.getElementById('pause-overlay').classList.add('show');
+  } else {
+    hidePause();
+  }
+}
+
+function hidePause() {
+  document.getElementById('pause-overlay').classList.remove('show');
+  state.isPaused = false;
+}
+
+// ===================== ROUND END =====================
+function showRoundEnd() {
+  clearInterval(state.timerInterval);
+
+  const overlay = document.getElementById('overlay-roundend');
+  const names = [state.team1, state.team2];
+
+  document.getElementById('re-icon').textContent = '⏰';
+  document.getElementById('re-title').textContent = "Time's Up!";
+  document.getElementById('re-sub').textContent = `${names[state.currentTeam]}'s turn is over`;
+
+  const summary = document.getElementById('re-summary');
+  summary.innerHTML = `
+    <div class="summary-row"><span class="label">✅ Correct</span><span class="val green">+${state.roundCorrect}</span></div>
+    <div class="summary-row"><span class="label">🚫 Taboo</span><span class="val red">-${state.roundTaboo}</span></div>
+    <div class="summary-row"><span class="label">⏭️ Skipped</span><span class="val yellow">${state.roundSkipped}</span></div>
+    <div class="summary-row" style="border-top:1px solid rgba(255,255,255,0.1);margin-top:8px;padding-top:12px;">
+      <span class="label">📊 Scores</span>
+      <span class="val">${state.team1}: ${state.scores[0]} &nbsp; ${state.team2}: ${state.scores[1]}</span>
+    </div>
+  `;
+
+  // Check if game over
+  const isLastTurn = state.round >= state.totalRounds;
+  const nextBtn = document.getElementById('re-next-btn');
+  nextBtn.textContent = isLastTurn ? '🏆 See Results!' : 'Next Turn →';
+
+  overlay.classList.add('show');
+}
+
+function nextTurn() {
+  document.getElementById('overlay-roundend').classList.remove('show');
+
+  if (state.round >= state.totalRounds) {
+    showWin();
+    return;
+  }
+
+  state.round++;
+  state.currentTeam = 1 - state.currentTeam;
+  startTurn();
+  showScreen('game');
+}
+
+// ===================== WIN =====================
+function showWin() {
+  const t1 = state.scores[0];
+  const t2 = state.scores[1];
+  let winnerName, emoji, sub;
+
+  if (t1 > t2) {
+    winnerName = state.team1;
+    emoji = '🏆';
+    sub = `${state.team1} wins with ${t1} points!`;
+  } else if (t2 > t1) {
+    winnerName = state.team2;
+    emoji = '🏆';
+    sub = `${state.team2} wins with ${t2} points!`;
+  } else {
+    winnerName = "It's a Tie!";
+    emoji = '🤝';
+    sub = `Both teams scored ${t1} points!`;
+  }
+
+  document.getElementById('win-emoji').textContent = emoji;
+  document.getElementById('win-title').textContent = winnerName === "It's a Tie!" ? winnerName : `${winnerName} Wins!`;
+  document.getElementById('win-subtitle').textContent = sub;
+
+  const fs = document.getElementById('final-scores');
+  fs.innerHTML = `
+    <div class="final-score-row ${t1 >= t2 ? 'winner' : ''}">
+      <span class="final-team">${state.team1}</span>
+      <span class="final-pts">${t1}</span>
+    </div>
+    <div class="final-score-row ${t2 >= t1 ? 'winner' : ''}">
+      <span class="final-team">${state.team2}</span>
+      <span class="final-pts">${t2}</span>
+    </div>
+  `;
+
+  showScreen('win');
+  launchConfetti();
+}
+
+// ===================== CONFETTI =====================
+function launchConfetti() {
+  const colors = ['#e94560', '#16c79a', '#f5a623', '#4a90d9', '#ff8c42', '#b24bec'];
+  for (let i = 0; i < 80; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      const size = 6 + Math.random() * 12;
+      el.style.cssText = `
+        left: ${Math.random() * 100}vw;
+        width: ${size}px; height: ${size}px;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
+        border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+        animation-duration: ${1.5 + Math.random() * 2.5}s;
+        animation-delay: ${Math.random() * 0.5}s;
+      `;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 30);
+  }
+}
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', () => {
+  initCategoryGrid();
+  state.circumference = 2 * Math.PI * 44;
+  document.getElementById('timer-ring').style.strokeDasharray = state.circumference;
+  document.getElementById('timer-ring').style.strokeDashoffset = 0;
+});
+</script>
+</body>
+</html>
