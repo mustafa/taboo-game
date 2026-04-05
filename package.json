@@ -1,8 +1,8 @@
 {
   "name": "taboo-game",
   "version": "1.0.0",
-  "description": "Taboo! Family Edition - A fun word game for kids",
+  "description": "Kid-friendly Taboo party game",
   "scripts": {
-    "build": "mkdir -p dist && cp -r public/* dist/"
+    "build": "cp -r public dist"
   }
 }
