@@ -475,8 +475,9 @@
       </button>
     </div>
 
-    <div style="width:100%;display:flex;justify-content:center;padding:8px 16px 12px;">
+    <div style="width:100%;display:flex;justify-content:center;gap:10px;padding:8px 16px 12px;">
       <button class="btn btn-ghost btn-xs" onclick="togglePause()">⏸ Pause</button>
+      <button class="btn btn-ghost btn-xs" style="color:var(--accent);border-color:rgba(233,69,96,0.3);" onclick="confirmQuit()">✕ Quit</button>
     </div>
   </div>
 
@@ -486,8 +487,8 @@
     <div class="win-title" id="win-title">Team Rockets Win!</div>
     <div class="win-subtitle" id="win-subtitle">Amazing game! 🎉</div>
     <div class="final-scores" id="final-scores"></div>
-    <button class="btn btn-primary" onclick="showScreen('setup')">Play Again!</button>
-    <button class="btn btn-ghost btn-sm" onclick="showScreen('title')" style="max-width:340px;">Back to Menu</button>
+    <button class="btn btn-primary" onclick="showScreen('setup')">🎮 New Game</button>
+    <button class="btn btn-ghost btn-sm" onclick="showScreen('title')" style="max-width:340px;">🏠 Back to Menu</button>
   </div>
 
 </div>
@@ -501,6 +502,7 @@
     <div class="round-summary" id="re-summary"></div>
     <div class="overlay-btns">
       <button class="btn btn-primary" onclick="nextTurn()" id="re-next-btn">Next Turn →</button>
+      <button class="btn btn-ghost" onclick="quitGame()" style="max-width:none;">✕ Quit to Menu</button>
     </div>
   </div>
 </div>
@@ -510,6 +512,20 @@
   <div style="font-size:64px;">⏸️</div>
   <div class="pause-text">PAUSED</div>
   <button class="btn btn-primary" onclick="togglePause()">▶ Resume</button>
+  <button class="btn btn-ghost btn-sm" style="max-width:240px;color:var(--accent);" onclick="hidePause();confirmQuit()">✕ Quit Game</button>
+</div>
+
+<!-- QUIT CONFIRM OVERLAY -->
+<div class="overlay" id="overlay-quit">
+  <div class="overlay-card">
+    <span class="overlay-icon">🚪</span>
+    <div class="overlay-title">Quit Game?</div>
+    <div class="overlay-sub">Your scores will be lost.</div>
+    <div class="overlay-btns">
+      <button class="btn btn-primary" onclick="quitGame()">Yes, Quit</button>
+      <button class="btn btn-ghost" onclick="closeQuitConfirm()" style="max-width:none;">Keep Playing</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1070,6 +1086,27 @@ function togglePause() {
 function hidePause() {
   document.getElementById('pause-overlay').classList.remove('show');
   state.isPaused = false;
+}
+
+function confirmQuit() {
+  // Pause the timer while confirming
+  state.isPaused = true;
+  document.getElementById('overlay-quit').classList.add('show');
+}
+
+function closeQuitConfirm() {
+  document.getElementById('overlay-quit').classList.remove('show');
+  state.isPaused = false;
+}
+
+function quitGame() {
+  clearInterval(state.timerInterval);
+  state.timerInterval = null;
+  state.isPaused = false;
+  document.getElementById('overlay-quit').classList.remove('show');
+  document.getElementById('overlay-roundend').classList.remove('show');
+  document.getElementById('pause-overlay').classList.remove('show');
+  showScreen('setup');
 }
 
 // ===================== ROUND END =====================
