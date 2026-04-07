@@ -328,6 +328,20 @@
   .text-center { text-align: center; }
   .gap-sm { gap: 12px; }
   .w-full { width: 100%; max-width: 420px; }
+
+  /* MODE TOGGLE */
+  .mode-options { display: flex; gap: 8px; }
+
+  /* INDIVIDUAL PLAYER INPUTS */
+  .player-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+  .player-row .team-input { flex: 1; }
+  .player-remove {
+    background: rgba(233,69,96,0.15); border: 1px solid rgba(233,69,96,0.3);
+    border-radius: 8px; padding: 8px 14px; color: var(--accent);
+    font-size: 18px; font-weight: 700; cursor: pointer; flex-shrink: 0;
+    line-height: 1; transition: background 0.2s;
+  }
+  .player-remove:active { background: rgba(233,69,96,0.3); }
 </style>
 </head>
 <body>
@@ -375,13 +389,30 @@
   <!-- SETUP SCREEN -->
   <div id="screen-setup" class="screen">
     <div class="screen-title">Game Setup</div>
+
     <div class="setup-section">
-      <div class="setup-label">Team 1 Name</div>
-      <input class="team-input" id="team1-name" type="text" placeholder="Team Rockets 🚀" maxlength="20" value="Team Rockets">
+      <div class="setup-label">Play Mode</div>
+      <div class="mode-options">
+        <div class="timer-btn active" data-mode="teams" onclick="selectMode('teams')" style="flex:1;">👥 Teams</div>
+        <div class="timer-btn" data-mode="individual" onclick="selectMode('individual')" style="flex:1;">🧑 Individual</div>
+      </div>
     </div>
-    <div class="setup-section">
-      <div class="setup-label">Team 2 Name</div>
-      <input class="team-input" id="team2-name" type="text" placeholder="Team Stars ⭐" maxlength="20" value="Team Stars">
+
+    <div id="teams-section" style="width:100%;max-width:420px;display:flex;flex-direction:column;gap:20px;">
+      <div class="setup-section">
+        <div class="setup-label">Team 1 Name</div>
+        <input class="team-input" id="team1-name" type="text" placeholder="Team Rockets 🚀" maxlength="20" value="Team Rockets">
+      </div>
+      <div class="setup-section">
+        <div class="setup-label">Team 2 Name</div>
+        <input class="team-input" id="team2-name" type="text" placeholder="Team Stars ⭐" maxlength="20" value="Team Stars">
+      </div>
+    </div>
+
+    <div id="individual-section" style="display:none;width:100%;max-width:420px;">
+      <div class="setup-label" style="margin-bottom:10px;">Player Names</div>
+      <div id="player-inputs"></div>
+      <button class="btn btn-ghost btn-sm" onclick="addPlayer()" id="add-player-btn" style="max-width:420px;margin-top:4px;">+ Add Player</button>
     </div>
     <div class="setup-section">
       <div class="setup-label">Timer Per Turn</div>
@@ -768,13 +799,16 @@ const CARDS = {
 
 // ===================== GAME STATE =====================
 let state = {
+  gameMode: 'teams',        // 'teams' | 'individual'
   team1: 'Team Rockets',
   team2: 'Team Stars',
+  players: ['Player 1', 'Player 2', 'Player 3'],
+  currentPlayerIndex: 0,
   timerSeconds: 60,
   roundsPerTeam: 3,
   selectedCategories: Object.keys(CARDS),
   scores: [0, 0],
-  currentTeam: 0,   // 0 or 1
+  currentTeam: 0,   // 0 or 1 (teams mode)
   round: 1,
   totalRounds: 6,
   skipsLeft: 3,
@@ -846,6 +880,56 @@ function showScreen(id) {
 }
 
 // ===================== SETUP =====================
+function selectMode(mode) {
+  state.gameMode = mode;
+  document.querySelectorAll('[data-mode]').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+  });
+  document.getElementById('teams-section').style.display = mode === 'teams' ? '' : 'none';
+  document.getElementById('individual-section').style.display = mode === 'individual' ? '' : 'none';
+}
+
+function renderPlayerInputs() {
+  const container = document.getElementById('player-inputs');
+  container.innerHTML = '';
+  state.players.forEach((name, i) => {
+    const row = document.createElement('div');
+    row.className = 'player-row';
+
+    const input = document.createElement('input');
+    input.className = 'team-input';
+    input.type = 'text';
+    input.value = name;
+    input.placeholder = `Player ${i + 1}`;
+    input.maxLength = 20;
+    input.addEventListener('input', () => { state.players[i] = input.value; });
+    row.appendChild(input);
+
+    if (state.players.length > 2) {
+      const btn = document.createElement('button');
+      btn.className = 'player-remove';
+      btn.textContent = '✕';
+      btn.onclick = () => removePlayer(i);
+      row.appendChild(btn);
+    }
+
+    container.appendChild(row);
+  });
+  document.getElementById('add-player-btn').style.display = state.players.length >= 8 ? 'none' : '';
+}
+
+function addPlayer() {
+  if (state.players.length >= 8) return;
+  state.players.push(`Player ${state.players.length + 1}`);
+  renderPlayerInputs();
+}
+
+function removePlayer(i) {
+  if (state.players.length <= 2) return;
+  state.players.splice(i, 1);
+  renderPlayerInputs();
+}
+
 function selectTimer(secs) {
   state.timerSeconds = secs;
   document.querySelectorAll('[data-time]').forEach(b => {
@@ -924,10 +1008,19 @@ function buildDeck() {
 
 // ===================== GAME START =====================
 function startGame() {
-  state.team1 = document.getElementById('team1-name').value || 'Team 1';
-  state.team2 = document.getElementById('team2-name').value || 'Team 2';
-  state.scores = [0, 0];
-  state.currentTeam = 0;
+  if (state.gameMode === 'individual') {
+    // Read current player names from state (kept in sync via oninput)
+    state.players = state.players.map((p, i) => p.trim() || `Player ${i + 1}`);
+    state.scores = state.players.map(() => 0);
+    state.currentPlayerIndex = 0;
+    state.totalRounds = state.roundsPerTeam * state.players.length;
+  } else {
+    state.team1 = document.getElementById('team1-name').value || 'Team 1';
+    state.team2 = document.getElementById('team2-name').value || 'Team 2';
+    state.scores = [0, 0];
+    state.currentTeam = 0;
+    state.totalRounds = state.roundsPerTeam * 2;
+  }
   state.round = 1;
   state.deck = buildDeck();
   state.cardIndex = 0;
@@ -959,22 +1052,34 @@ function startTurn() {
 }
 
 function updateHeader() {
-  const names = [state.team1, state.team2];
-  document.getElementById('hdr-team1-name').textContent = state.team1;
-  document.getElementById('hdr-team2-name').textContent = state.team2;
-  document.getElementById('hdr-score1').textContent = state.scores[0];
-  document.getElementById('hdr-score2').textContent = state.scores[1];
-
-  const turnNum = Math.ceil(((state.round - 1) + 1));
-  document.getElementById('hdr-round').textContent = `Round ${state.round} of ${state.totalRounds}`;
-  document.getElementById('hdr-turn').textContent = `${names[state.currentTeam]}'s turn`;
-  document.getElementById('turn-badge').textContent = `${names[state.currentTeam].toUpperCase()}'S TURN`;
+  if (state.gameMode === 'individual') {
+    const player = state.players[state.currentPlayerIndex];
+    const score = state.scores[state.currentPlayerIndex];
+    document.getElementById('hdr-team1-name').textContent = player;
+    document.getElementById('hdr-score1').textContent = score;
+    document.getElementById('hdr-team2-name').textContent = `${state.currentPlayerIndex + 1}/${state.players.length}`;
+    document.getElementById('hdr-score2').textContent = '👤';
+    document.getElementById('hdr-round').textContent = `Turn ${state.round} of ${state.totalRounds}`;
+    document.getElementById('hdr-turn').textContent = `${player}'s turn`;
+    document.getElementById('turn-badge').textContent = `${player.toUpperCase()}'S TURN`;
+  } else {
+    const names = [state.team1, state.team2];
+    document.getElementById('hdr-team1-name').textContent = state.team1;
+    document.getElementById('hdr-team2-name').textContent = state.team2;
+    document.getElementById('hdr-score1').textContent = state.scores[0];
+    document.getElementById('hdr-score2').textContent = state.scores[1];
+    document.getElementById('hdr-round').textContent = `Round ${state.round} of ${state.totalRounds}`;
+    document.getElementById('hdr-turn').textContent = `${names[state.currentTeam]}'s turn`;
+    document.getElementById('turn-badge').textContent = `${names[state.currentTeam].toUpperCase()}'S TURN`;
+  }
 }
 
 // ===================== CARD DISPLAY =====================
 function showCard() {
   if (state.cardIndex >= state.deck.length) {
-    state.deck = [...state.deck, ...buildDeck()];
+    // All cards exhausted — reshuffle full deck before repeating
+    state.deck = buildDeck();
+    state.cardIndex = 0;
   }
   const card = state.deck[state.cardIndex];
   const catInfo = CATEGORIES.find(c => c.id === card.category);
@@ -1028,8 +1133,12 @@ function updateTimerDisplay() {
 }
 
 // ===================== ACTIONS =====================
+function currentIdx() {
+  return state.gameMode === 'individual' ? state.currentPlayerIndex : state.currentTeam;
+}
+
 function cardCorrect() {
-  state.scores[state.currentTeam]++;
+  state.scores[currentIdx()]++;
   state.roundCorrect++;
   state.cardIndex++;
   soundCorrect();
@@ -1050,7 +1159,7 @@ function cardSkip() {
 }
 
 function cardTaboo() {
-  state.scores[state.currentTeam] = Math.max(0, state.scores[state.currentTeam] - 1);
+  state.scores[currentIdx()] = Math.max(0, state.scores[currentIdx()] - 1);
   state.roundTaboo++;
   state.cardIndex++;
   soundTaboo();
@@ -1114,24 +1223,34 @@ function showRoundEnd() {
   clearInterval(state.timerInterval);
 
   const overlay = document.getElementById('overlay-roundend');
-  const names = [state.team1, state.team2];
+  const currentName = state.gameMode === 'individual'
+    ? state.players[state.currentPlayerIndex]
+    : [state.team1, state.team2][state.currentTeam];
 
   document.getElementById('re-icon').textContent = '⏰';
   document.getElementById('re-title').textContent = "Time's Up!";
-  document.getElementById('re-sub').textContent = `${names[state.currentTeam]}'s turn is over`;
+  document.getElementById('re-sub').textContent = `${currentName}'s turn is over`;
+
+  let scoresHtml;
+  if (state.gameMode === 'individual') {
+    scoresHtml = state.players.map((p, i) =>
+      `<span style="white-space:nowrap;">${p}: <strong>${state.scores[i]}</strong></span>`
+    ).join(' &nbsp; ');
+  } else {
+    scoresHtml = `${state.team1}: ${state.scores[0]} &nbsp; ${state.team2}: ${state.scores[1]}`;
+  }
 
   const summary = document.getElementById('re-summary');
   summary.innerHTML = `
     <div class="summary-row"><span class="label">✅ Correct</span><span class="val green">+${state.roundCorrect}</span></div>
     <div class="summary-row"><span class="label">🚫 Taboo</span><span class="val red">-${state.roundTaboo}</span></div>
     <div class="summary-row"><span class="label">⏭️ Skipped</span><span class="val yellow">${state.roundSkipped}</span></div>
-    <div class="summary-row" style="border-top:1px solid rgba(255,255,255,0.1);margin-top:8px;padding-top:12px;">
+    <div class="summary-row" style="border-top:1px solid rgba(255,255,255,0.1);margin-top:8px;padding-top:12px;flex-wrap:wrap;gap:6px;">
       <span class="label">📊 Scores</span>
-      <span class="val">${state.team1}: ${state.scores[0]} &nbsp; ${state.team2}: ${state.scores[1]}</span>
+      <span class="val" style="font-size:13px;flex-wrap:wrap;">${scoresHtml}</span>
     </div>
   `;
 
-  // Check if game over
   const isLastTurn = state.round >= state.totalRounds;
   const nextBtn = document.getElementById('re-next-btn');
   nextBtn.textContent = isLastTurn ? '🏆 See Results!' : 'Next Turn →';
@@ -1148,46 +1267,70 @@ function nextTurn() {
   }
 
   state.round++;
-  state.currentTeam = 1 - state.currentTeam;
+  if (state.gameMode === 'individual') {
+    state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.players.length;
+  } else {
+    state.currentTeam = 1 - state.currentTeam;
+  }
   startTurn();
   showScreen('game');
 }
 
 // ===================== WIN =====================
 function showWin() {
-  const t1 = state.scores[0];
-  const t2 = state.scores[1];
   let winnerName, emoji, sub;
+  const fs = document.getElementById('final-scores');
 
-  if (t1 > t2) {
-    winnerName = state.team1;
-    emoji = '🏆';
-    sub = `${state.team1} wins with ${t1} points!`;
-  } else if (t2 > t1) {
-    winnerName = state.team2;
-    emoji = '🏆';
-    sub = `${state.team2} wins with ${t2} points!`;
+  if (state.gameMode === 'individual') {
+    const maxScore = Math.max(...state.scores);
+    const winners = state.players.filter((_, i) => state.scores[i] === maxScore);
+    if (winners.length === 1) {
+      winnerName = winners[0];
+      emoji = '🏆';
+      sub = `${winners[0]} wins with ${maxScore} points!`;
+    } else {
+      winnerName = "It's a Tie!";
+      emoji = '🤝';
+      sub = `${winners.join(' & ')} tied with ${maxScore} points!`;
+    }
+    // Sort by score descending
+    const ranked = state.players
+      .map((p, i) => ({ name: p, score: state.scores[i] }))
+      .sort((a, b) => b.score - a.score);
+    fs.innerHTML = ranked.map(p => `
+      <div class="final-score-row ${p.score === maxScore ? 'winner' : ''}">
+        <span class="final-team">${p.name}</span>
+        <span class="final-pts">${p.score}</span>
+      </div>
+    `).join('');
   } else {
-    winnerName = "It's a Tie!";
-    emoji = '🤝';
-    sub = `Both teams scored ${t1} points!`;
+    const t1 = state.scores[0];
+    const t2 = state.scores[1];
+    if (t1 > t2) {
+      winnerName = state.team1; emoji = '🏆';
+      sub = `${state.team1} wins with ${t1} points!`;
+    } else if (t2 > t1) {
+      winnerName = state.team2; emoji = '🏆';
+      sub = `${state.team2} wins with ${t2} points!`;
+    } else {
+      winnerName = "It's a Tie!"; emoji = '🤝';
+      sub = `Both teams scored ${t1} points!`;
+    }
+    fs.innerHTML = `
+      <div class="final-score-row ${t1 >= t2 ? 'winner' : ''}">
+        <span class="final-team">${state.team1}</span>
+        <span class="final-pts">${t1}</span>
+      </div>
+      <div class="final-score-row ${t2 >= t1 ? 'winner' : ''}">
+        <span class="final-team">${state.team2}</span>
+        <span class="final-pts">${t2}</span>
+      </div>
+    `;
   }
 
   document.getElementById('win-emoji').textContent = emoji;
   document.getElementById('win-title').textContent = winnerName === "It's a Tie!" ? winnerName : `${winnerName} Wins!`;
   document.getElementById('win-subtitle').textContent = sub;
-
-  const fs = document.getElementById('final-scores');
-  fs.innerHTML = `
-    <div class="final-score-row ${t1 >= t2 ? 'winner' : ''}">
-      <span class="final-team">${state.team1}</span>
-      <span class="final-pts">${t1}</span>
-    </div>
-    <div class="final-score-row ${t2 >= t1 ? 'winner' : ''}">
-      <span class="final-team">${state.team2}</span>
-      <span class="final-pts">${t2}</span>
-    </div>
-  `;
 
   showScreen('win');
   launchConfetti();
@@ -1218,6 +1361,7 @@ function launchConfetti() {
 // ===================== INIT =====================
 document.addEventListener('DOMContentLoaded', () => {
   initCategoryGrid();
+  renderPlayerInputs();
   state.circumference = 2 * Math.PI * 44;
   document.getElementById('timer-ring').style.strokeDasharray = state.circumference;
   document.getElementById('timer-ring').style.strokeDashoffset = 0;
