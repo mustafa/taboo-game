@@ -152,6 +152,18 @@ input{font-family:inherit;outline:none}
 .tutorial-close{margin-top:20px}
 
 /* DRAW WORD HIDDEN */
+/* PASS THE PHONE */
+.pass-screen{position:fixed;inset:0;background:var(--bg);z-index:250;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeIn 0.3s ease;text-align:center;padding:20px}
+.pass-screen .pass-icon{font-size:72px;margin-bottom:20px;animation:pulse 1.5s infinite}
+.pass-screen .pass-name{font-size:28px;font-weight:800;margin-bottom:8px}
+.pass-screen .pass-sub{font-size:15px;color:var(--text2);margin-bottom:32px}
+.pass-screen .pass-ready{padding:18px 48px;border-radius:var(--radius-lg);font-size:18px;font-weight:700}
+
+/* CONFETTI */
+.confetti-container{position:fixed;inset:0;pointer-events:none;z-index:400;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:10px;top:-10px;opacity:0.9;animation:confettiFall linear forwards}
+@keyframes confettiFall{0%{transform:translateY(0) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
 .draw-word-hidden{font-size:16px;font-weight:600;text-align:center;color:var(--text3);margin:8px 0;padding:10px;background:var(--surface2);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition)}
 .draw-word-hidden:hover{background:var(--surface3)}
 .draw-word-revealed{font-size:24px;font-weight:800;text-align:center;color:var(--yellow);margin:8px 0;animation:pop 0.2s ease}
@@ -250,6 +262,43 @@ function sfxClick(){playTone(800,0.05,'sine',0.08)}
 function sfxBuzz(){playTone(150,0.4,'square',0.12)}
 function sfxTick(){playTone(1000,0.03,'sine',0.06)}
 function sfxWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.15),i*100))}
+function sfxReveal(){playTone(440,0.08);setTimeout(()=>playTone(554,0.08),80);setTimeout(()=>playTone(659,0.12),160)}
+function sfxDramatic(){playTone(220,0.3,'triangle',0.12);setTimeout(()=>playTone(277,0.3,'triangle',0.12),300);setTimeout(()=>playTone(330,0.4,'triangle',0.15),600)}
+
+// ─── PASS THE PHONE ───
+function showPassScreen(playerName,subtitle,onReady){
+  const div=document.createElement('div');
+  div.className='pass-screen';
+  div.innerHTML=`
+    <div class="pass-icon">📱</div>
+    <div class="pass-name">Pass to ${playerName}</div>
+    <div class="pass-sub">${subtitle||'Tap when ready'}</div>
+    <button class="btn btn-primary pass-ready" id="passReady">I'm Ready!</button>
+  `;
+  document.body.appendChild(div);
+  document.getElementById('passReady').onclick=()=>{sfxClick();div.remove();if(onReady)onReady();};
+}
+
+// ─── CONFETTI ───
+function showConfetti(){
+  const container=document.createElement('div');
+  container.className='confetti-container';
+  const colors=['#7c5cfc','#ec4899','#22c55e','#eab308','#3b82f6','#f97316','#ef4444','#14b8a6'];
+  for(let i=0;i<60;i++){
+    const piece=document.createElement('div');
+    piece.className='confetti-piece';
+    const color=colors[Math.floor(Math.random()*colors.length)];
+    const left=Math.random()*100;
+    const size=Math.random()*8+6;
+    const dur=Math.random()*2+2;
+    const delay=Math.random()*1.5;
+    const shape=Math.random()>0.5?'50%':'0';
+    piece.style.cssText=`left:${left}%;width:${size}px;height:${size}px;background:${color};border-radius:${shape};animation-duration:${dur}s;animation-delay:${delay}s;`;
+    container.appendChild(piece);
+  }
+  document.body.appendChild(container);
+  setTimeout(()=>container.remove(),4500);
+}
 
 // ─── UTILS ───
 function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
@@ -1254,7 +1303,11 @@ function triviaAnswer(idx,correct,btn){
   setTimeout(()=>{
     s.qIdx++;
     s.currentPlayer=(s.currentPlayer+1)%s.players.length;
-    renderTriviaQuestion();
+    if(s.qIdx<s.questions.length){
+      showPassScreen(s.players[s.currentPlayer].name,'Your turn to answer!',renderTriviaQuestion);
+    } else {
+      renderTriviaQuestion();
+    }
   },1500);
 }
 
@@ -1551,10 +1604,12 @@ function wyrVote(choice){
       <button class="btn btn-primary btn-block" onclick="wyrNext()">Next Question →</button>
     `;
   } else {
-    document.getElementById('wyrVoter').textContent=s.players[s.votingPlayer]+', make your choice!';
-    document.getElementById('wyrVoter').style.animation='none';
-    document.getElementById('wyrVoter').offsetHeight;
-    document.getElementById('wyrVoter').style.animation='pop 0.2s ease';
+    showPassScreen(s.players[s.votingPlayer],'Your turn to vote!',()=>{
+      document.getElementById('wyrVoter').textContent=s.players[s.votingPlayer]+', make your choice!';
+      document.getElementById('wyrVoter').style.animation='none';
+      document.getElementById('wyrVoter').offsetHeight;
+      document.getElementById('wyrVoter').style.animation='pop 0.2s ease';
+    });
   }
 }
 
@@ -1641,7 +1696,9 @@ function submitWord(){
   s.roundNum++;
   s.currentPlayer=(s.currentPlayer+1)%s.players.length;
   if(s.timer)clearInterval(s.timer);
-  renderWordAssocTurn();
+  // Find next alive player
+  while(!s.players[s.currentPlayer].alive)s.currentPlayer=(s.currentPlayer+1)%s.players.length;
+  showPassScreen(s.players[s.currentPlayer].name,'Your turn — think fast!',renderWordAssocTurn);
 }
 
 function waEliminate(){
@@ -1670,7 +1727,7 @@ function waEliminate(){
 
 function showWordAssocResults(){
   const winner=gameState.players.find(p=>p.alive);
-  sfxWin();
+  sfxWin();showConfetti();
   showScreen('results');
   document.getElementById('resultsContent').innerHTML=`
     <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
@@ -1753,7 +1810,7 @@ function feudRevealAnswer(idx){
   if(el){el.classList.remove('hidden');el.classList.add('revealed');}
   s.roundPoints+=survey.answers[idx].pts;
   document.getElementById('feudPts').textContent=s.roundPoints+' pts this round';
-  sfxCorrect();
+  sfxReveal();
   // Check if all revealed
   if(s.revealed.size===survey.answers.length){
     feudAwardRound();
@@ -1810,7 +1867,7 @@ function feudAwardRound(){
   banner.className='feud-banner';
   banner.textContent='SURVEY SAYS! '+s.roundPoints+' pts to '+s.teams[s.currentTeam].name+'!';
   document.body.appendChild(banner);
-  sfxWin();
+  sfxDramatic();
   s.teams[s.currentTeam].score+=s.roundPoints;
   // Reveal all remaining
   const survey=s.surveys[s.surveyIdx];
@@ -1830,7 +1887,7 @@ function feudAwardRound(){
 
 function showFeudResults(){
   const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
-  sfxWin();
+  sfxWin();showConfetti();
   showScreen('results');
   document.getElementById('resultsContent').innerHTML=`
     <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
@@ -1922,7 +1979,7 @@ function cnGiveClue(){
   gameState.clue=clue;
   gameState.clueNum=num;
   gameState.guessesLeft=num+1; // one extra guess allowed
-  sfxClick();
+  sfxReveal();
   renderCodenames();
 }
 
@@ -1960,12 +2017,12 @@ function cnClickCard(idx){
 
   // Check win
   if(s.redLeft===0){
-    sfxWin();s.gameOver=true;
+    sfxWin();showConfetti();s.gameOver=true;
     setTimeout(()=>cnShowWinner(s.redName),600);
     renderCodenames();return;
   }
   if(s.blueLeft===0){
-    sfxWin();s.gameOver=true;
+    sfxWin();showConfetti();s.gameOver=true;
     setTimeout(()=>cnShowWinner(s.blueName),600);
     renderCodenames();return;
   }
@@ -2010,7 +2067,7 @@ function showResults(){
   if(gameState.timer)clearInterval(gameState.timer);
   const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
   const winner=teams[0];
-  sfxWin();
+  sfxWin();showConfetti();
   showScreen('results');
   const game=GAMES.find(g=>g.id===currentGame);
   document.getElementById('resultsContent').innerHTML=`
