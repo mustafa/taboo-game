@@ -141,6 +141,21 @@ input{font-family:inherit;outline:none}
 .cn-clue-area{margin:10px 0;text-align:center}
 .cn-clue-display{font-size:20px;font-weight:800;margin:8px 0}
 
+/* TUTORIAL OVERLAY */
+.tutorial-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn 0.2s ease}
+.tutorial-card{background:var(--surface);border-radius:var(--radius-lg);padding:28px;max-width:440px;width:100%;max-height:80vh;overflow-y:auto;animation:slideUp 0.3s ease}
+.tutorial-card h2{font-size:22px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.tutorial-card h3{font-size:14px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.5px;margin:16px 0 8px}
+.tutorial-card p,.tutorial-card li{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:6px}
+.tutorial-card ol,.tutorial-card ul{padding-left:20px;margin:8px 0}
+.tutorial-card .tip{background:rgba(124,92,252,0.1);border-left:3px solid var(--accent);padding:8px 12px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:12px 0;font-size:13px;color:var(--text2)}
+.tutorial-close{margin-top:20px}
+
+/* DRAW WORD HIDDEN */
+.draw-word-hidden{font-size:16px;font-weight:600;text-align:center;color:var(--text3);margin:8px 0;padding:10px;background:var(--surface2);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition)}
+.draw-word-hidden:hover{background:var(--surface3)}
+.draw-word-revealed{font-size:24px;font-weight:800;text-align:center;color:var(--yellow);margin:8px 0;animation:pop 0.2s ease}
+
 /* WOULD YOU RATHER */
 .wyr-option{padding:24px;border-radius:var(--radius-lg);font-size:16px;font-weight:600;line-height:1.4;text-align:center;transition:var(--transition);cursor:pointer;min-height:100px;display:flex;align-items:center;justify-content:center}
 .wyr-option:first-child{background:linear-gradient(135deg,rgba(124,92,252,0.2),rgba(124,92,252,0.1));border:2px solid rgba(124,92,252,0.3)}
@@ -206,6 +221,7 @@ input{font-family:inherit;outline:none}
 <!-- GAME PLAY SCREEN -->
 <div id="play" class="screen">
   <button class="btn-icon back-btn" onclick="confirmQuit()">←</button>
+  <button class="btn-icon" style="position:fixed;top:16px;right:16px;z-index:100;font-size:16px" onclick="if(currentGame)showTutorial(currentGame)">❓</button>
   <div id="playContent"></div>
 </div>
 
@@ -238,6 +254,92 @@ function sfxWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.
 // ─── UTILS ───
 function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+
+// ─── TUTORIALS ───
+const TUTORIALS={
+  taboo:{icon:'🤐',title:'How to Play Taboo',sections:[
+    {h:'Objective',p:'Get your teammates to guess the secret word on the card — but you can\'t say any of the "taboo" (forbidden) words listed below it!'},
+    {h:'How It Works',list:['One person is the clue-giver. They see the word and the forbidden words.','Describe the word using other words, synonyms, or creative clues.','If your team guesses correctly, tap "Got it!" to score a point.','Use "Skip" to move to the next card (no penalty).','If you accidentally say a taboo word, the other team hits "Buzz" and you lose a point.']},
+    {h:'Winning',p:'The team with the most points at the end of all rounds wins!'},
+    {tip:'Try giving short, rapid-fire clues. "It\'s like a ___ but ___" works great!'}
+  ]},
+  trivia:{icon:'🧠',title:'How to Play Trivia',sections:[
+    {h:'Objective',p:'Answer multiple-choice questions correctly to earn points.'},
+    {h:'How It Works',list:['Each player takes turns answering a question.','Pick one of the four answer choices.','Correct answers earn 1 point. Wrong answers earn nothing.','Questions span science, history, geography, pop culture, and more.']},
+    {h:'Winning',p:'The player with the most correct answers at the end wins!'},
+    {tip:'Don\'t overthink it — your first instinct is often right!'}
+  ]},
+  charades:{icon:'🎭',title:'How to Play Charades',sections:[
+    {h:'Objective',p:'Act out the word or phrase without speaking, and get your team to guess it.'},
+    {h:'Rules',list:['No talking, no mouthing words, no pointing at objects in the room.','Use body language, gestures, and acting only.','Your team shouts guesses. Tap "Got it!" when they get it right.','Use "Skip" if the prompt is too hard.']},
+    {h:'Winning',p:'The team with the most correct guesses wins!'},
+    {tip:'Start by showing the category — hold up fingers for number of words, or act out "sounds like" clues.'}
+  ]},
+  pictionary:{icon:'🎨',title:'How to Play Pictionary',sections:[
+    {h:'Objective',p:'Draw the secret word and get your team to guess it — no letters or numbers allowed!'},
+    {h:'How It Works',list:['The drawer sees the word (tap "Show Word" — keep the screen hidden from guessers!).','Draw on the canvas using your finger or mouse.','Your team shouts guesses while you draw.','Tap "Guessed it!" when they get it right.','No writing letters, numbers, or symbols. Drawing only!']},
+    {h:'Winning',p:'The team with the most correct guesses wins!'},
+    {tip:'Start with the outline of the main shape. Add details only if your team is stuck.'}
+  ]},
+  wyr:{icon:'🤔',title:'How to Play Would You Rather',sections:[
+    {h:'Objective',p:'Choose between two tough options and see how your family votes!'},
+    {h:'How It Works',list:['Each player votes on the scenario one at a time.','Pass the phone between players — only the current voter should look.','After everyone votes, results are revealed with percentages.','Discuss and debate your choices — that\'s the fun part!']},
+    {tip:'There are no wrong answers! The best rounds lead to funny debates.'}
+  ]},
+  wordassoc:{icon:'⚡',title:'How to Play Word Association',sections:[
+    {h:'Objective',p:'Say a related word before time runs out. Hesitate and you\'re eliminated!'},
+    {h:'How It Works',list:['A starting word appears on screen.','The current player types a word that\'s related to the previous word.','You must submit before the timer runs out.','If you can\'t think of a word or time expires, you\'re out.','Last player standing wins!']},
+    {h:'Example Chain',p:'"Ocean → Wave → Surfing → Beach → Sand → Castle → King"'},
+    {tip:'Keep it flowing — the connection just needs to make sense to the group. Creativity counts!'}
+  ]},
+  familyfeud:{icon:'📋',title:'How to Play Family Feud',sections:[
+    {h:'Objective',p:'Guess the most popular survey answers to score points!'},
+    {h:'How It Works',list:['A survey question is shown with hidden answers ranked by popularity.','Type a guess or tap an answer panel to reveal it.','Each answer is worth points based on how popular it was.','Get 3 strikes (wrong guesses) and the other team can steal!','The stealing team gets one guess — if correct, they take all the round\'s points.']},
+    {h:'Winning',p:'The team with the most total points after all rounds wins!'},
+    {tip:'Think about what the MOST COMMON answer would be, not the most creative one.'}
+  ]},
+  codenames:{icon:'🕵️',title:'How to Play Codenames',sections:[
+    {h:'Objective',p:'Find all your team\'s secret agents on the board before the other team finds theirs.'},
+    {h:'Setup',list:['Two teams: Red and Blue. Each team picks a Spymaster.','Only Spymasters should toggle "Show Spymaster" view to see the color map.','Red has 9 agents, Blue has 8. There are also neutral cards and 1 assassin.']},
+    {h:'How to Play',list:['The Spymaster gives a one-word clue and a number (how many cards it relates to).','The team taps cards they think match the clue.','Correct guess = keep guessing (up to the number + 1 bonus).','Wrong color = turn ends immediately.','Hit the ASSASSIN = instant loss!']},
+    {h:'Winning',p:'First team to reveal all their agents wins. Or the other team loses by hitting the assassin.'},
+    {tip:'Spymasters: try clues that connect multiple words at once. "Aquatic 3" could link Ocean, Whale, and Dolphin!'}
+  ]}
+};
+
+function showTutorial(gameId){
+  const t=TUTORIALS[gameId];
+  if(!t)return;
+  const overlay=document.createElement('div');
+  overlay.className='tutorial-overlay';
+  overlay.onclick=e=>{if(e.target===overlay)overlay.remove();};
+  overlay.innerHTML=`
+    <div class="tutorial-card">
+      <h2>${t.icon} ${t.title}</h2>
+      ${t.sections.map(s=>{
+        if(s.h)return `<h3>${s.h}</h3>`;
+        return '';
+      }).join('')
+      // rebuild properly:
+      }
+    </div>
+  `;
+  // Rebuild content properly
+  const card=overlay.querySelector('.tutorial-card');
+  card.innerHTML=`<h2>${t.icon} ${t.title}</h2>`;
+  t.sections.forEach(s=>{
+    if(s.h){const h=document.createElement('h3');h.textContent=s.h;card.appendChild(h);}
+    if(s.p){const p=document.createElement('p');p.textContent=s.p;card.appendChild(p);}
+    if(s.list){const ol=document.createElement('ol');s.list.forEach(li=>{const l=document.createElement('li');l.textContent=li;ol.appendChild(l);});card.appendChild(ol);}
+    if(s.tip){const d=document.createElement('div');d.className='tip';d.textContent='💡 '+s.tip;card.appendChild(d);}
+  });
+  const btn=document.createElement('button');
+  btn.className='btn btn-primary btn-block tutorial-close';
+  btn.textContent='Got it!';
+  btn.onclick=()=>overlay.remove();
+  card.appendChild(btn);
+  document.body.appendChild(overlay);
+}
 
 let currentGame=null;
 let gameState={};
@@ -298,6 +400,7 @@ function renderHome(){
         <span>👥 ${g.players}</span>
         <span>⏱ ${g.time}</span>
         ${g.tags.map(t=>`<span>${t}</span>`).join('')}
+        <span style="cursor:pointer" onclick="event.stopPropagation();showTutorial('${g.id}')">❓ Rules</span>
       </div>
     </div>
   `).join('');
@@ -1282,7 +1385,7 @@ function renderPictionaryTurn(){
       <div class="badge" style="background:rgba(236,72,153,0.2);color:#f472b6">${team.name}'s Turn</div>
       <div class="score-display">Round ${s.round} of ${s.rounds}</div>
     </div>
-    <div class="draw-word" id="drawWord">Draw: ${card.word}</div>
+    <div class="draw-word-hidden" id="drawWord" onclick="revealDrawWord()">👁 Tap to see your word (hide from guessers!)</div>
     <div class="draw-canvas-wrap" id="canvasWrap">
       <canvas id="drawCanvas" width="560" height="400"></canvas>
     </div>
@@ -1336,6 +1439,23 @@ function setupCanvas(){
   canvas.addEventListener('touchstart',start,{passive:false});canvas.addEventListener('touchmove',move,{passive:false});canvas.addEventListener('touchend',end);
 }
 
+function revealDrawWord(){
+  const el=document.getElementById('drawWord');
+  if(!el||!gameState.currentCard)return;
+  if(el.classList.contains('draw-word-hidden')){
+    el.className='draw-word-revealed';
+    el.textContent='Draw: '+gameState.currentCard.word;
+    el.onclick=()=>hideDrawWord();
+  }
+}
+function hideDrawWord(){
+  const el=document.getElementById('drawWord');
+  if(!el)return;
+  el.className='draw-word-hidden';
+  el.textContent='👁 Tap to see your word (hide from guessers!)';
+  el.onclick=()=>revealDrawWord();
+}
+
 function setDrawColor(c,btn){
   gameState.drawColor=c;
   document.querySelectorAll('.color-btn').forEach(b=>b.classList.remove('active'));
@@ -1351,7 +1471,8 @@ function pictionaryCorrect(){sfxCorrect();gameState.teams[gameState.currentTeam]
 function pictionarySkip(){sfxClick();pictionaryNextCard();}
 function pictionaryNextCard(){
   const card=getPictionaryCard();gameState.currentCard=card;
-  const w=document.getElementById('drawWord');if(w)w.textContent='Draw: '+card.word;
+  const w=document.getElementById('drawWord');
+  if(w){w.className='draw-word-hidden';w.textContent='👁 Tap to see your word (hide from guessers!)';w.onclick=()=>revealDrawWord();}
   clearCanvas();
 }
 function pictionaryNextTurn(){
