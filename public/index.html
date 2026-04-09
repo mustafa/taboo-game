@@ -97,6 +97,50 @@ input{font-family:inherit;outline:none}
 .color-btn.active{border-color:white;transform:scale(1.2)}
 .draw-word{font-size:24px;font-weight:800;text-align:center;color:var(--yellow);margin:8px 0}
 
+/* FAMILY FEUD */
+.feud-board{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.feud-answer{display:flex;align-items:center;height:48px;border-radius:var(--radius-sm);overflow:hidden;cursor:pointer;transition:var(--transition)}
+.feud-answer.hidden{background:var(--surface2);justify-content:center}
+.feud-answer.hidden:hover{background:var(--surface3)}
+.feud-answer .feud-num{width:36px;height:100%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex-shrink:0;background:rgba(234,179,8,0.2);color:var(--yellow)}
+.feud-answer .feud-text{flex:1;padding:0 12px;font-weight:600;font-size:14px}
+.feud-answer .feud-pts{padding:0 12px;font-weight:800;color:var(--yellow);font-size:14px}
+.feud-answer.revealed{background:linear-gradient(135deg,rgba(234,179,8,0.15),rgba(234,179,8,0.05));border:1px solid rgba(234,179,8,0.3);animation:pop 0.3s ease}
+.feud-question{font-size:18px;font-weight:700;text-align:center;margin:16px 0;line-height:1.4;color:var(--text)}
+.feud-strikes{display:flex;gap:12px;justify-content:center;margin:12px 0}
+.feud-x{font-size:36px;opacity:0.15;transition:all 0.3s ease}
+.feud-x.active{opacity:1;color:var(--red);transform:scale(1.3);animation:shake 0.3s ease}
+.feud-banner{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--yellow);color:#1a1a2e;padding:16px 32px;border-radius:var(--radius-lg);font-size:22px;font-weight:800;z-index:300;animation:pop 0.3s ease;box-shadow:0 8px 40px rgba(234,179,8,0.4)}
+.feud-team-scores{display:flex;gap:12px;margin:8px 0}
+.feud-team-score{flex:1;text-align:center;padding:10px;border-radius:var(--radius-sm);background:var(--surface2)}
+.feud-team-score.active{border:2px solid var(--yellow)}
+.feud-team-score .name{font-size:12px;color:var(--text2);font-weight:600}
+.feud-team-score .pts{font-size:20px;font-weight:800;color:var(--yellow)}
+
+/* CODENAMES */
+.cn-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:12px 0}
+.cn-card{aspect-ratio:1.4;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;text-align:center;font-size:11px;font-weight:700;cursor:pointer;transition:var(--transition);padding:4px;line-height:1.2;text-transform:uppercase;letter-spacing:0.3px;word-break:break-word}
+.cn-card.unrevealed{background:var(--surface2);color:var(--text)}
+.cn-card.unrevealed:hover{background:var(--surface3);transform:translateY(-1px)}
+.cn-card.red{background:linear-gradient(135deg,#dc2626,#b91c1c);color:white}
+.cn-card.blue{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:white}
+.cn-card.neutral{background:var(--surface3);color:var(--text3)}
+.cn-card.assassin{background:linear-gradient(135deg,#1a1a2e,#0f0f1a);color:var(--red);border:2px solid var(--red)}
+.cn-card.revealed{cursor:default;opacity:0.85}
+.cn-card.sp-red{box-shadow:inset 0 0 0 2px rgba(220,38,38,0.4)}
+.cn-card.sp-blue{box-shadow:inset 0 0 0 2px rgba(37,99,235,0.4)}
+.cn-card.sp-neutral{box-shadow:inset 0 0 0 2px rgba(100,100,120,0.3)}
+.cn-card.sp-assassin{box-shadow:inset 0 0 0 2px rgba(239,68,68,0.6)}
+.cn-turn-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:var(--radius-sm);margin:8px 0;font-weight:600;font-size:14px}
+.cn-turn-bar.red-turn{background:rgba(220,38,38,0.15);color:#ef4444}
+.cn-turn-bar.blue-turn{background:rgba(37,99,235,0.15);color:#60a5fa}
+.cn-scores{display:flex;gap:12px;margin:8px 0}
+.cn-score-box{flex:1;text-align:center;padding:8px;border-radius:var(--radius-sm);font-weight:700}
+.cn-score-box.red{background:rgba(220,38,38,0.15);color:#ef4444}
+.cn-score-box.blue{background:rgba(37,99,235,0.15);color:#60a5fa}
+.cn-clue-area{margin:10px 0;text-align:center}
+.cn-clue-display{font-size:20px;font-weight:800;margin:8px 0}
+
 /* WOULD YOU RATHER */
 .wyr-option{padding:24px;border-radius:var(--radius-lg);font-size:16px;font-weight:600;line-height:1.4;text-align:center;transition:var(--transition);cursor:pointer;min-height:100px;display:flex;align-items:center;justify-content:center}
 .wyr-option:first-child{background:linear-gradient(135deg,rgba(124,92,252,0.2),rgba(124,92,252,0.1));border:2px solid rgba(124,92,252,0.3)}
@@ -229,6 +273,16 @@ const GAMES = [
     id:'wordassoc',name:'Word Association',icon:'⚡',color:'#14b8a6',
     desc:'Quick! Say the first word that comes to mind. Hesitate and you\'re out!',
     players:'3+',time:'~10 min',tags:['Speed','Words']
+  },
+  {
+    id:'familyfeud',name:'Family Feud',icon:'📋',color:'#eab308',
+    desc:'Survey says! Guess the most popular answers before getting three strikes.',
+    players:'4+',time:'~20 min',tags:['Teams','Survey']
+  },
+  {
+    id:'codenames',name:'Codenames',icon:'🕵️',color:'#dc2626',
+    desc:'Give one-word clues to help your team find their secret agents on the board.',
+    players:'4+',time:'~20 min',tags:['Teams','Strategy']
   }
 ];
 
@@ -679,6 +733,38 @@ const WYR_QS=[
 // ─── WORD ASSOCIATION STARTERS ───
 const WA_STARTERS=['Ocean','Fire','Music','Dream','Mountain','Castle','Thunder','Crystal','Shadow','Forest','Robot','Treasure','Galaxy','Diamond','Festival','Mystery','Dragon','Sunset','Carnival','Blizzard','Jungle','Volcano','Puzzle','Lightning','Carnival','Pirate','Rainbow','Astronaut','Tornado','Safari','Wizard','Dolphin','Eclipse','Adventure','Enchanted','Labyrinth','Phoenix','Starlight','Hurricane','Expedition'];
 
+// ─── FAMILY FEUD SURVEYS ───
+const FEUD_SURVEYS=[
+  {q:'Name something you bring to the beach',answers:[{a:'Towel',pts:35},{a:'Sunscreen',pts:25},{a:'Chair',pts:15},{a:'Umbrella',pts:10},{a:'Cooler',pts:8},{a:'Book',pts:5},{a:'Ball',pts:2}]},
+  {q:'Name something people do on their phone while waiting',answers:[{a:'Social Media',pts:30},{a:'Text',pts:25},{a:'Play Games',pts:20},{a:'Check Email',pts:12},{a:'Browse Web',pts:8},{a:'Watch Videos',pts:5}]},
+  {q:'Name a reason someone might be late to work',answers:[{a:'Traffic',pts:35},{a:'Overslept',pts:30},{a:'Car Trouble',pts:15},{a:'Kids',pts:10},{a:'Weather',pts:7},{a:'Lost Keys',pts:3}]},
+  {q:'Name something you find in a junk drawer',answers:[{a:'Batteries',pts:25},{a:'Tape',pts:20},{a:'Scissors',pts:18},{a:'Pens',pts:15},{a:'Rubber Bands',pts:10},{a:'Menus',pts:7},{a:'Coupons',pts:5}]},
+  {q:'Name an animal you might see at the zoo',answers:[{a:'Lion',pts:28},{a:'Elephant',pts:25},{a:'Giraffe',pts:20},{a:'Monkey',pts:15},{a:'Bear',pts:7},{a:'Penguin',pts:5}]},
+  {q:'Name something people collect',answers:[{a:'Stamps',pts:28},{a:'Coins',pts:25},{a:'Cards',pts:18},{a:'Shoes',pts:12},{a:'Books',pts:10},{a:'Art',pts:5},{a:'Vinyl Records',pts:2}]},
+  {q:'Name a popular pizza topping',answers:[{a:'Pepperoni',pts:35},{a:'Mushrooms',pts:20},{a:'Sausage',pts:15},{a:'Olives',pts:12},{a:'Peppers',pts:10},{a:'Onions',pts:5},{a:'Pineapple',pts:3}]},
+  {q:'Name something you associate with Halloween',answers:[{a:'Costumes',pts:30},{a:'Candy',pts:28},{a:'Pumpkins',pts:18},{a:'Ghosts',pts:12},{a:'Haunted Houses',pts:8},{a:'Trick or Treat',pts:4}]},
+  {q:'Name a place where people wait in line',answers:[{a:'Grocery Store',pts:30},{a:'Amusement Park',pts:22},{a:'DMV',pts:18},{a:'Bank',pts:12},{a:'Airport',pts:10},{a:'Restaurant',pts:5},{a:'Post Office',pts:3}]},
+  {q:'Name something in a classroom',answers:[{a:'Desks',pts:30},{a:'Whiteboard',pts:22},{a:'Books',pts:18},{a:'Pencils',pts:12},{a:'Computer',pts:10},{a:'Clock',pts:5},{a:'Globe',pts:3}]},
+  {q:'Name something people argue about on road trips',answers:[{a:'Directions',pts:30},{a:'Music',pts:25},{a:'Temperature',pts:18},{a:'Food Stops',pts:12},{a:'Driving Speed',pts:10},{a:'Who Drives',pts:5}]},
+  {q:'Name a superhero power',answers:[{a:'Flying',pts:32},{a:'Super Strength',pts:25},{a:'Invisibility',pts:18},{a:'Speed',pts:12},{a:'X-Ray Vision',pts:8},{a:'Telepathy',pts:5}]},
+  {q:'Name something that comes in pairs',answers:[{a:'Shoes',pts:30},{a:'Socks',pts:25},{a:'Gloves',pts:18},{a:'Earrings',pts:12},{a:'Eyes',pts:8},{a:'Twins',pts:5},{a:'Dice',pts:2}]},
+  {q:'Name something people do at a birthday party',answers:[{a:'Eat Cake',pts:32},{a:'Open Presents',pts:25},{a:'Sing Happy Birthday',pts:18},{a:'Play Games',pts:12},{a:'Dance',pts:8},{a:'Take Photos',pts:5}]},
+  {q:'Name a common New Year resolution',answers:[{a:'Exercise More',pts:35},{a:'Lose Weight',pts:22},{a:'Save Money',pts:18},{a:'Eat Healthier',pts:12},{a:'Quit Smoking',pts:8},{a:'Read More',pts:5}]},
+  {q:'Name something people forget to pack for vacation',answers:[{a:'Toothbrush',pts:28},{a:'Charger',pts:25},{a:'Underwear',pts:18},{a:'Sunscreen',pts:12},{a:'Medication',pts:10},{a:'Socks',pts:5},{a:'Umbrella',pts:2}]},
+  {q:'Name a famous movie villain',answers:[{a:'Darth Vader',pts:30},{a:'Joker',pts:25},{a:'Thanos',pts:18},{a:'Voldemort',pts:12},{a:'Hannibal Lecter',pts:8},{a:'Scar',pts:5},{a:'Cruella',pts:2}]},
+  {q:'Name something you do before going to bed',answers:[{a:'Brush Teeth',pts:32},{a:'Set Alarm',pts:22},{a:'Check Phone',pts:18},{a:'Read',pts:12},{a:'Shower',pts:8},{a:'Pray',pts:5},{a:'Lock Doors',pts:3}]},
+  {q:'Name a sport that uses a ball',answers:[{a:'Football',pts:28},{a:'Basketball',pts:25},{a:'Baseball',pts:18},{a:'Soccer',pts:15},{a:'Tennis',pts:8},{a:'Golf',pts:4},{a:'Bowling',pts:2}]},
+  {q:'Name something you find in a hospital',answers:[{a:'Doctors',pts:28},{a:'Nurses',pts:22},{a:'Beds',pts:18},{a:'Medicine',pts:15},{a:'Wheelchairs',pts:10},{a:'Bandages',pts:5},{a:'IV Drips',pts:2}]},
+  {q:'Name something kids are afraid of',answers:[{a:'The Dark',pts:32},{a:'Monsters',pts:25},{a:'Thunder',pts:18},{a:'Spiders',pts:12},{a:'Ghosts',pts:8},{a:'Clowns',pts:5}]},
+  {q:'Name a yellow food',answers:[{a:'Banana',pts:32},{a:'Corn',pts:25},{a:'Lemon',pts:18},{a:'Cheese',pts:12},{a:'Pineapple',pts:8},{a:'Egg Yolk',pts:5}]},
+  {q:'Name something associated with a wedding',answers:[{a:'Ring',pts:28},{a:'Cake',pts:22},{a:'Dress',pts:20},{a:'Flowers',pts:12},{a:'Vows',pts:10},{a:'Dancing',pts:5},{a:'Champagne',pts:3}]},
+  {q:'Name something you find in a wallet',answers:[{a:'Cash',pts:30},{a:'Credit Cards',pts:28},{a:'ID',pts:18},{a:'Photos',pts:10},{a:'Receipts',pts:8},{a:'Business Cards',pts:4},{a:'Coupons',pts:2}]},
+  {q:'Name a breakfast food',answers:[{a:'Eggs',pts:28},{a:'Pancakes',pts:22},{a:'Cereal',pts:18},{a:'Toast',pts:12},{a:'Bacon',pts:10},{a:'Waffles',pts:5},{a:'Oatmeal',pts:5}]},
+];
+
+// ─── CODENAMES WORD POOL ───
+const CN_WORDS=['APPLE','BEACH','CASTLE','DRAGON','ENGINE','FOREST','GHOST','HAMMER','ISLAND','JUNGLE','KNIGHT','LEMON','MIRROR','NEEDLE','OCEAN','PIANO','QUEEN','ROCKET','SPIDER','TOWER','UNICORN','VIOLIN','WHALE','DIAMOND','EAGLE','FLAME','GLACIER','HARBOR','IRON','JACKET','KITE','LASER','MARBLE','NINJA','ORBIT','PENGUIN','RADAR','SHADOW','TIGER','VAMPIRE','WIZARD','ANCHOR','BRIDGE','CANDLE','DESERT','FALCON','GARDEN','HELMET','IVORY','JEWEL','LANTERN','MANGO','NOVEL','OPERA','PARROT','QUARTZ','RIVER','SPHINX','THRONE','TUNNEL','UMBRELLA','VENUS','WAFFLE','CRYSTAL','AURORA','BAMBOO','COMET','DOLPHIN','ECLIPSE','FOSSIL','GOBLIN','HORIZON','ICEBERG','JASMINE','KERNEL','LOTUS','METEOR','NEBULA','OLIVE','PHOENIX','REBEL','SAFARI','TEMPLE','URCHIN','VELVET','WALRUS','ZENITH','ATLAS','BISON','CORAL','DAGGER','EMERALD','FLUTE','GRIZZLY','HUNTER','INFERNO','JAGUAR','KIMONO','LOCKET','MAGNET','NECTAR'];
+
 // ════════════════════════════════════════════
 //  GAME SETUP / ROUTING
 // ════════════════════════════════════════════
@@ -817,6 +903,54 @@ function setupGame(id){
     showScreen('setup');
     document.getElementById('setupContent').innerHTML=html;
     addPlayer();addPlayer();addPlayer();
+  } else if(id==='familyfeud'){
+    html=`
+      <div style="text-align:center;margin:40px 0 24px">
+        <div style="font-size:48px;margin-bottom:8px">${game.icon}</div>
+        <h2 style="font-size:24px;font-weight:800">${game.name}</h2>
+        <p style="color:var(--text2);margin-top:4px">Guess the survey's top answers!</p>
+      </div>
+      <div class="setup-section">
+        <label>Team 1 Name</label>
+        <input class="input" id="team1Name" value="Team 1" placeholder="Team 1">
+      </div>
+      <div class="setup-section">
+        <label>Team 2 Name</label>
+        <input class="input" id="team2Name" value="Team 2" placeholder="Team 2">
+      </div>
+      <div class="setup-section">
+        <label>Rounds</label>
+        <div class="mode-toggle">
+          <button class="active" onclick="setRounds(5,this)">5</button>
+          <button onclick="setRounds(8,this)">8</button>
+          <button onclick="setRounds(10,this)">10</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:24px" onclick="startGame()">Start Game</button>
+    `;
+    gameState.mode='teams';gameState.rounds=5;
+    showScreen('setup');
+    document.getElementById('setupContent').innerHTML=html;
+  } else if(id==='codenames'){
+    html=`
+      <div style="text-align:center;margin:40px 0 24px">
+        <div style="font-size:48px;margin-bottom:8px">${game.icon}</div>
+        <h2 style="font-size:24px;font-weight:800">${game.name}</h2>
+        <p style="color:var(--text2);margin-top:4px">Red vs Blue — find your agents!</p>
+      </div>
+      <div class="setup-section">
+        <label>Red Team Name</label>
+        <input class="input" id="team1Name" value="Red Team" placeholder="Red Team">
+      </div>
+      <div class="setup-section">
+        <label>Blue Team Name</label>
+        <input class="input" id="team2Name" value="Blue Team" placeholder="Blue Team">
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:24px" onclick="startGame()">Start Game</button>
+    `;
+    gameState.mode='teams';
+    showScreen('setup');
+    document.getElementById('setupContent').innerHTML=html;
   }
 }
 
@@ -864,6 +998,8 @@ function startGame(){
   else if(currentGame==='pictionary')startPictionary();
   else if(currentGame==='wyr')startWYR();
   else if(currentGame==='wordassoc')startWordAssoc();
+  else if(currentGame==='familyfeud')startFamilyFeud();
+  else if(currentGame==='codenames')startCodenames();
 }
 
 // ════════════════════════════════════════════
@@ -1423,6 +1559,325 @@ function showWordAssocResults(){
       <div class="wa-chain" style="margin:20px 0;max-height:120px">${gameState.chain.map(w=>`<span>${w}</span>`).join('')}</div>
     </div>
     <button class="btn btn-primary btn-block" onclick="setupGame('wordassoc')">Play Again</button>
+    <button class="btn btn-secondary btn-block" style="margin-top:10px" onclick="showScreen('home')">Back to Games</button>
+  `;
+}
+
+// ════════════════════════════════════════════
+//  FAMILY FEUD
+// ════════════════════════════════════════════
+function startFamilyFeud(){
+  const s=gameState;
+  const t1=document.getElementById('team1Name')?.value||'Team 1';
+  const t2=document.getElementById('team2Name')?.value||'Team 2';
+  s.teams=[{name:t1,score:0},{name:t2,score:0}];
+  s.currentTeam=0;
+  s.surveys=shuffle([...FEUD_SURVEYS]).slice(0,s.rounds);
+  s.surveyIdx=0;
+  s.strikes=0;
+  s.revealed=new Set();
+  s.roundPoints=0;
+  s.phase='playing'; // playing, steal
+  showScreen('play');
+  renderFeudRound();
+}
+
+function renderFeudRound(){
+  const s=gameState;
+  if(s.surveyIdx>=s.surveys.length){showFeudResults();return;}
+  const survey=s.surveys[s.surveyIdx];
+  s.strikes=0;s.revealed=new Set();s.roundPoints=0;s.phase='playing';
+  const team=s.teams[s.currentTeam];
+  const opp=s.teams[(s.currentTeam+1)%2];
+  const el=document.getElementById('playContent');
+  el.innerHTML=`
+    <div class="feud-team-scores">
+      <div class="feud-team-score ${s.currentTeam===0?'active':''}"><div class="name">${s.teams[0].name}</div><div class="pts">${s.teams[0].score}</div></div>
+      <div class="feud-team-score ${s.currentTeam===1?'active':''}"><div class="name">${s.teams[1].name}</div><div class="pts">${s.teams[1].score}</div></div>
+    </div>
+    <div class="score-display">Round ${s.surveyIdx+1} of ${s.surveys.length}</div>
+    <div class="feud-question">${survey.q}</div>
+    <div class="feud-board" id="feudBoard">
+      ${survey.answers.map((ans,i)=>`
+        <div class="feud-answer hidden" id="feud-a-${i}" onclick="feudRevealAnswer(${i})">
+          <div class="feud-num">${i+1}</div>
+          <div class="feud-text">${ans.a}</div>
+          <div class="feud-pts">${ans.pts}</div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="feud-strikes" id="feudStrikes">
+      <span class="feud-x" id="strike0">✕</span>
+      <span class="feud-x" id="strike1">✕</span>
+      <span class="feud-x" id="strike2">✕</span>
+    </div>
+    <div style="text-align:center;margin:8px 0">
+      <div style="font-size:13px;color:var(--text2)" id="feudStatus">${team.name} is guessing</div>
+      <div style="font-size:20px;font-weight:800;color:var(--yellow);margin:4px 0" id="feudPts">0 pts this round</div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:8px;justify-content:center;flex-wrap:wrap">
+      <input class="input" id="feudGuess" placeholder="Type your guess..." style="max-width:260px" autocomplete="off" onkeydown="if(event.key==='Enter')feudSubmitGuess()">
+      <button class="btn btn-primary btn-sm" onclick="feudSubmitGuess()">Guess</button>
+      <button class="btn btn-danger btn-sm" onclick="feudStrike()">✕ Strike</button>
+    </div>
+  `;
+}
+
+function feudRevealAnswer(idx){
+  const s=gameState;
+  const survey=s.surveys[s.surveyIdx];
+  if(s.revealed.has(idx))return;
+  s.revealed.add(idx);
+  const el=document.getElementById('feud-a-'+idx);
+  if(el){el.classList.remove('hidden');el.classList.add('revealed');}
+  s.roundPoints+=survey.answers[idx].pts;
+  document.getElementById('feudPts').textContent=s.roundPoints+' pts this round';
+  sfxCorrect();
+  // Check if all revealed
+  if(s.revealed.size===survey.answers.length){
+    feudAwardRound();
+  }
+}
+
+function feudSubmitGuess(){
+  const inp=document.getElementById('feudGuess');
+  const guess=inp?.value.trim().toLowerCase();
+  if(!guess)return;
+  inp.value='';
+  const s=gameState;
+  const survey=s.surveys[s.surveyIdx];
+  let found=false;
+  survey.answers.forEach((ans,i)=>{
+    if(!s.revealed.has(i)&&ans.a.toLowerCase().includes(guess)){
+      feudRevealAnswer(i);
+      found=true;
+    }
+  });
+  if(!found){
+    feudStrike();
+  }
+}
+
+function feudStrike(){
+  const s=gameState;
+  s.strikes++;
+  const sx=document.getElementById('strike'+(s.strikes-1));
+  if(sx)sx.classList.add('active');
+  sfxWrong();
+  if(s.strikes>=3){
+    if(s.phase==='playing'){
+      // Other team gets a chance to steal
+      s.phase='steal';
+      s.currentTeam=(s.currentTeam+1)%2;
+      s.strikes=0;
+      document.querySelectorAll('.feud-x').forEach(x=>x.classList.remove('active'));
+      document.getElementById('feudStatus').textContent=s.teams[s.currentTeam].name+' can STEAL!';
+      document.getElementById('feudStatus').style.color='var(--yellow)';
+      document.getElementById('feudStatus').style.fontWeight='800';
+    } else {
+      // Steal failed, award to original team
+      s.currentTeam=(s.currentTeam+1)%2;
+      feudAwardRound();
+    }
+  }
+}
+
+function feudAwardRound(){
+  const s=gameState;
+  // Show banner
+  const banner=document.createElement('div');
+  banner.className='feud-banner';
+  banner.textContent='SURVEY SAYS! '+s.roundPoints+' pts to '+s.teams[s.currentTeam].name+'!';
+  document.body.appendChild(banner);
+  sfxWin();
+  s.teams[s.currentTeam].score+=s.roundPoints;
+  // Reveal all remaining
+  const survey=s.surveys[s.surveyIdx];
+  survey.answers.forEach((_,i)=>{
+    if(!s.revealed.has(i)){
+      const el=document.getElementById('feud-a-'+i);
+      if(el){el.classList.remove('hidden');el.classList.add('revealed');}
+    }
+  });
+  setTimeout(()=>{
+    banner.remove();
+    s.surveyIdx++;
+    s.currentTeam=s.surveyIdx%2;
+    renderFeudRound();
+  },2500);
+}
+
+function showFeudResults(){
+  const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
+  sfxWin();
+  showScreen('results');
+  document.getElementById('resultsContent').innerHTML=`
+    <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
+      <div style="font-size:64px;margin-bottom:16px">🏆</div>
+      <h2 style="font-size:28px;font-weight:800">${teams[0].name} Wins!</h2>
+      <p style="color:var(--text2);margin-top:4px">${teams[0].score} to ${teams[1].score}</p>
+    </div>
+    <div class="scoreboard">
+      ${teams.map((t,i)=>`<div class="score-row ${i===0?'highlight':''}"><span class="name">${i===0?'🥇':'🥈'} ${t.name}</span><span class="pts">${t.score} pts</span></div>`).join('')}
+    </div>
+    <button class="btn btn-primary btn-block" style="margin-top:24px" onclick="setupGame('familyfeud')">Play Again</button>
+    <button class="btn btn-secondary btn-block" style="margin-top:10px" onclick="showScreen('home')">Back to Games</button>
+  `;
+}
+
+// ════════════════════════════════════════════
+//  CODENAMES
+// ════════════════════════════════════════════
+function startCodenames(){
+  const s=gameState;
+  const t1=document.getElementById('team1Name')?.value||'Red Team';
+  const t2=document.getElementById('team2Name')?.value||'Blue Team';
+  s.redName=t1;s.blueName=t2;
+  // Pick 25 random words
+  const words=shuffle([...CN_WORDS]).slice(0,25);
+  // Assign colors: 9 red, 8 blue, 7 neutral, 1 assassin (red goes first)
+  const colors=shuffle([...Array(9).fill('red'),...Array(8).fill('blue'),...Array(7).fill('neutral'),'assassin']);
+  s.cards=words.map((w,i)=>({word:w,color:colors[i],revealed:false}));
+  s.turn='red'; // red goes first (has 9)
+  s.redLeft=9;s.blueLeft=8;
+  s.guessesLeft=0;
+  s.clue='';s.clueNum=0;
+  s.spymasterView=false;
+  s.gameOver=false;
+  showScreen('play');
+  renderCodenames();
+}
+
+function renderCodenames(){
+  const s=gameState;
+  const el=document.getElementById('playContent');
+  const turnColor=s.turn==='red'?'red-turn':'blue-turn';
+  const turnName=s.turn==='red'?s.redName:s.blueName;
+
+  el.innerHTML=`
+    <div class="cn-scores">
+      <div class="cn-score-box red">${s.redName}: ${s.redLeft} left</div>
+      <div class="cn-score-box blue">${s.blueName}: ${s.blueLeft} left</div>
+    </div>
+    <div class="cn-turn-bar ${turnColor}">
+      <span>${turnName}'s turn</span>
+      <span>${s.guessesLeft>0?s.guessesLeft+' guesses left':'Waiting for clue'}</span>
+    </div>
+    ${s.clue?`<div class="cn-clue-area"><div class="cn-clue-display">"${s.clue}" — ${s.clueNum}</div></div>`:''}
+    <div class="cn-grid" id="cnGrid">
+      ${s.cards.map((c,i)=>{
+        let cls='cn-card';
+        if(c.revealed){cls+=' '+c.color+' revealed';}
+        else{
+          cls+=' unrevealed';
+          if(s.spymasterView)cls+=' sp-'+c.color;
+        }
+        return `<div class="${cls}" onclick="cnClickCard(${i})">${c.word}</div>`;
+      }).join('')}
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0">
+      <button class="btn btn-sm ${s.spymasterView?'btn-primary':'btn-secondary'}" onclick="cnToggleSpy()">🕵️ ${s.spymasterView?'Hide':'Show'} Spymaster</button>
+      <button class="btn btn-sm btn-secondary" onclick="cnEndTurn()">End Turn</button>
+    </div>
+    ${!s.gameOver&&s.guessesLeft===0?`
+    <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin:10px 0">
+      <input class="input" id="cnClueInput" placeholder="One-word clue" style="max-width:160px" autocomplete="off">
+      <input class="input" id="cnClueNum" placeholder="#" type="number" min="1" max="9" style="max-width:60px">
+      <button class="btn btn-sm btn-primary" onclick="cnGiveClue()">Give Clue</button>
+    </div>
+    `:''}
+  `;
+}
+
+function cnToggleSpy(){
+  gameState.spymasterView=!gameState.spymasterView;
+  renderCodenames();
+}
+
+function cnGiveClue(){
+  const clue=document.getElementById('cnClueInput')?.value.trim();
+  const num=parseInt(document.getElementById('cnClueNum')?.value);
+  if(!clue||!num||num<1)return;
+  gameState.clue=clue;
+  gameState.clueNum=num;
+  gameState.guessesLeft=num+1; // one extra guess allowed
+  sfxClick();
+  renderCodenames();
+}
+
+function cnClickCard(idx){
+  const s=gameState;
+  if(s.gameOver||s.guessesLeft<=0)return;
+  const card=s.cards[idx];
+  if(card.revealed)return;
+  card.revealed=true;
+
+  if(card.color==='assassin'){
+    sfxBuzz();
+    s.gameOver=true;
+    const loser=s.turn;
+    const winner=loser==='red'?s.blueName:s.redName;
+    setTimeout(()=>{
+      showScreen('results');
+      document.getElementById('resultsContent').innerHTML=`
+        <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
+          <div style="font-size:64px;margin-bottom:16px">💀</div>
+          <h2 style="font-size:28px;font-weight:800">ASSASSIN!</h2>
+          <p style="color:var(--text2);margin-top:8px">${s.turn==='red'?s.redName:s.blueName} found the assassin.</p>
+          <p style="font-size:20px;font-weight:700;margin-top:16px">${winner} wins!</p>
+        </div>
+        <button class="btn btn-primary btn-block" style="margin-top:24px" onclick="setupGame('codenames')">Play Again</button>
+        <button class="btn btn-secondary btn-block" style="margin-top:10px" onclick="showScreen('home')">Back to Games</button>
+      `;
+    },800);
+    renderCodenames();
+    return;
+  }
+
+  if(card.color==='red')s.redLeft--;
+  if(card.color==='blue')s.blueLeft--;
+
+  // Check win
+  if(s.redLeft===0){
+    sfxWin();s.gameOver=true;
+    setTimeout(()=>cnShowWinner(s.redName),600);
+    renderCodenames();return;
+  }
+  if(s.blueLeft===0){
+    sfxWin();s.gameOver=true;
+    setTimeout(()=>cnShowWinner(s.blueName),600);
+    renderCodenames();return;
+  }
+
+  if(card.color===s.turn){
+    sfxCorrect();
+    s.guessesLeft--;
+    if(s.guessesLeft<=0){cnEndTurn();}
+    else{renderCodenames();}
+  } else {
+    sfxWrong();
+    s.guessesLeft=0;
+    cnEndTurn();
+  }
+}
+
+function cnEndTurn(){
+  const s=gameState;
+  if(s.gameOver)return;
+  s.turn=s.turn==='red'?'blue':'red';
+  s.guessesLeft=0;s.clue='';s.clueNum=0;
+  renderCodenames();
+}
+
+function cnShowWinner(name){
+  showScreen('results');
+  document.getElementById('resultsContent').innerHTML=`
+    <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
+      <div style="font-size:64px;margin-bottom:16px">🏆</div>
+      <h2 style="font-size:28px;font-weight:800">${name} Wins!</h2>
+      <p style="color:var(--text2);margin-top:8px">All agents found!</p>
+    </div>
+    <button class="btn btn-primary btn-block" style="margin-top:24px" onclick="setupGame('codenames')">Play Again</button>
     <button class="btn btn-secondary btn-block" style="margin-top:10px" onclick="showScreen('home')">Back to Games</button>
   `;
 }
