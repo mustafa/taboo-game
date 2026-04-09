@@ -572,6 +572,9 @@ const CATEGORIES = [
   { id: 'toys', name: 'Games & Toys', icon: '🎮' },
   { id: 'music', name: 'Music', icon: '🎵' },
   { id: 'holidays', name: 'Holidays', icon: '🎉' },
+  { id: 'everyday', name: 'Everyday Life', icon: '🏠' },
+  { id: 'technology', name: 'Technology', icon: '💻' },
+  { id: 'places', name: 'Places & Travel', icon: '✈️' },
 ];
 
 const CARDS = {
@@ -596,6 +599,36 @@ const CARDS = {
     { word: 'Wolf', taboo: ['howl', 'pack', 'dog', 'forest', 'moon'] },
     { word: 'Koala', taboo: ['Australia', 'tree', 'eucalyptus', 'cute', 'gray'] },
     { word: 'Chameleon', taboo: ['color', 'change', 'lizard', 'tongue', 'skin'] },
+    { word: 'Gorilla', taboo: ['ape', 'strong', 'jungle', 'primate', 'chest'] },
+    { word: 'Lion', taboo: ['roar', 'mane', 'pride', 'Africa', 'king'] },
+    { word: 'Shark', taboo: ['teeth', 'ocean', 'bite', 'fin', 'jaws'] },
+    { word: 'Crab', taboo: ['claws', 'sideways', 'shell', 'ocean', 'pinch'] },
+    { word: 'Butterfly', taboo: ['wings', 'cocoon', 'colorful', 'flutter', 'caterpillar'] },
+    { word: 'Bee', taboo: ['sting', 'honey', 'hive', 'yellow', 'flower'] },
+    { word: 'Eagle', taboo: ['fly', 'talon', 'bald', 'America', 'soar'] },
+    { word: 'Owl', taboo: ['hoot', 'night', 'wise', 'fly', 'feathers'] },
+    { word: 'Fox', taboo: ['red', 'sly', 'tail', 'forest', 'cunning'] },
+    { word: 'Deer', taboo: ['antlers', 'forest', 'doe', 'buck', 'Bambi'] },
+    { word: 'Horse', taboo: ['ride', 'mane', 'gallop', 'stable', 'saddle'] },
+    { word: 'Pig', taboo: ['oink', 'mud', 'pink', 'bacon', 'snout'] },
+    { word: 'Lobster', taboo: ['claws', 'red', 'ocean', 'boil', 'expensive'] },
+    { word: 'Jellyfish', taboo: ['sting', 'ocean', 'transparent', 'tentacles', 'float'] },
+    { word: 'Skunk', taboo: ['smell', 'stripe', 'spray', 'black', 'stink'] },
+    { word: 'Raccoon', taboo: ['mask', 'trash', 'ring', 'tail', 'bandit'] },
+    { word: 'Squirrel', taboo: ['acorn', 'nut', 'tree', 'bushy', 'tail'] },
+    { word: 'Bat', taboo: ['cave', 'night', 'fly', 'echolocation', 'vampire'] },
+    { word: 'Snail', taboo: ['shell', 'slow', 'slime', 'garden', 'trail'] },
+    { word: 'Camel', taboo: ['hump', 'desert', 'water', 'sand', 'spit'] },
+    { word: 'Llama', taboo: ['spit', 'South America', 'woolly', 'Peru', 'herd'] },
+    { word: 'Seahorse', taboo: ['ocean', 'tiny', 'male', 'pregnant', 'coral'] },
+    { word: 'Alligator', taboo: ['swamp', 'teeth', 'green', 'jaw', 'Florida'] },
+    { word: 'Porcupine', taboo: ['quills', 'spike', 'sharp', 'needle', 'defense'] },
+    { word: 'Swan', taboo: ['white', 'graceful', 'neck', 'lake', 'elegant'] },
+    { word: 'Moose', taboo: ['antlers', 'Canada', 'large', 'forest', 'elk'] },
+    { word: 'Coyote', taboo: ['howl', 'desert', 'wild', 'dog', 'western'] },
+    { word: 'Manta Ray', taboo: ['flat', 'ocean', 'glide', 'wing', 'sting'] },
+    { word: 'Otter', taboo: ['hold hands', 'river', 'playful', 'swim', 'fur'] },
+    { word: 'Mongoose', taboo: ['snake', 'quick', 'India', 'cobra', 'furry'] },
   ],
   food: [
     { word: 'Pizza', taboo: ['cheese', 'Italy', 'round', 'slice', 'pepperoni'] },
@@ -618,6 +651,36 @@ const CARDS = {
     { word: 'Avocado', taboo: ['green', 'guacamole', 'healthy', 'toast', 'seed'] },
     { word: 'Pretzel', taboo: ['twisted', 'salt', 'knot', 'crunchy', 'dough'] },
     { word: 'Pineapple', taboo: ['tropical', 'yellow', 'spiky', 'fruit', 'Hawaii'] },
+    { word: 'Burrito', taboo: ['wrap', 'tortilla', 'beans', 'Mexico', 'rolled'] },
+    { word: 'Waffle', taboo: ['grid', 'syrup', 'iron', 'breakfast', 'square'] },
+    { word: 'Bacon', taboo: ['pork', 'crispy', 'breakfast', 'salty', 'strip'] },
+    { word: 'Cereal', taboo: ['milk', 'bowl', 'morning', 'box', 'crunchy'] },
+    { word: 'Soup', taboo: ['hot', 'bowl', 'spoon', 'broth', 'ladle'] },
+    { word: 'Cupcake', taboo: ['frosting', 'bake', 'small', 'cake', 'sprinkles'] },
+    { word: 'Lemon', taboo: ['sour', 'yellow', 'citrus', 'juice', 'zest'] },
+    { word: 'Carrot', taboo: ['orange', 'vegetable', 'rabbit', 'crunchy', 'root'] },
+    { word: 'Broccoli', taboo: ['green', 'tree', 'vegetable', 'healthy', 'floret'] },
+    { word: 'Steak', taboo: ['beef', 'grill', 'medium rare', 'cow', 'cut'] },
+    { word: 'Nachos', taboo: ['chips', 'cheese', 'jalapeño', 'salsa', 'guacamole'] },
+    { word: 'Ramen', taboo: ['noodles', 'Japan', 'broth', 'bowl', 'slurp'] },
+    { word: 'Fried Chicken', taboo: ['crispy', 'Kentucky', 'batter', 'wing', 'drumstick'] },
+    { word: 'Cheesecake', taboo: ['creamy', 'New York', 'graham cracker', 'dessert', 'baked'] },
+    { word: 'Lasagna', taboo: ['layers', 'pasta', 'Italy', 'oven', 'ricotta'] },
+    { word: 'Milkshake', taboo: ['ice cream', 'thick', 'straw', 'blended', 'dairy'] },
+    { word: 'Garlic Bread', taboo: ['Italian', 'butter', 'toast', 'garlic', 'side'] },
+    { word: 'Marshmallow', taboo: ['fluffy', 'campfire', 'soft', 'white', 'roast'] },
+    { word: 'Mashed Potatoes', taboo: ['gravy', 'butter', 'creamy', 'Thanksgiving', 'potato'] },
+    { word: 'Blueberry', taboo: ['blue', 'muffin', 'berry', 'antioxidant', 'small'] },
+    { word: 'Grilled Cheese', taboo: ['sandwich', 'toast', 'melted', 'butter', 'pan'] },
+    { word: 'Pie', taboo: ['crust', 'filling', 'apple', 'pumpkin', 'Thanksgiving'] },
+    { word: 'Smoothie', taboo: ['blended', 'fruit', 'healthy', 'drink', 'straw'] },
+    { word: 'Croissant', taboo: ['French', 'buttery', 'flaky', 'curved', 'pastry'] },
+    { word: 'Omelet', taboo: ['eggs', 'fold', 'cheese', 'breakfast', 'pan'] },
+    { word: 'Guacamole', taboo: ['avocado', 'dip', 'chips', 'Mexico', 'green'] },
+    { word: 'Brownie', taboo: ['chocolate', 'fudge', 'baked', 'square', 'gooey'] },
+    { word: 'Cotton Candy', taboo: ['spun', 'sugar', 'pink', 'fair', 'fluffy'] },
+    { word: 'Corn Dog', taboo: ['stick', 'batter', 'fair', 'dipped', 'hot dog'] },
+    { word: 'Apple', taboo: ['red', 'tree', 'fruit', 'cider', 'doctor'] },
   ],
   sports: [
     { word: 'Basketball', taboo: ['hoop', 'ball', 'dribble', 'NBA', 'court'] },
@@ -640,6 +703,26 @@ const CARDS = {
     { word: 'Golf', taboo: ['club', 'hole', 'putt', 'course', 'green'] },
     { word: 'Karate', taboo: ['kick', 'punch', 'belt', 'Japanese', 'chop'] },
     { word: 'Badminton', taboo: ['shuttle', 'racket', 'birdie', 'net', 'feather'] },
+    { word: 'Hockey', taboo: ['puck', 'ice', 'stick', 'goal', 'skate'] },
+    { word: 'Football', taboo: ['touchdown', 'NFL', 'quarterback', 'field goal', 'tackle'] },
+    { word: 'Rugby', taboo: ['scrum', 'tackle', 'oval', 'England', 'carry'] },
+    { word: 'Lacrosse', taboo: ['stick', 'net', 'catch', 'throw', 'field'] },
+    { word: 'Table Tennis', taboo: ['ping pong', 'paddle', 'small', 'table', 'spin'] },
+    { word: 'Water Polo', taboo: ['pool', 'throw', 'cap', 'tread', 'goal'] },
+    { word: 'Snowboarding', taboo: ['board', 'mountain', 'trick', 'halfpipe', 'snow'] },
+    { word: 'Diving', taboo: ['pool', 'board', 'splash', 'flip', 'Olympic'] },
+    { word: 'Boxing', taboo: ['punch', 'gloves', 'ring', 'knockout', 'fight'] },
+    { word: 'Judo', taboo: ['throw', 'Japan', 'mat', 'uniform', 'belt'] },
+    { word: 'Marathon', taboo: ['run', 'miles', 'long', 'endurance', '26'] },
+    { word: 'Rowing', taboo: ['boat', 'oar', 'water', 'stroke', 'crew'] },
+    { word: 'Curling', taboo: ['stone', 'sweep', 'ice', 'Canada', 'shuffle'] },
+    { word: 'Cricket', taboo: ['bat', 'wicket', 'England', 'innings', 'pitch'] },
+    { word: 'Fencing', taboo: ['sword', 'mask', 'lunge', 'épée', 'parry'] },
+    { word: 'Triathlon', taboo: ['swim', 'bike', 'run', 'three', 'ironman'] },
+    { word: 'High Jump', taboo: ['bar', 'leap', 'height', 'flop', 'clear'] },
+    { word: 'Pole Vault', taboo: ['pole', 'bar', 'jump', 'flexible', 'height'] },
+    { word: 'Weightlifting', taboo: ['barbell', 'heavy', 'lift', 'snatch', 'press'] },
+    { word: 'Horse Racing', taboo: ['jockey', 'Derby', 'bet', 'track', 'gallop'] },
   ],
   movies: [
     { word: 'Dinosaur', taboo: ['Jurassic', 'T-Rex', 'extinct', 'park', 'prehistoric'] },
@@ -662,6 +745,36 @@ const CARDS = {
     { word: 'Astronaut', taboo: ['space', 'suit', 'moon', 'rocket', 'NASA'] },
     { word: 'Fairy', taboo: ['wings', 'magic', 'wand', 'tiny', 'Tinker Bell'] },
     { word: 'Clown', taboo: ['circus', 'funny', 'makeup', 'balloon', 'nose'] },
+    { word: 'Harry Potter', taboo: ['wizard', 'Hogwarts', 'magic', 'wand', 'Hermione'] },
+    { word: 'Star Wars', taboo: ['lightsaber', 'Jedi', 'Darth Vader', 'galaxy', 'force'] },
+    { word: 'The Lion King', taboo: ['Simba', 'Africa', 'Mufasa', 'pride', 'Disney'] },
+    { word: 'Frozen', taboo: ['Elsa', 'ice', 'Anna', 'Olaf', 'Disney'] },
+    { word: 'Titanic', taboo: ['ship', 'iceberg', 'sink', 'Leonardo DiCaprio', 'Jack'] },
+    { word: 'Spider-Man', taboo: ['web', 'spider', 'Peter Parker', 'New York', 'Marvel'] },
+    { word: 'Shrek', taboo: ['ogre', 'swamp', 'Donkey', 'Fiona', 'layers'] },
+    { word: 'Finding Nemo', taboo: ['fish', 'ocean', 'clownfish', 'Disney', 'lost'] },
+    { word: 'Toy Story', taboo: ['Buzz', 'Woody', 'toys', 'Pixar', 'Andy'] },
+    { word: 'Batman', taboo: ['cape', 'Gotham', 'Joker', 'cave', 'Bruce Wayne'] },
+    { word: 'Avengers', taboo: ['Marvel', 'superheroes', 'Infinity', 'Iron Man', 'team'] },
+    { word: 'Home Alone', taboo: ['Kevin', 'booby trap', 'robbers', 'Christmas', 'left'] },
+    { word: 'The Grinch', taboo: ['Christmas', 'green', 'heart', 'Whoville', 'steal'] },
+    { word: 'Ghostbusters', taboo: ['ghost', 'proton pack', 'slime', 'Slimer', 'busting'] },
+    { word: 'Back to the Future', taboo: ['time machine', 'DeLorean', 'Marty', '1985', 'flux'] },
+    { word: 'The Simpsons', taboo: ['Homer', 'Springfield', 'Bart', 'yellow', 'animated'] },
+    { word: 'Game of Thrones', taboo: ['dragons', 'throne', 'winter', 'HBO', 'Westeros'] },
+    { word: 'Scooby-Doo', taboo: ['dog', 'mystery', 'Shaggy', 'gang', 'monster'] },
+    { word: 'Minions', taboo: ['yellow', 'Gru', 'banana', 'small', 'Despicable'] },
+    { word: 'Black Panther', taboo: ['Wakanda', 'Marvel', 'Africa', 'vibranium', 'king'] },
+    { word: 'Elf', taboo: ['Will Ferrell', 'North Pole', 'Santa', 'Christmas', 'Buddy'] },
+    { word: 'Indiana Jones', taboo: ['whip', 'hat', 'archaeologist', 'adventure', 'temple'] },
+    { word: 'Jurassic Park', taboo: ['dinosaurs', 'island', 'T-Rex', 'velociraptor', 'cloned'] },
+    { word: 'E.T.', taboo: ['alien', 'Spielberg', 'bicycle', 'phone home', 'finger'] },
+    { word: 'The Hunger Games', taboo: ['Katniss', 'Panem', 'bow', 'district', 'survival'] },
+    { word: 'Breaking Bad', taboo: ['Walter White', 'chemistry', 'meth', 'Heisenberg', 'blue'] },
+    { word: 'Friends', taboo: ['Central Perk', 'New York', 'Joey', 'Rachel', 'sitcom'] },
+    { word: 'Stranger Things', taboo: ['Eleven', 'Upside Down', 'Hawkins', 'Netflix', 'monster'] },
+    { word: 'Spongebob', taboo: ['Bikini Bottom', 'Patrick', 'Krabby Patty', 'underwater', 'yellow'] },
+    { word: 'Mulan', taboo: ['China', 'warrior', 'Disney', 'dragon', 'army'] },
   ],
   school: [
     { word: 'Backpack', taboo: ['carry', 'school', 'bag', 'books', 'strap'] },
@@ -684,6 +797,26 @@ const CARDS = {
     { word: 'Grade', taboo: ['A', 'score', 'report', 'teacher', 'test'] },
     { word: 'Bully', taboo: ['mean', 'push', 'tease', 'school', 'hurt'] },
     { word: 'Science Fair', taboo: ['experiment', 'project', 'school', 'volcano', 'ribbon'] },
+    { word: 'Principal', taboo: ['office', 'school', 'boss', 'trouble', 'leader'] },
+    { word: 'Detention', taboo: ['trouble', 'after school', 'punishment', 'bad', 'stay'] },
+    { word: 'Report Card', taboo: ['grades', 'parent', 'sign', 'teacher', 'marks'] },
+    { word: 'Graduation', taboo: ['diploma', 'cap', 'gown', 'ceremony', 'senior'] },
+    { word: 'Prom', taboo: ['dance', 'dress', 'high school', 'corsage', 'king'] },
+    { word: 'Yearbook', taboo: ['photos', 'sign', 'memories', 'class', 'senior'] },
+    { word: 'Textbook', taboo: ['heavy', 'chapter', 'subject', 'school', 'pages'] },
+    { word: 'Substitute Teacher', taboo: ['replacement', 'fill in', 'class', 'absent', 'different'] },
+    { word: 'Pencil Case', taboo: ['store', 'zipper', 'supplies', 'carry', 'pens'] },
+    { word: 'School Bus', taboo: ['yellow', 'route', 'driver', 'stop', 'ride'] },
+    { word: 'Hall Pass', taboo: ['bathroom', 'permission', 'wander', 'classroom', 'leave'] },
+    { word: 'Lunch Box', taboo: ['food', 'carry', 'pack', 'school', 'thermos'] },
+    { word: 'Debate', taboo: ['argue', 'sides', 'persuade', 'speech', 'topic'] },
+    { word: 'Drama Club', taboo: ['act', 'play', 'stage', 'perform', 'theater'] },
+    { word: 'Gym Class', taboo: ['exercise', 'coach', 'physical', 'sport', 'PE'] },
+    { word: 'Art Class', taboo: ['paint', 'draw', 'create', 'teacher', 'canvas'] },
+    { word: 'Math Test', taboo: ['exam', 'numbers', 'fail', 'study', 'algebra'] },
+    { word: 'Essay', taboo: ['write', 'paragraph', 'topic', 'five', 'thesis'] },
+    { word: 'Highlighter', taboo: ['yellow', 'bright', 'mark', 'important', 'fluorescent'] },
+    { word: 'Class President', taboo: ['election', 'vote', 'speech', 'leader', 'campaign'] },
   ],
   science: [
     { word: 'Volcano', taboo: ['lava', 'erupt', 'mountain', 'fire', 'Hawaii'] },
@@ -706,6 +839,26 @@ const CARDS = {
     { word: 'Solar System', taboo: ['planets', 'sun', 'orbit', 'space', 'galaxy'] },
     { word: 'Tide', taboo: ['ocean', 'moon', 'beach', 'pull', 'wave'] },
     { word: 'Metamorphosis', taboo: ['butterfly', 'caterpillar', 'change', 'cocoon', 'transform'] },
+    { word: 'Hurricane', taboo: ['wind', 'storm', 'spin', 'Florida', 'category'] },
+    { word: 'Comet', taboo: ['tail', 'space', 'ice', 'orbit', 'streak'] },
+    { word: 'Asteroid', taboo: ['space', 'rock', 'orbit', 'impact', 'dinosaur'] },
+    { word: 'Galaxy', taboo: ['stars', 'Milky Way', 'space', 'universe', 'spiral'] },
+    { word: 'Satellite', taboo: ['orbit', 'space', 'signal', 'GPS', 'dish'] },
+    { word: 'Telescope', taboo: ['star', 'look', 'far', 'lens', 'Hubble'] },
+    { word: 'Prism', taboo: ['rainbow', 'light', 'glass', 'refract', 'spectrum'] },
+    { word: 'Molecule', taboo: ['atoms', 'bond', 'chemistry', 'tiny', 'compound'] },
+    { word: 'Cell', taboo: ['biology', 'nucleus', 'tiny', 'living', 'membrane'] },
+    { word: 'Bacteria', taboo: ['germ', 'tiny', 'infection', 'microscope', 'illness'] },
+    { word: 'Virus', taboo: ['sick', 'germ', 'infection', 'tiny', 'spread'] },
+    { word: 'Evolution', taboo: ['Darwin', 'adapt', 'survive', 'species', 'change'] },
+    { word: 'Periodic Table', taboo: ['elements', 'chemistry', 'Mendeleev', 'symbols', 'atoms'] },
+    { word: 'Laser', taboo: ['beam', 'light', 'focused', 'cut', 'pointer'] },
+    { word: 'Cloning', taboo: ['copy', 'DNA', 'identical', 'sheep', 'Dolly'] },
+    { word: 'Blizzard', taboo: ['snow', 'storm', 'whiteout', 'cold', 'wind'] },
+    { word: 'Oxygen', taboo: ['breathe', 'air', 'element', 'O2', 'lungs'] },
+    { word: 'Carbon Dioxide', taboo: ['exhale', 'gas', 'greenhouse', 'CO2', 'plant'] },
+    { word: 'Newton', taboo: ['apple', 'gravity', 'physics', 'laws', 'motion'] },
+    { word: 'Mammoth', taboo: ['woolly', 'extinct', 'elephant', 'ice age', 'tusks'] },
   ],
   geography: [
     { word: 'Ocean', taboo: ['water', 'sea', 'waves', 'deep', 'salt'] },
@@ -728,6 +881,26 @@ const CARDS = {
     { word: 'Pyramids', taboo: ['Egypt', 'ancient', 'triangle', 'pharaoh', 'Giza'] },
     { word: 'Niagara Falls', taboo: ['waterfall', 'Canada', 'big', 'border', 'USA'] },
     { word: 'Everest', taboo: ['tallest', 'mountain', 'Nepal', 'climb', 'Himalaya'] },
+    { word: 'Tokyo', taboo: ['Japan', 'city', 'capital', 'busy', 'neon'] },
+    { word: 'London', taboo: ['England', 'Big Ben', 'Thames', 'UK', 'queen'] },
+    { word: 'New York City', taboo: ['Manhattan', 'skyscrapers', 'Times Square', 'taxi', 'Big Apple'] },
+    { word: 'Rome', taboo: ['Italy', 'Colosseum', 'ancient', 'Pope', 'gladiator'] },
+    { word: 'Colosseum', taboo: ['Rome', 'gladiator', 'arena', 'ancient', 'Italy'] },
+    { word: 'Machu Picchu', taboo: ['Peru', 'Inca', 'ruins', 'mountain', 'ancient'] },
+    { word: 'Mount Fuji', taboo: ['Japan', 'volcano', 'snow', 'sacred', 'climb'] },
+    { word: 'Nile River', taboo: ['Egypt', 'longest', 'Africa', 'Cleopatra', 'ancient'] },
+    { word: 'Great Barrier Reef', taboo: ['coral', 'Australia', 'ocean', 'fish', 'scuba'] },
+    { word: 'Statue of Liberty', taboo: ['New York', 'torch', 'gift', 'France', 'freedom'] },
+    { word: 'Big Ben', taboo: ['London', 'clock', 'tower', 'England', 'bell'] },
+    { word: 'Sydney Opera House', taboo: ['Australia', 'concert', 'harbor', 'sail', 'iconic'] },
+    { word: 'Golden Gate Bridge', taboo: ['San Francisco', 'red', 'bay', 'suspension', 'California'] },
+    { word: 'Yellowstone', taboo: ['geyser', 'national park', 'Old Faithful', 'bison', 'Wyoming'] },
+    { word: 'Stonehenge', taboo: ['England', 'boulders', 'ancient', 'circle', 'mystery'] },
+    { word: 'Iceland', taboo: ['Northern Lights', 'volcano', 'cold', 'geysers', 'island'] },
+    { word: 'Brazil', taboo: ['carnival', 'Amazon', 'soccer', 'Portuguese', 'South America'] },
+    { word: 'Himalayas', taboo: ['mountains', 'Nepal', 'Everest', 'Asia', 'range'] },
+    { word: 'Taj Mahal', taboo: ['India', 'marble', 'mausoleum', 'love', 'Agra'] },
+    { word: 'Caribbean', taboo: ['islands', 'tropical', 'cruise', 'clear water', 'reggae'] },
   ],
   toys: [
     { word: 'LEGO', taboo: ['bricks', 'build', 'plastic', 'connect', 'set'] },
@@ -750,6 +923,26 @@ const CARDS = {
     { word: 'Slinky', taboo: ['spring', 'stairs', 'metal', 'coil', 'bounce'] },
     { word: 'Play-Doh', taboo: ['sculpt', 'squish', 'clay', 'shape', 'mold'] },
     { word: 'Dominoes', taboo: ['tiles', 'knock', 'chain', 'dots', 'fall'] },
+    { word: 'UNO', taboo: ['cards', 'skip', 'reverse', 'wild', 'draw four'] },
+    { word: 'Twister', taboo: ['mat', 'spin', 'fall', 'hands', 'feet'] },
+    { word: 'Connect Four', taboo: ['yellow', 'red', 'column', 'drop', 'row'] },
+    { word: 'Checkers', taboo: ['jump', 'red', 'black', 'board', 'king'] },
+    { word: 'Operation', taboo: ['buzzer', 'tweezers', 'patient', 'funny bone', 'careful'] },
+    { word: 'Clue', taboo: ['murder', 'weapon', 'room', 'Colonel Mustard', 'mystery'] },
+    { word: 'Battleship', taboo: ['sink', 'grid', 'peg', 'miss', 'hit'] },
+    { word: 'Candy Land', taboo: ['board', 'rainbow', 'cards', 'kids', 'candy'] },
+    { word: 'Pictionary', taboo: ['draw', 'guess', 'timer', 'team', 'picture'] },
+    { word: 'Trivial Pursuit', taboo: ['trivia', 'pie', 'question', 'knowledge', 'category'] },
+    { word: 'Magic 8-Ball', taboo: ['predict', 'shake', 'answer', 'fortune', 'mystery'] },
+    { word: 'Etch A Sketch', taboo: ['draw', 'knobs', 'shake', 'erase', 'screen'] },
+    { word: 'Tamagotchi', taboo: ['virtual pet', 'feed', 'digital', 'care', 'egg'] },
+    { word: 'Barbie', taboo: ['doll', 'pink', 'Ken', 'fashion', 'Mattel'] },
+    { word: 'Hot Wheels', taboo: ['toy car', 'track', 'race', 'miniature', 'metal'] },
+    { word: 'Fidget Spinner', taboo: ['spin', 'fingers', 'focus', 'trend', 'balance'] },
+    { word: 'Bop It', taboo: ['pull', 'twist', 'commands', 'fast', 'electronic'] },
+    { word: 'Risk', taboo: ['world domination', 'armies', 'territory', 'dice', 'strategy'] },
+    { word: 'Sorry!', taboo: ['board', 'bump', 'start', 'cards', 'slide'] },
+    { word: 'Marbles', taboo: ['glass', 'roll', 'shooter', 'circle', 'small'] },
   ],
   music: [
     { word: 'Guitar', taboo: ['strings', 'strum', 'rock', 'acoustic', 'play'] },
@@ -772,6 +965,26 @@ const CARDS = {
     { word: 'Lullaby', taboo: ['baby', 'sleep', 'soft', 'quiet', 'night'] },
     { word: 'Rap', taboo: ['rhyme', 'hip hop', 'flow', 'beat', 'words'] },
     { word: 'Orchestra', taboo: ['conductor', 'classical', 'symphony', 'instruments', 'baton'] },
+    { word: 'Taylor Swift', taboo: ['country', 'pop', 'albums', 'Swifties', 'era'] },
+    { word: 'Beyoncé', taboo: ['Lemonade', 'Destiny\'s Child', 'Queen Bey', 'R&B', 'formation'] },
+    { word: 'The Beatles', taboo: ['Liverpool', 'John', 'Paul', 'Ringo', 'British'] },
+    { word: 'Elvis', taboo: ['King', 'rock and roll', 'hip', 'Graceland', 'hound dog'] },
+    { word: 'Michael Jackson', taboo: ['moonwalk', 'Thriller', 'pop', 'glove', 'King'] },
+    { word: 'Rock and Roll', taboo: ['electric guitar', 'stage', 'rebel', 'loud', 'roll'] },
+    { word: 'Jazz', taboo: ['New Orleans', 'improvise', 'swing', 'saxophone', 'Louis Armstrong'] },
+    { word: 'Hip Hop', taboo: ['rap', 'DJ', 'rhyme', 'beat', 'culture'] },
+    { word: 'Opera', taboo: ['singer', 'Italian', 'dramatic', 'aria', 'soprano'] },
+    { word: 'Music Video', taboo: ['MTV', 'visual', 'YouTube', 'song', 'film'] },
+    { word: 'Grammy', taboo: ['award', 'music', 'ceremony', 'best', 'gold'] },
+    { word: 'Album', taboo: ['songs', 'release', 'artist', 'tracks', 'CD'] },
+    { word: 'Country Music', taboo: ['Nashville', 'guitar', 'twang', 'boots', 'southern'] },
+    { word: 'Heavy Metal', taboo: ['loud', 'guitar', 'headbang', 'dark', 'scream'] },
+    { word: 'Saxophone', taboo: ['blow', 'jazz', 'brass', 'curved', 'reed'] },
+    { word: 'Music Festival', taboo: ['outdoor', 'stage', 'crowd', 'bands', 'Coachella'] },
+    { word: 'Encore', taboo: ['extra', 'crowd', 'cheer', 'concert', 'more'] },
+    { word: 'Acoustic', taboo: ['unplugged', 'guitar', 'natural', 'no amp', 'raw'] },
+    { word: 'Marching Band', taboo: ['parade', 'instruments', 'halftime', 'uniform', 'formation'] },
+    { word: 'Conductor', taboo: ['baton', 'orchestra', 'wave', 'lead', 'tempo'] },
   ],
   holidays: [
     { word: 'Christmas', taboo: ['Santa', 'presents', 'tree', 'December', 'winter'] },
@@ -794,6 +1007,152 @@ const CARDS = {
     { word: 'April Fools', taboo: ['prank', 'joke', 'trick', 'funny', 'April'] },
     { word: 'Christmas Tree', taboo: ['decorate', 'ornament', 'pine', 'green', 'Christmas'] },
     { word: 'Fireworks', taboo: ['Fourth', 'July', 'explosion', 'sky', 'colorful'] },
+    { word: 'Chinese New Year', taboo: ['dragon', 'lantern', 'red envelope', 'lunar', 'Year'] },
+    { word: 'Kwanzaa', taboo: ['candles', 'African American', 'unity', 'December', 'kinara'] },
+    { word: 'Eid', taboo: ['Muslim', 'Ramadan', 'feast', 'prayer', 'celebration'] },
+    { word: 'Memorial Day', taboo: ['soldiers', 'veterans', 'May', 'fallen', 'honor'] },
+    { word: 'Labor Day', taboo: ['workers', 'September', 'summer end', 'barbecue', 'Monday'] },
+    { word: 'Earth Day', taboo: ['environment', 'April', 'planet', 'recycle', 'green'] },
+    { word: 'Groundhog Day', taboo: ['shadow', 'February', 'Phil', 'Punxsutawney', 'winter'] },
+    { word: 'Super Bowl', taboo: ['football', 'halftime', 'commercials', 'February', 'championship'] },
+    { word: 'Back to School', taboo: ['supplies', 'August', 'September', 'fresh start', 'teacher'] },
+    { word: 'Carnival', taboo: ['rides', 'games', 'cotton candy', 'tent', 'fair'] },
+    { word: 'Graduation Party', taboo: ['celebrate', 'diploma', 'senior', 'done', 'family'] },
+    { word: 'Baby Shower', taboo: ['gifts', 'pregnant', 'pink', 'blue', 'newborn'] },
+    { word: 'Wedding', taboo: ['bride', 'groom', 'ring', 'vows', 'reception'] },
+    { word: 'Trick or Treat', taboo: ['Halloween', 'candy', 'door', 'costume', 'bag'] },
+    { word: 'New Year\'s Eve', taboo: ['midnight', 'countdown', 'party', 'ball drop', 'December'] },
+    { word: 'Bonfire', taboo: ['fire', 'wood', 'marshmallow', 'outdoor', 'night'] },
+    { word: 'Block Party', taboo: ['neighborhood', 'street', 'outdoor', 'food', 'summer'] },
+    { word: 'Sleepover', taboo: ['pajamas', 'pillow fight', 'snacks', 'friends', 'night'] },
+    { word: 'Surprise Party', taboo: ['hidden', 'yell', 'shock', 'birthday', 'secret'] },
+    { word: 'Tailgate', taboo: ['parking lot', 'football', 'grill', 'game day', 'trunk'] },
+  ],
+  everyday: [
+    { word: 'Refrigerator', taboo: ['cold', 'food', 'kitchen', 'chill', 'fridge'] },
+    { word: 'Toothbrush', taboo: ['teeth', 'brush', 'paste', 'clean', 'morning'] },
+    { word: 'Shower', taboo: ['water', 'soap', 'clean', 'bathroom', 'hot'] },
+    { word: 'Laundry', taboo: ['clothes', 'wash', 'dryer', 'detergent', 'spin'] },
+    { word: 'Dishwasher', taboo: ['plates', 'clean', 'cycle', 'kitchen', 'soap'] },
+    { word: 'Vacuum Cleaner', taboo: ['suck', 'floor', 'carpet', 'dirt', 'suction'] },
+    { word: 'Remote Control', taboo: ['TV', 'buttons', 'channel', 'click', 'battery'] },
+    { word: 'Doorbell', taboo: ['ring', 'visitor', 'press', 'front door', 'chime'] },
+    { word: 'Mailbox', taboo: ['letters', 'post', 'outside', 'metal', 'deliver'] },
+    { word: 'Couch', taboo: ['sit', 'cushion', 'living room', 'relax', 'sofa'] },
+    { word: 'Pillow', taboo: ['sleep', 'soft', 'head', 'fluff', 'bed'] },
+    { word: 'Blanket', taboo: ['warm', 'cover', 'soft', 'sleep', 'cozy'] },
+    { word: 'Mirror', taboo: ['reflection', 'glass', 'look', 'bathroom', 'yourself'] },
+    { word: 'Closet', taboo: ['clothes', 'hang', 'dark', 'storage', 'door'] },
+    { word: 'Lawn Mower', taboo: ['grass', 'cut', 'yard', 'push', 'engine'] },
+    { word: 'Garbage Can', taboo: ['trash', 'lid', 'throw away', 'dump', 'bag'] },
+    { word: 'Grocery Store', taboo: ['food', 'shop', 'aisle', 'cart', 'checkout'] },
+    { word: 'Shopping Cart', taboo: ['push', 'wheels', 'store', 'groceries', 'metal'] },
+    { word: 'Traffic Light', taboo: ['red', 'green', 'stop', 'go', 'intersection'] },
+    { word: 'Crosswalk', taboo: ['walk', 'stripes', 'road', 'signal', 'pedestrian'] },
+    { word: 'Elevator', taboo: ['up', 'down', 'floor', 'button', 'doors'] },
+    { word: 'Umbrella', taboo: ['rain', 'open', 'wet', 'carry', 'handle'] },
+    { word: 'Alarm', taboo: ['wake', 'ring', 'beep', 'snooze', 'morning'] },
+    { word: 'Microwave', taboo: ['heat', 'food', 'beep', 'rotate', 'quick'] },
+    { word: 'Toaster', taboo: ['bread', 'pop up', 'crispy', 'slot', 'breakfast'] },
+    { word: 'Blender', taboo: ['smoothie', 'spin', 'blade', 'motor', 'liquid'] },
+    { word: 'Sunglasses', taboo: ['sun', 'cool', 'shade', 'eyes', 'UV'] },
+    { word: 'Keys', taboo: ['lock', 'car', 'jingle', 'open', 'keychain'] },
+    { word: 'Wallet', taboo: ['money', 'leather', 'cards', 'pocket', 'cash'] },
+    { word: 'Backyard', taboo: ['grass', 'outdoor', 'fence', 'grill', 'home'] },
+    { word: 'Haircut', taboo: ['scissors', 'barber', 'trim', 'style', 'hair'] },
+    { word: 'Dentist', taboo: ['teeth', 'drill', 'cavity', 'clean', 'appointment'] },
+    { word: 'Doctor', taboo: ['hospital', 'sick', 'stethoscope', 'medicine', 'checkup'] },
+    { word: 'Newspaper', taboo: ['read', 'print', 'news', 'daily', 'headlines'] },
+    { word: 'Cereal Bowl', taboo: ['breakfast', 'milk', 'spoon', 'morning', 'pour'] },
+    { word: 'Parking Lot', taboo: ['car', 'spot', 'lines', 'drive', 'space'] },
+    { word: 'ATM', taboo: ['money', 'bank', 'card', 'PIN', 'cash'] },
+    { word: 'Garage', taboo: ['car', 'door', 'open', 'tools', 'park'] },
+    { word: 'Bathtub', taboo: ['soak', 'bubbles', 'water', 'relax', 'drain'] },
+    { word: 'Garden Hose', taboo: ['water', 'spray', 'plants', 'outside', 'connect'] },
+  ],
+  technology: [
+    { word: 'Smartphone', taboo: ['iPhone', 'Android', 'call', 'touch screen', 'app'] },
+    { word: 'Laptop', taboo: ['computer', 'portable', 'keyboard', 'screen', 'battery'] },
+    { word: 'Internet', taboo: ['online', 'connect', 'WiFi', 'web', 'browser'] },
+    { word: 'Password', taboo: ['secret', 'login', 'secure', 'remember', 'characters'] },
+    { word: 'WiFi', taboo: ['internet', 'wireless', 'router', 'connect', 'signal'] },
+    { word: 'Social Media', taboo: ['post', 'follow', 'like', 'Instagram', 'feed'] },
+    { word: 'Email', taboo: ['send', 'inbox', 'message', 'subject', 'attach'] },
+    { word: 'Video Call', taboo: ['Zoom', 'FaceTime', 'screen', 'camera', 'remote'] },
+    { word: 'App', taboo: ['download', 'phone', 'program', 'icon', 'store'] },
+    { word: 'Search Engine', taboo: ['Google', 'query', 'results', 'type', 'find'] },
+    { word: 'Cloud Storage', taboo: ['save online', 'iCloud', 'backup', 'sync', 'server'] },
+    { word: 'Selfie', taboo: ['photo', 'yourself', 'camera', 'stick', 'front'] },
+    { word: 'Emoji', taboo: ['smiley', 'symbol', 'text', 'face', 'yellow'] },
+    { word: 'GPS', taboo: ['directions', 'maps', 'navigate', 'satellite', 'location'] },
+    { word: 'Bluetooth', taboo: ['wireless', 'speaker', 'pair', 'headphones', 'short range'] },
+    { word: 'Keyboard', taboo: ['type', 'keys', 'computer', 'QWERTY', 'space bar'] },
+    { word: 'Printer', taboo: ['paper', 'ink', 'print', 'document', 'scan'] },
+    { word: 'USB Drive', taboo: ['flash', 'plug', 'storage', 'small', 'port'] },
+    { word: 'Charging Cable', taboo: ['plug', 'battery', 'power', 'connect', 'phone'] },
+    { word: 'Smart Watch', taboo: ['wrist', 'Apple Watch', 'notifications', 'fitness', 'heart rate'] },
+    { word: 'Virtual Reality', taboo: ['headset', 'immersive', 'goggles', 'VR', 'game'] },
+    { word: 'Artificial Intelligence', taboo: ['AI', 'machine learning', 'robot', 'data', 'smart'] },
+    { word: 'Drone', taboo: ['fly', 'camera', 'remote', 'buzz', 'aerial'] },
+    { word: 'Streaming', taboo: ['Netflix', 'watch online', 'buffering', 'video', 'subscription'] },
+    { word: 'Online Shopping', taboo: ['Amazon', 'cart', 'deliver', 'order', 'click'] },
+    { word: 'Podcast', taboo: ['audio', 'episode', 'subscribe', 'listen', 'host'] },
+    { word: 'YouTube', taboo: ['video', 'channel', 'subscribe', 'views', 'Google'] },
+    { word: 'TikTok', taboo: ['dance', 'short video', 'viral', 'trends', 'Chinese'] },
+    { word: 'Coding', taboo: ['program', 'language', 'developer', 'computer', 'software'] },
+    { word: 'Video Game', taboo: ['controller', 'play', 'screen', 'level', 'console'] },
+    { word: 'Touchscreen', taboo: ['finger', 'swipe', 'tap', 'glass', 'phone'] },
+    { word: 'Notification', taboo: ['ping', 'alert', 'buzz', 'phone', 'pop-up'] },
+    { word: 'Screenshot', taboo: ['capture', 'screen', 'save', 'photo', 'phone'] },
+    { word: 'Autocorrect', taboo: ['wrong word', 'phone', 'type', 'embarrassing', 'change'] },
+    { word: 'QR Code', taboo: ['scan', 'square', 'pattern', 'camera', 'menu'] },
+    { word: 'Hacker', taboo: ['computer', 'break in', 'code', 'steal data', 'dark'] },
+    { word: 'Algorithm', taboo: ['steps', 'computer', 'social media', 'sequence', 'code'] },
+    { word: 'Battery', taboo: ['charge', 'power', 'low', 'percent', 'drain'] },
+    { word: 'Headset', taboo: ['ears', 'microphone', 'gaming', 'call', 'listen'] },
+    { word: 'Router', taboo: ['WiFi', 'internet', 'box', 'signal', 'network'] },
+  ],
+  places: [
+    { word: 'Airport', taboo: ['fly', 'plane', 'terminal', 'boarding', 'security'] },
+    { word: 'Hotel', taboo: ['room', 'bed', 'key card', 'lobby', 'stay'] },
+    { word: 'Passport', taboo: ['travel', 'country', 'stamp', 'ID', 'border'] },
+    { word: 'Suitcase', taboo: ['pack', 'wheels', 'travel', 'clothes', 'zipper'] },
+    { word: 'Theme Park', taboo: ['rides', 'Disney', 'roller coaster', 'tickets', 'lines'] },
+    { word: 'Museum', taboo: ['art', 'history', 'exhibits', 'quiet', 'artifacts'] },
+    { word: 'Beach Resort', taboo: ['ocean', 'pool', 'tropical', 'vacation', 'hotel'] },
+    { word: 'Cruise Ship', taboo: ['ocean', 'buffet', 'deck', 'ports', 'cabin'] },
+    { word: 'Road Trip', taboo: ['car', 'drive', 'highway', 'snacks', 'map'] },
+    { word: 'Camping', taboo: ['tent', 'fire', 'woods', 'outdoor', 'sleeping bag'] },
+    { word: 'National Park', taboo: ['nature', 'hiking', 'Yellowstone', 'ranger', 'wildlife'] },
+    { word: 'Zoo', taboo: ['animals', 'cage', 'exhibit', 'tickets', 'keeper'] },
+    { word: 'Aquarium', taboo: ['fish', 'tank', 'sharks', 'underwater', 'glass'] },
+    { word: 'Stadium', taboo: ['seats', 'game', 'crowd', 'sports', 'field'] },
+    { word: 'Shopping Mall', taboo: ['stores', 'food court', 'escalator', 'buy', 'indoor'] },
+    { word: 'Farmers Market', taboo: ['fresh', 'local', 'vegetables', 'outdoor', 'stalls'] },
+    { word: 'Food Truck', taboo: ['street', 'wheels', 'serve', 'menu', 'mobile'] },
+    { word: 'Train Station', taboo: ['platform', 'track', 'board', 'departure', 'rail'] },
+    { word: 'Subway', taboo: ['underground', 'train', 'city', 'platform', 'tunnel'] },
+    { word: 'Taxi', taboo: ['yellow', 'cab', 'driver', 'meter', 'hail'] },
+    { word: 'Customs', taboo: ['border', 'passport', 'declare', 'inspection', 'airport'] },
+    { word: 'Tour Guide', taboo: ['group', 'history', 'facts', 'walk', 'lead'] },
+    { word: 'Souvenir', taboo: ['gift', 'memory', 'trip', 'magnet', 'keepsake'] },
+    { word: 'Bed and Breakfast', taboo: ['inn', 'cozy', 'morning meal', 'stay', 'host'] },
+    { word: 'Hostel', taboo: ['budget', 'bunk beds', 'backpacker', 'shared', 'cheap'] },
+    { word: 'Amusement Park', taboo: ['rides', 'roller coaster', 'fun', 'tickets', 'lines'] },
+    { word: 'Art Gallery', taboo: ['paintings', 'exhibit', 'quiet', 'modern', 'museum'] },
+    { word: 'Café', taboo: ['coffee', 'pastry', 'sit', 'wifi', 'cozy'] },
+    { word: 'Luggage', taboo: ['bags', 'travel', 'carry', 'wheels', 'checked'] },
+    { word: 'Boarding Pass', taboo: ['airplane', 'seat', 'gate', 'scan', 'ticket'] },
+    { word: 'Time Zone', taboo: ['clocks', 'travel', 'jet lag', 'hours', 'difference'] },
+    { word: 'Layover', taboo: ['airport', 'wait', 'flight', 'connecting', 'hours'] },
+    { word: 'Bed', taboo: ['sleep', 'mattress', 'pillow', 'sheets', 'rest'] },
+    { word: 'Tourist', taboo: ['camera', 'sightseeing', 'map', 'visitor', 'foreign'] },
+    { word: 'Currency Exchange', taboo: ['money', 'foreign', 'rate', 'travel', 'convert'] },
+    { word: 'Lighthouse', taboo: ['light', 'coast', 'sailor', 'beam', 'rocky'] },
+    { word: 'Hot Air Balloon', taboo: ['float', 'sky', 'basket', 'fire', 'colorful'] },
+    { word: 'Ski Resort', taboo: ['mountain', 'snow', 'lodge', 'lift', 'slope'] },
+    { word: 'Vineyard', taboo: ['grapes', 'wine', 'France', 'tour', 'harvest'] },
+    { word: 'Haunted House', taboo: ['scary', 'ghost', 'attraction', 'Halloween', 'spooky'] },
   ],
 };
 
@@ -814,6 +1173,7 @@ let state = {
   skipsLeft: 3,
   cardIndex: 0,
   deck: [],
+  usedWords: new Set(), // tracks words shown this game — never repeats until full cycle
   timerInterval: null,
   timeLeft: 60,
   isPaused: false,
@@ -992,18 +1352,44 @@ function updateStartBtn() {
 }
 
 // ===================== DECK =====================
-function buildDeck() {
-  let deck = [];
-  state.selectedCategories.forEach(catId => {
-    const cards = CARDS[catId];
-    cards.forEach(card => deck.push({ ...card, category: catId }));
-  });
-  // Shuffle
-  for (let i = deck.length - 1; i > 0; i--) {
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
-  return deck;
+  return arr;
+}
+
+function buildDeck() {
+  // Build flat list of all eligible cards (de-duped by word at source)
+  let all = [];
+  state.selectedCategories.forEach(catId => {
+    CARDS[catId].forEach(card => all.push({ ...card, category: catId }));
+  });
+
+  // Filter out already-shown words this cycle
+  let remaining = all.filter(c => !state.usedWords.has(c.word));
+
+  // If every card has been seen, reset the cycle and use full deck
+  if (remaining.length === 0) {
+    state.usedWords = new Set();
+    remaining = all;
+  }
+
+  return shuffle(remaining);
+}
+
+function advanceCard() {
+  // Mark current card as used before moving on
+  if (state.deck[state.cardIndex]) {
+    state.usedWords.add(state.deck[state.cardIndex].word);
+  }
+  state.cardIndex++;
+  // If we've exhausted the current deck slice, build the next slice
+  if (state.cardIndex >= state.deck.length) {
+    state.deck = buildDeck();
+    state.cardIndex = 0;
+  }
 }
 
 // ===================== GAME START =====================
@@ -1022,6 +1408,7 @@ function startGame() {
     state.totalRounds = state.roundsPerTeam * 2;
   }
   state.round = 1;
+  state.usedWords = new Set();
   state.deck = buildDeck();
   state.cardIndex = 0;
 
@@ -1037,12 +1424,6 @@ function startTurn() {
   state.roundCorrect = 0;
   state.roundTaboo = 0;
   state.roundSkipped = 0;
-
-  // Ensure deck has cards
-  if (state.cardIndex >= state.deck.length) {
-    state.deck = buildDeck();
-    state.cardIndex = 0;
-  }
 
   updateHeader();
   updateSkipBtn();
@@ -1076,17 +1457,14 @@ function updateHeader() {
 
 // ===================== CARD DISPLAY =====================
 function showCard() {
-  if (state.cardIndex >= state.deck.length) {
-    // All cards exhausted — reshuffle full deck before repeating
-    state.deck = buildDeck();
-    state.cardIndex = 0;
-  }
   const card = state.deck[state.cardIndex];
   const catInfo = CATEGORIES.find(c => c.id === card.category);
 
   document.getElementById('card-category').textContent = `${catInfo ? catInfo.icon : ''} ${catInfo ? catInfo.name : card.category}`;
   document.getElementById('card-main-word').textContent = card.word;
-  document.getElementById('card-counter').textContent = `#${state.cardIndex + 1}`;
+  const totalSeen = state.usedWords.size + 1;
+  const totalCards = state.selectedCategories.reduce((s, id) => s + CARDS[id].length, 0);
+  document.getElementById('card-counter').textContent = `${totalSeen}/${totalCards}`;
 
   const tabooDiv = document.getElementById('taboo-words');
   tabooDiv.innerHTML = '';
@@ -1140,7 +1518,7 @@ function currentIdx() {
 function cardCorrect() {
   state.scores[currentIdx()]++;
   state.roundCorrect++;
-  state.cardIndex++;
+  advanceCard();
   soundCorrect();
   flashCard('green');
   updateHeader();
@@ -1151,7 +1529,7 @@ function cardSkip() {
   if (state.skipsLeft <= 0) return;
   state.skipsLeft--;
   state.roundSkipped++;
-  state.cardIndex++;
+  advanceCard();
   soundSkip();
   flashCard('yellow');
   updateSkipBtn();
@@ -1161,7 +1539,7 @@ function cardSkip() {
 function cardTaboo() {
   state.scores[currentIdx()] = Math.max(0, state.scores[currentIdx()] - 1);
   state.roundTaboo++;
-  state.cardIndex++;
+  advanceCard();
   soundTaboo();
   flashCard('red');
   updateHeader();
