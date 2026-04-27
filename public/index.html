@@ -254,7 +254,8 @@ input{font-family:inherit;outline:none}
 .wof-spin-btn:disabled{opacity:0.5;cursor:not-allowed;transform:translate(-50%,-50%)}
 .wof-result-banner{text-align:center;font-size:22px;font-weight:800;padding:8px;border-radius:var(--radius-sm);margin:6px 0;animation:pop 0.3s ease}
 
-.wof-board{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:10px 0;padding:8px;background:var(--surface);border-radius:var(--radius);min-height:60px}
+.wof-board{display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:center;margin:10px 0;padding:8px;background:var(--surface);border-radius:var(--radius);min-height:60px}
+.wof-word{display:inline-flex;gap:4px;white-space:nowrap}
 .wof-tile{width:32px;height:40px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;text-transform:uppercase;transition:all 0.3s ease}
 .wof-tile.blank{background:linear-gradient(135deg,#2563eb,#1d4ed8);border:1px solid rgba(59,130,246,0.4)}
 .wof-tile.revealed{background:white;color:#1a1a2e;animation:pop 0.3s ease}
@@ -1171,19 +1172,21 @@ function wofGetPuzzle(){
 function wofRenderBoard(){
   const s=gameState;
   const phrase=s.puzzle.phrase;
+  const words=phrase.split(' ');
   let html='';
-  for(let i=0;i<phrase.length;i++){
-    const ch=phrase[i];
-    if(ch===' '){
-      html+='<div class="wof-tile space"></div>';
-    } else if(!/[A-Z]/.test(ch)){
-      html+=`<div class="wof-tile punct">${ch}</div>`;
-    } else if(s.revealedLetters.has(ch)){
-      html+=`<div class="wof-tile revealed">${ch}</div>`;
-    } else {
-      html+='<div class="wof-tile blank"></div>';
+  words.forEach((word,wi)=>{
+    html+='<span class="wof-word">';
+    for(const ch of word){
+      if(!/[A-Z]/.test(ch)){
+        html+=`<div class="wof-tile punct">${ch}</div>`;
+      } else if(s.revealedLetters.has(ch)){
+        html+=`<div class="wof-tile revealed">${ch}</div>`;
+      } else {
+        html+='<div class="wof-tile blank"></div>';
+      }
     }
-  }
+    html+='</span>';
+  });
   return html;
 }
 
