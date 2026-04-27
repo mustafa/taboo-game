@@ -1844,8 +1844,9 @@ function startFamilyFeud(){
   const t2=document.getElementById('team2Name')?.value||'Team 2';
   s.teams=[{name:t1,score:0},{name:t2,score:0}];
   s.currentTeam=0;
-  s.surveys=shuffle([...FEUD_SURVEYS]).slice(0,s.rounds);
+  s.surveys=shuffle([...FEUD_SURVEYS]);
   s.surveyIdx=0;
+  s.roundsPlayed=0;
   s.strikes=0;
   s.revealed=new Set();
   s.roundPoints=0;
@@ -1877,7 +1878,8 @@ function feudMatchGuess(guess, answer){
 
 function renderFeudRound(){
   const s=gameState;
-  if(s.surveyIdx>=s.surveys.length){showFeudResults();return;}
+  if(s.roundsPlayed>=s.rounds){showFeudResults();return;}
+  if(s.surveyIdx>=s.surveys.length){s.surveyIdx=0;s.surveys=shuffle([...FEUD_SURVEYS]);}
   const survey=s.surveys[s.surveyIdx];
   s.strikes=0;s.revealed=new Set();s.roundPoints=0;s.phase='playing';
   s.playingTeam=s.currentTeam;
@@ -1885,8 +1887,10 @@ function renderFeudRound(){
   const el=document.getElementById('playContent');
   el.innerHTML=`
     ${renderTeamScoreBar(s.teams, s.currentTeam)}
-    <div class="score-display">Round ${s.surveyIdx+1} of ${s.surveys.length}</div>
-    <div class="feud-question">${survey.q}</div>
+    <div class="score-display">Round ${s.roundsPlayed+1} of ${s.rounds}</div>
+    <div class="feud-question" style="position:relative">${survey.q}
+      <button onclick="feudSkipSurvey()" title="Skip to a new survey" style="position:absolute;top:-8px;right:-8px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:12px;padding:4px 10px;border-radius:20px;cursor:pointer;font-weight:600;opacity:0.8;transition:opacity 0.2s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">Skip ↻</button>
+    </div>
     <div class="feud-board" id="feudBoard">
       ${survey.answers.map((ans,i)=>`
         <div class="feud-answer hidden" id="feud-a-${i}">
@@ -1911,6 +1915,13 @@ function renderFeudRound(){
     </div>
   `;
   setTimeout(()=>{const inp=document.getElementById('feudGuess');if(inp)inp.focus();},100);
+}
+
+function feudSkipSurvey(){
+  sfxClick();
+  const s=gameState;
+  s.surveyIdx++;
+  renderFeudRound();
 }
 
 function feudRevealAnswer(idx){
@@ -2009,8 +2020,9 @@ function feudAwardRound(){
   setTimeout(()=>{
     banner.remove();
     s.surveyIdx++;
-    s.currentTeam=s.surveyIdx%2;
-    if(s.surveyIdx<s.surveys.length){
+    s.roundsPlayed++;
+    s.currentTeam=s.roundsPlayed%2;
+    if(s.roundsPlayed<s.rounds){
       showTeamTransition(s.teams[s.currentTeam].name, renderFeudRound);
     } else {
       renderFeudRound(); // will trigger showFeudResults
