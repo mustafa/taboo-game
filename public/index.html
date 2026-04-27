@@ -373,6 +373,7 @@ function showTeamTransition(teamName, onDone){
       if(onDone)onDone();
     }
   },1000);
+  div._interval=interval;
   div.onclick=()=>{clearInterval(interval);div.remove();if(onDone)onDone();};
   sfxTick();
 }
@@ -573,9 +574,19 @@ function renderHome(){
   `).join('');
 }
 
+let quitToken=0;
+function safeTimeout(fn,ms){
+  const tok=quitToken;
+  return setTimeout(()=>{ if(tok!==quitToken)return; fn(); },ms);
+}
 function confirmQuit(){
   if(confirm('Quit this game and go back?')){
+    quitToken++;
     if(gameState.timer)clearInterval(gameState.timer);
+    document.querySelectorAll('.pass-screen,.team-transition,.feud-banner,.confetti-container').forEach(n=>{
+      if(n._interval)clearInterval(n._interval);
+      n.remove();
+    });
     gameState={};
     showScreen('home');
   }
@@ -1196,7 +1207,7 @@ function wofRenderLetterButtons(){
   for(const ch of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'){
     const isVowel=VOWELS.includes(ch);
     const used=s.guessedLetters.has(ch);
-    const disabled=used||s.phase!=='pick_letter'||(isVowel&&s.phase==='pick_letter'&&!s.buyingVowel)||(!isVowel&&s.buyingVowel);
+    const disabled=used||s.transitioning||s.phase!=='pick_letter'||(isVowel&&s.phase==='pick_letter'&&!s.buyingVowel)||(!isVowel&&s.buyingVowel);
     html+=`<button class="wof-letter-btn ${isVowel?'vowel':'consonant'} ${used?'used':''}" ${disabled?'disabled':''} onclick="wofPickLetter('${ch}')">${ch}</button>`;
   }
   return html;
@@ -1232,13 +1243,14 @@ function renderWOF(){
     <div class="wof-wheel-wrap">
       <div class="wof-pointer"></div>
       <canvas id="wofCanvas" width="280" height="280" style="border-radius:50%"></canvas>
-      <button class="wof-spin-btn" id="wofSpinBtn" ${(s.phase!=='spin'&&s.phase!=='spun')||s.spinning?'disabled':''} onclick="wofDoSpin()">SPIN</button>
+      <button class="wof-spin-btn" id="wofSpinBtn" ${(s.phase!=='spin'&&s.phase!=='spun')||s.spinning||s.transitioning?'disabled':''} onclick="wofDoSpin()">SPIN</button>
     </div>
     ${s.lastResult?`<div class="wof-result-banner" style="background:${s.lastResultColor};color:${s.lastResultTextColor||'white'}">${s.lastResult}</div>`:''}
     <div class="wof-letters">${wofRenderLetterButtons()}</div>
     <div class="wof-actions">
-      <button class="btn btn-sm" style="background:rgba(234,179,8,0.2);color:var(--yellow)" ${!canBuyVowel||s.phase==='spin'||s.spinning?'disabled':''} onclick="wofBuyVowel()">Buy Vowel ($250)</button>
-      <button class="btn btn-sm btn-primary" ${!canSolve||s.spinning?'disabled':''} onclick="wofTrySolve()">Solve!</button>
+      <button class="btn btn-sm" style="background:rgba(234,179,8,0.2);color:var(--yellow)" ${!canBuyVowel||s.phase==='spin'||s.spinning||s.transitioning?'disabled':''} onclick="wofBuyVowel()">Buy Vowel ($250)</button>
+      <button class="btn btn-sm btn-primary" ${!canSolve||s.spinning||s.transitioning?'disabled':''} onclick="wofTrySolve()">Solve!</button>
+      <button class="btn btn-sm btn-secondary" ${s.spinning||s.transitioning?'disabled':''} onclick="wofPassTurn()">⏭ Pass</button>
     </div>
   `;
   // draw wheel
@@ -1248,7 +1260,7 @@ function renderWOF(){
 
 function wofDoSpin(){
   const s=gameState;
-  if((s.phase!=='spin'&&s.phase!=='spun')||s.spinning)return;
+  if((s.phase!=='spin'&&s.phase!=='spun')||s.spinning||s.transitioning)return;
   s.phase='spin';
   s.lastResult='';
   wofSpinWheel((segment)=>{
@@ -1256,12 +1268,14 @@ function wofDoSpin(){
       sfxBuzz();
       s.teams[s.currentPlayer].roundBank=0;
       s.lastResult='💀 BANKRUPT!';s.lastResultColor='var(--red)';
-      setTimeout(()=>wofNextPlayer(),1500);
+      s.transitioning=true;
+      safeTimeout(()=>wofNextPlayer(),1500);
       renderWOF();
     } else if(segment==='LOSE'){
       sfxWrong();
       s.lastResult='⏭ Lose a Turn!';s.lastResultColor='var(--surface3)';
-      setTimeout(()=>wofNextPlayer(),1500);
+      s.transitioning=true;
+      safeTimeout(()=>wofNextPlayer(),1500);
       renderWOF();
     } else {
       s.currentAmount=segment;
@@ -1276,6 +1290,7 @@ function wofDoSpin(){
 
 function wofPickLetter(ch){
   const s=gameState;
+  if(s.transitioning||s.spinning)return;
   if(s.guessedLetters.has(ch))return;
   s.guessedLetters.add(ch);
 
@@ -1304,13 +1319,15 @@ function wofPickLetter(ch){
     sfxWrong();
     s.lastResult=`No ${ch}'s!`;s.lastResultColor='var(--surface3)';s.lastResultTextColor='var(--text)';
     s.buyingVowel=false;
-    setTimeout(()=>wofNextPlayer(),1200);
+    s.transitioning=true;
+    safeTimeout(()=>wofNextPlayer(),1200);
     renderWOF();
   }
 }
 
 function wofBuyVowel(){
   const s=gameState;
+  if(s.transitioning||s.spinning)return;
   const team=s.teams[s.currentPlayer];
   if(team.roundBank<250)return;
   s.buyingVowel=true;
@@ -1319,8 +1336,16 @@ function wofBuyVowel(){
   renderWOF();
 }
 
+function wofPassTurn(){
+  const s=gameState;
+  if(s.transitioning||s.spinning)return;
+  sfxClick();
+  wofNextPlayer();
+}
+
 function wofTrySolve(){
   const s=gameState;
+  if(s.transitioning||s.spinning)return;
   const guess=prompt('Solve the puzzle:');
   if(!guess)return;
   const clean=guess.toUpperCase().replace(/[^A-Z ]/g,'').trim();
@@ -1330,7 +1355,8 @@ function wofTrySolve(){
   } else {
     sfxWrong();
     s.lastResult='Wrong guess!';s.lastResultColor='var(--red)';
-    setTimeout(()=>wofNextPlayer(),1200);
+    s.transitioning=true;
+    safeTimeout(()=>wofNextPlayer(),1200);
     renderWOF();
   }
 }
@@ -1344,8 +1370,9 @@ function wofSolveSuccess(){
   team.score+=team.roundBank;
   sfxWin();showConfetti();
   s.lastResult=`🎉 ${team.name} solved it! +$${team.roundBank}`;s.lastResultColor='var(--green)';s.lastResultTextColor='white';
+  s.transitioning=true;
   renderWOF();
-  setTimeout(()=>{
+  safeTimeout(()=>{
     s.round++;
     if(s.round>s.rounds){
       wofShowResults();
@@ -1360,6 +1387,7 @@ function wofNextPlayer(){
   s.currentPlayer=(s.currentPlayer+1)%s.teams.length;
   s.phase='spin';
   s.buyingVowel=false;
+  s.transitioning=false;
   s.lastResult='';
   const team=s.teams[s.currentPlayer];
   showTeamTransition(team.name,()=>{renderWOF();});
@@ -1373,6 +1401,7 @@ function wofStartRound(){
   s.guessedLetters=new Set();
   s.phase='spin';
   s.buyingVowel=false;
+  s.transitioning=false;
   s.currentAmount=0;
   s.lastResult='';
   s.lastResultColor='';
@@ -1414,6 +1443,12 @@ function wofShowResults(){
 //  GAME SETUP / ROUTING
 // ════════════════════════════════════════════
 function setupGame(id){
+  quitToken++;
+  if(gameState&&gameState.timer)clearInterval(gameState.timer);
+  document.querySelectorAll('.pass-screen,.team-transition,.feud-banner,.confetti-container').forEach(n=>{
+    if(n._interval)clearInterval(n._interval);
+    n.remove();
+  });
   currentGame=id;
   gameState={};
   const game=GAMES.find(g=>g.id===id);
@@ -1814,7 +1849,10 @@ function renderTriviaQuestion(){
     <div class="trivia-category"><span class="badge" style="background:var(--surface2);color:var(--text2)">${q.cat}</span></div>
     <div class="trivia-question">${q.q}</div>
     <div class="trivia-options">
-      ${q.a.map((a,i)=>`<button class="trivia-option" onclick="triviaAnswer(${i},${q.c},this)">${String.fromCharCode(65+i)}. ${a}</button>`).join('')}
+      ${q.a.map((a,i)=>`<button class="trivia-option" data-idx="${i}" onclick="triviaAnswer(this)">${String.fromCharCode(65+i)}. ${a}</button>`).join('')}
+    </div>
+    <div style="text-align:center;margin-top:12px">
+      <button class="btn btn-secondary btn-sm" onclick="triviaSkip()">⏭ Skip Question</button>
     </div>
     <div class="scoreboard" style="margin-top:20px">
       ${s.players.map(p=>`<div class="score-row ${p.name===player.name?'highlight':''}"><span class="name">${p.name}</span><span class="pts">${p.score} pts</span></div>`).join('')}
@@ -1822,8 +1860,11 @@ function renderTriviaQuestion(){
   `;
 }
 
-function triviaAnswer(idx,correct,btn){
+function triviaAnswer(btn){
   const s=gameState;
+  if(btn.disabled)return;
+  const idx=+btn.dataset.idx;
+  const correct=s.questions[s.qIdx].c;
   const options=document.querySelectorAll('.trivia-option');
   options.forEach((o,i)=>{
     o.disabled=true;
@@ -1832,15 +1873,23 @@ function triviaAnswer(idx,correct,btn){
   });
   if(idx===correct){sfxCorrect();s.players[s.currentPlayer].score++;}
   else sfxWrong();
-  setTimeout(()=>{
-    s.qIdx++;
-    s.currentPlayer=(s.currentPlayer+1)%s.players.length;
-    if(s.qIdx<s.questions.length){
-      showPassScreen(s.players[s.currentPlayer].name,'Your turn to answer!',renderTriviaQuestion);
-    } else {
-      renderTriviaQuestion();
-    }
-  },1500);
+  safeTimeout(()=>triviaAdvance(),1500);
+}
+
+function triviaSkip(){
+  sfxClick();
+  triviaAdvance();
+}
+
+function triviaAdvance(){
+  const s=gameState;
+  s.qIdx++;
+  s.currentPlayer=(s.currentPlayer+1)%s.players.length;
+  if(s.qIdx<s.questions.length){
+    showPassScreen(s.players[s.currentPlayer].name,'Your turn to answer!',renderTriviaQuestion);
+  } else {
+    renderTriviaQuestion();
+  }
 }
 
 // ════════════════════════════════════════════
@@ -2110,8 +2159,17 @@ function renderWYRQuestion(){
       <div class="wyr-or">— OR —</div>
       <div class="wyr-option" id="wyrB" onclick="wyrVote('b')">${q.b}</div>
     </div>
+    <div style="text-align:center;margin-top:8px">
+      <button class="btn btn-secondary btn-sm" onclick="wyrSkip()">⏭ Skip Question</button>
+    </div>
     <div id="wyrResultArea"></div>
   `;
+}
+
+function wyrSkip(){
+  sfxClick();
+  gameState.qIdx++;
+  renderWYRQuestion();
 }
 
 function wyrVote(choice){
@@ -2255,7 +2313,7 @@ function waEliminate(){
 
   // Quick overlay
   const alivePlayers=s.players.filter(p=>p.alive);
-  if(alivePlayers.length<=1){setTimeout(showWordAssocResults,500);return;}
+  if(alivePlayers.length<=1){safeTimeout(showWordAssocResults,500);return;}
 
   el.innerHTML=`
     <div style="text-align:center;margin-top:80px;animation:pop 0.3s ease">
@@ -2343,8 +2401,8 @@ function renderFeudRound(){
       ${survey.answers.map((ans,i)=>`
         <div class="feud-answer hidden" id="feud-a-${i}">
           <div class="feud-num">${i+1}</div>
-          <div class="feud-text">${ans.a}</div>
-          <div class="feud-pts">${ans.pts} pts</div>
+          <div class="feud-text"></div>
+          <div class="feud-pts"></div>
         </div>
       `).join('')}
     </div>
@@ -2377,9 +2435,17 @@ function feudRevealAnswer(idx){
   const survey=s.surveys[s.surveyIdx];
   if(s.revealed.has(idx))return;
   s.revealed.add(idx);
+  const ans=survey.answers[idx];
   const el=document.getElementById('feud-a-'+idx);
-  if(el){el.classList.remove('hidden');el.classList.add('revealed');el.style.animation='none';el.offsetHeight;el.style.animation='feudFlip 0.4s ease';}
-  s.roundPoints+=survey.answers[idx].pts;
+  if(el){
+    const txt=el.querySelector('.feud-text');
+    const pts=el.querySelector('.feud-pts');
+    if(txt)txt.textContent=ans.a;
+    if(pts)pts.textContent=ans.pts+' pts';
+    el.classList.remove('hidden');el.classList.add('revealed');
+    el.style.animation='none';el.offsetHeight;el.style.animation='feudFlip 0.4s ease';
+  }
+  s.roundPoints+=ans.pts;
   const ptsEl=document.getElementById('feudPts');
   if(ptsEl)ptsEl.textContent=s.roundPoints+' pts this round';
   sfxReveal();
@@ -2443,12 +2509,19 @@ function feudAwardRound(){
   const s=gameState;
   // Reveal all remaining
   const survey=s.surveys[s.surveyIdx];
-  survey.answers.forEach((_,i)=>{
+  survey.answers.forEach((ans,i)=>{
     if(!s.revealed.has(i)){
       s.revealed.add(i);
       const el=document.getElementById('feud-a-'+i);
-      if(el){el.classList.remove('hidden');el.classList.add('revealed');el.style.animation='none';el.offsetHeight;el.style.animation='feudFlip 0.4s ease';}
-      s.roundPoints+=survey.answers[i].pts;
+      if(el){
+        const txt=el.querySelector('.feud-text');
+        const pts=el.querySelector('.feud-pts');
+        if(txt)txt.textContent=ans.a;
+        if(pts)pts.textContent=ans.pts+' pts';
+        el.classList.remove('hidden');el.classList.add('revealed');
+        el.style.animation='none';el.offsetHeight;el.style.animation='feudFlip 0.4s ease';
+      }
+      s.roundPoints+=ans.pts;
     }
   });
   // Award points to current team
@@ -2465,7 +2538,7 @@ function feudAwardRound(){
   // Disable input
   const controls=document.getElementById('feudControls');
   if(controls)controls.style.display='none';
-  setTimeout(()=>{
+  safeTimeout(()=>{
     banner.remove();
     s.surveyIdx++;
     s.roundsPlayed++;
@@ -2588,7 +2661,7 @@ function cnClickCard(idx){
     s.gameOver=true;
     const loser=s.turn;
     const winner=loser==='red'?s.blueName:s.redName;
-    setTimeout(()=>{
+    safeTimeout(()=>{
       showScreen('results');
       document.getElementById('resultsContent').innerHTML=`
         <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
@@ -2611,12 +2684,12 @@ function cnClickCard(idx){
   // Check win
   if(s.redLeft===0){
     sfxWin();showConfetti();s.gameOver=true;
-    setTimeout(()=>cnShowWinner(s.redName),600);
+    safeTimeout(()=>cnShowWinner(s.redName),600);
     renderCodenames();return;
   }
   if(s.blueLeft===0){
     sfxWin();showConfetti();s.gameOver=true;
-    setTimeout(()=>cnShowWinner(s.blueName),600);
+    safeTimeout(()=>cnShowWinner(s.blueName),600);
     renderCodenames();return;
   }
 
@@ -2674,6 +2747,7 @@ function startWheelOfFortune(){
   s.guessedLetters=new Set();
   s.phase='spin';
   s.buyingVowel=false;
+  s.transitioning=false;
   s.currentAmount=0;
   s.lastResult='';
   s.lastResultColor='';
