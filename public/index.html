@@ -244,6 +244,40 @@ input{font-family:inherit;outline:none}
 .overlay-card{background:var(--surface);border-radius:var(--radius-lg);padding:32px;max-width:400px;width:100%;text-align:center;animation:slideUp 0.3s ease}
 .overlay-card h2{font-size:24px;font-weight:800;margin-bottom:12px}
 .overlay-card p{color:var(--text2);margin-bottom:20px}
+
+/* WHEEL OF FORTUNE */
+.wof-wheel-wrap{position:relative;width:280px;height:280px;margin:10px auto;user-select:none}
+.wof-wheel{width:100%;height:100%;border-radius:50%;position:relative;transition:none;border:4px solid var(--surface3)}
+.wof-pointer{position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:24px solid var(--yellow);z-index:10;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4))}
+.wof-spin-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--pink));color:white;font-weight:800;font-size:13px;box-shadow:0 4px 15px rgba(124,92,252,0.4);z-index:5;transition:var(--transition);text-transform:uppercase;letter-spacing:0.5px}
+.wof-spin-btn:hover{transform:translate(-50%,-50%) scale(1.08)}
+.wof-spin-btn:disabled{opacity:0.5;cursor:not-allowed;transform:translate(-50%,-50%)}
+.wof-result-banner{text-align:center;font-size:22px;font-weight:800;padding:8px;border-radius:var(--radius-sm);margin:6px 0;animation:pop 0.3s ease}
+
+.wof-board{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:10px 0;padding:8px;background:var(--surface);border-radius:var(--radius);min-height:60px}
+.wof-tile{width:32px;height:40px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;text-transform:uppercase;transition:all 0.3s ease}
+.wof-tile.blank{background:linear-gradient(135deg,#2563eb,#1d4ed8);border:1px solid rgba(59,130,246,0.4)}
+.wof-tile.revealed{background:white;color:#1a1a2e;animation:pop 0.3s ease}
+.wof-tile.space{width:12px;background:transparent;border:none}
+.wof-tile.punct{background:rgba(255,255,255,0.15);color:var(--text)}
+.wof-category{text-align:center;font-size:13px;font-weight:700;color:var(--yellow);text-transform:uppercase;letter-spacing:1px;margin:6px 0}
+
+.wof-letters{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin:8px 0}
+.wof-letter-btn{width:34px;height:36px;border-radius:6px;font-size:14px;font-weight:700;transition:var(--transition)}
+.wof-letter-btn.consonant{background:var(--surface2);color:var(--text)}
+.wof-letter-btn.consonant:hover:not(:disabled){background:var(--surface3)}
+.wof-letter-btn.vowel{background:rgba(234,179,8,0.15);color:var(--yellow);border:1px solid rgba(234,179,8,0.3)}
+.wof-letter-btn.vowel:hover:not(:disabled){background:rgba(234,179,8,0.25)}
+.wof-letter-btn:disabled{opacity:0.2;cursor:not-allowed}
+.wof-letter-btn.used{opacity:0.15}
+
+.wof-actions{display:flex;gap:8px;justify-content:center;margin:8px 0;flex-wrap:wrap}
+.wof-player-bank{font-size:14px;font-weight:700;color:var(--green);text-align:center;margin:4px 0}
+
+@keyframes wheelSpin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(var(--spin-deg))}
+}
 </style>
 </head>
 <body>
@@ -419,6 +453,12 @@ const TUTORIALS={
     {h:'Winning',p:'The team with the most total points after all rounds wins!'},
     {tip:'Think about what the MOST COMMON answer would be, not the most creative one.'}
   ]},
+  wheeloffortune:{icon:'🎡',title:'How to Play Wheel of Fortune',sections:[
+    {h:'Objective',p:'Solve the hidden word puzzle by guessing letters, one at a time. Spin the wheel to earn money for each correct consonant!'},
+    {h:'How It Works',list:['A hidden phrase is shown as blank tiles with a category hint.','On your turn, spin the wheel to land on a dollar amount (or a penalty!).','Pick a consonant — if it\'s in the puzzle, all instances are revealed and you earn $amount × number of letters found.','You can also "Buy a Vowel" for $250 — vowels reveal but don\'t earn money.','At any time, you can try to "Solve" the entire puzzle.','If you guess wrong or hit "Lose a Turn," the next player goes.','If you land on "Bankrupt," you lose all money earned this round!']},
+    {h:'Winning',p:'The player who solves the puzzle keeps their round earnings. After all rounds, the player with the most money wins!'},
+    {tip:'Pay attention to the category and common letter patterns. Try to solve early if you\'re confident — but guess wrong and you lose your turn!'}
+  ]},
   codenames:{icon:'🕵️',title:'How to Play Codenames',sections:[
     {h:'Objective',p:'Find all your team\'s secret agents on the board before the other team finds theirs.'},
     {h:'Setup',list:['Two teams: Red and Blue. Each team picks a Spymaster.','Only Spymasters should toggle "Show Spymaster" view to see the color map.','Red has 9 agents, Blue has 8. There are also neutral cards and 1 assassin.']},
@@ -506,6 +546,11 @@ const GAMES = [
     id:'codenames',name:'Codenames',icon:'🕵️',color:'#dc2626',
     desc:'Give one-word clues to help your team find their secret agents on the board.',
     players:'4+',time:'~20 min',tags:['Teams','Strategy']
+  },
+  {
+    id:'wheeloffortune',name:'Wheel of Fortune',icon:'🎡',color:'#22c55e',
+    desc:'Spin the wheel, guess letters, and solve the puzzle before your opponents!',
+    players:'2-4',time:'~20 min',tags:['Word Game','Turns']
   }
 ];
 
@@ -990,6 +1035,379 @@ const FEUD_SURVEYS=[
 const CN_WORDS=['APPLE','BEACH','CASTLE','DRAGON','ENGINE','FOREST','GHOST','HAMMER','ISLAND','JUNGLE','KNIGHT','LEMON','MIRROR','NEEDLE','OCEAN','PIANO','QUEEN','ROCKET','SPIDER','TOWER','UNICORN','VIOLIN','WHALE','DIAMOND','EAGLE','FLAME','GLACIER','HARBOR','IRON','JACKET','KITE','LASER','MARBLE','NINJA','ORBIT','PENGUIN','RADAR','SHADOW','TIGER','VAMPIRE','WIZARD','ANCHOR','BRIDGE','CANDLE','DESERT','FALCON','GARDEN','HELMET','IVORY','JEWEL','LANTERN','MANGO','NOVEL','OPERA','PARROT','QUARTZ','RIVER','SPHINX','THRONE','TUNNEL','UMBRELLA','VENUS','WAFFLE','CRYSTAL','AURORA','BAMBOO','COMET','DOLPHIN','ECLIPSE','FOSSIL','GOBLIN','HORIZON','ICEBERG','JASMINE','KERNEL','LOTUS','METEOR','NEBULA','OLIVE','PHOENIX','REBEL','SAFARI','TEMPLE','URCHIN','VELVET','WALRUS','ZENITH','ATLAS','BISON','CORAL','DAGGER','EMERALD','FLUTE','GRIZZLY','HUNTER','INFERNO','JAGUAR','KIMONO','LOCKET','MAGNET','NECTAR'];
 
 // ════════════════════════════════════════════
+//  WHEEL OF FORTUNE
+// ════════════════════════════════════════════
+const WOF_PUZZLES=[
+  {phrase:'AROUND THE WORLD',cat:'Phrase'},{phrase:'BEST FRIENDS FOREVER',cat:'Phrase'},
+  {phrase:'BREAK A LEG',cat:'Phrase'},{phrase:'COOL AS A CUCUMBER',cat:'Phrase'},
+  {phrase:'EASY AS PIE',cat:'Phrase'},{phrase:'GO WITH THE FLOW',cat:'Phrase'},
+  {phrase:'HAPPY AS A CLAM',cat:'Phrase'},{phrase:'KEEP YOUR EYES PEELED',cat:'Phrase'},
+  {phrase:'LET THE CAT OUT OF THE BAG',cat:'Phrase'},{phrase:'PIECE OF CAKE',cat:'Phrase'},
+  {phrase:'PRACTICE MAKES PERFECT',cat:'Phrase'},{phrase:'THE EARLY BIRD CATCHES THE WORM',cat:'Phrase'},
+  {phrase:'TIME FLIES WHEN YOURE HAVING FUN',cat:'Phrase'},{phrase:'WHEN PIGS FLY',cat:'Phrase'},
+  {phrase:'GRAND CANYON',cat:'Place'},{phrase:'NIAGARA FALLS',cat:'Place'},
+  {phrase:'STATUE OF LIBERTY',cat:'Place'},{phrase:'GREAT BARRIER REEF',cat:'Place'},
+  {phrase:'YELLOWSTONE NATIONAL PARK',cat:'Place'},{phrase:'EIFFEL TOWER',cat:'Place'},
+  {phrase:'MOUNT RUSHMORE',cat:'Place'},{phrase:'TIMES SQUARE',cat:'Place'},
+  {phrase:'GOLDEN GATE BRIDGE',cat:'Place'},{phrase:'CENTRAL PARK',cat:'Place'},
+  {phrase:'CHOCOLATE CHIP COOKIES',cat:'Food & Drink'},{phrase:'PEANUT BUTTER AND JELLY',cat:'Food & Drink'},
+  {phrase:'MACARONI AND CHEESE',cat:'Food & Drink'},{phrase:'HOT CHOCOLATE',cat:'Food & Drink'},
+  {phrase:'BANANA SPLIT',cat:'Food & Drink'},{phrase:'GRILLED CHEESE SANDWICH',cat:'Food & Drink'},
+  {phrase:'STRAWBERRY LEMONADE',cat:'Food & Drink'},{phrase:'CHICKEN NOODLE SOUP',cat:'Food & Drink'},
+  {phrase:'ROLLER COASTER',cat:'Thing'},{phrase:'SLEEPING BAG',cat:'Thing'},
+  {phrase:'TREASURE CHEST',cat:'Thing'},{phrase:'MAGIC CARPET',cat:'Thing'},
+  {phrase:'SHOOTING STAR',cat:'Thing'},{phrase:'SNOW GLOBE',cat:'Thing'},
+  {phrase:'RUBBER DUCK',cat:'Thing'},{phrase:'BUBBLE BATH',cat:'Thing'},
+  {phrase:'TEDDY BEAR',cat:'Thing'},{phrase:'ROCKING CHAIR',cat:'Thing'},
+  {phrase:'SOCCER PLAYER',cat:'Occupation'},{phrase:'FIREFIGHTER',cat:'Occupation'},
+  {phrase:'SCHOOL BUS DRIVER',cat:'Occupation'},{phrase:'PARK RANGER',cat:'Occupation'},
+  {phrase:'ICE CREAM TRUCK DRIVER',cat:'Occupation'},{phrase:'BASKETBALL COACH',cat:'Occupation'},
+  {phrase:'MAKING SNOW ANGELS',cat:'Event'},{phrase:'BIRTHDAY PARTY SURPRISE',cat:'Event'},
+  {phrase:'FAMILY GAME NIGHT',cat:'Event'},{phrase:'TRICK OR TREATING',cat:'Event'},
+  {phrase:'BUILDING A SNOWMAN',cat:'Event'},{phrase:'GOING ON A ROAD TRIP',cat:'Event'},
+  {phrase:'LAUGHING OUT LOUD',cat:'Before & After'},{phrase:'RUNNING BACK AND FORTH',cat:'Before & After'},
+  {phrase:'GOLDEN RETRIEVER',cat:'Living Thing'},{phrase:'BALD EAGLE',cat:'Living Thing'},
+  {phrase:'BUTTERSCOTCH CANDY',cat:'Food & Drink'},{phrase:'RAINBOW SPRINKLES',cat:'Thing'},
+  {phrase:'BACKYARD CAMPING',cat:'Event'},{phrase:'PILLOW FORT',cat:'Thing'},
+  {phrase:'DOLPHIN WATCHING',cat:'Event'},{phrase:'UNDER THE SEA',cat:'Phrase'},
+  {phrase:'REACH FOR THE STARS',cat:'Phrase'},{phrase:'FOLLOW YOUR DREAMS',cat:'Phrase'},
+  {phrase:'WALKING ON SUNSHINE',cat:'Phrase'},{phrase:'ONCE UPON A TIME',cat:'Phrase'},
+  {phrase:'NORTH POLE',cat:'On the Map'},{phrase:'HAWAIIAN ISLANDS',cat:'On the Map'},
+  {phrase:'ROCKY MOUNTAINS',cat:'On the Map'},{phrase:'AMAZON RIVER',cat:'On the Map'},
+];
+
+const WOF_SEGMENTS=[100,300,'LOSE',500,200,800,150,400,'BANKRUPT',250,600,900,150,700,1000,2500,200,400,300,500,150,350,250,450];
+const WOF_COLORS=['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#2980b9','#333','#16a085','#c0392b','#8e44ad','#27ae60','#d35400','#f1c40f','#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#555','#c0392b'];
+const VOWELS='AEIOU';
+const CONSONANTS='BCDFGHJKLMNPQRSTVWXYZ';
+
+function wofDrawWheel(canvas,rotation){
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width,h=canvas.height;
+  const cx=w/2,cy=h/2,r=w/2-4;
+  ctx.clearRect(0,0,w,h);
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(rotation*Math.PI/180);
+  const n=WOF_SEGMENTS.length;
+  const arc=2*Math.PI/n;
+  for(let i=0;i<n;i++){
+    ctx.beginPath();ctx.moveTo(0,0);
+    ctx.arc(0,0,r,i*arc,(i+1)*arc);
+    ctx.closePath();
+    ctx.fillStyle=WOF_COLORS[i];ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1;ctx.stroke();
+    // text
+    ctx.save();
+    ctx.rotate(i*arc+arc/2);
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillStyle='white';ctx.font='bold 11px sans-serif';
+    const label=WOF_SEGMENTS[i]==='BANKRUPT'?'💀':WOF_SEGMENTS[i]==='LOSE'?'LOSE':'$'+WOF_SEGMENTS[i];
+    ctx.fillText(label,r*0.68,0);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+function wofSpinWheel(callback){
+  const s=gameState;
+  if(s.spinning)return;
+  s.spinning=true;
+  sfxClick();
+  const canvas=document.getElementById('wofCanvas');
+  if(!canvas)return;
+  const totalSpin=1800+Math.random()*1800; // 5-10 full rotations
+  const startRot=s.wheelRotation||0;
+  const endRot=startRot+totalSpin;
+  const duration=4000;
+  const startTime=Date.now();
+
+  // tick sound during spin
+  let lastTick=0;
+  const tickInterval=setInterval(()=>{
+    const elapsed=Date.now()-startTime;
+    const progress=Math.min(elapsed/duration,1);
+    if(progress>0.7){
+      const tickRate=200+800*((progress-0.7)/0.3);
+      if(Date.now()-lastTick>tickRate){sfxTick();lastTick=Date.now();}
+    } else if(Date.now()-lastTick>100){sfxTick();lastTick=Date.now();}
+  },50);
+
+  function animate(){
+    const elapsed=Date.now()-startTime;
+    const progress=Math.min(elapsed/duration,1);
+    // ease out cubic
+    const eased=1-Math.pow(1-progress,3);
+    const currentRot=startRot+totalSpin*eased;
+    wofDrawWheel(canvas,currentRot);
+    if(progress<1){
+      requestAnimationFrame(animate);
+    } else {
+      clearInterval(tickInterval);
+      s.wheelRotation=endRot%360;
+      s.spinning=false;
+      // determine segment
+      const n=WOF_SEGMENTS.length;
+      const arc=360/n;
+      // pointer is at top (270 degrees in standard), wheel rotates clockwise
+      const normalizedAngle=(360-(endRot%360)+270)%360;
+      const idx=Math.floor(normalizedAngle/arc)%n;
+      callback(WOF_SEGMENTS[idx]);
+    }
+  }
+  animate();
+}
+
+function wofGetPuzzle(){
+  const s=gameState;
+  if(s.usedPuzzles.size>=WOF_PUZZLES.length)s.usedPuzzles=new Set();
+  let pool=WOF_PUZZLES.filter((_,i)=>!s.usedPuzzles.has(i));
+  const ri=Math.floor(Math.random()*pool.length);
+  const pi=WOF_PUZZLES.indexOf(pool[ri]);
+  s.usedPuzzles.add(pi);
+  return WOF_PUZZLES[pi];
+}
+
+function wofRenderBoard(){
+  const s=gameState;
+  const phrase=s.puzzle.phrase;
+  let html='';
+  for(let i=0;i<phrase.length;i++){
+    const ch=phrase[i];
+    if(ch===' '){
+      html+='<div class="wof-tile space"></div>';
+    } else if(!/[A-Z]/.test(ch)){
+      html+=`<div class="wof-tile punct">${ch}</div>`;
+    } else if(s.revealedLetters.has(ch)){
+      html+=`<div class="wof-tile revealed">${ch}</div>`;
+    } else {
+      html+='<div class="wof-tile blank"></div>';
+    }
+  }
+  return html;
+}
+
+function wofRenderLetterButtons(){
+  const s=gameState;
+  let html='';
+  for(const ch of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'){
+    const isVowel=VOWELS.includes(ch);
+    const used=s.guessedLetters.has(ch);
+    const disabled=used||s.phase!=='pick_letter'||(isVowel&&s.phase==='pick_letter'&&!s.buyingVowel)||(!isVowel&&s.buyingVowel);
+    html+=`<button class="wof-letter-btn ${isVowel?'vowel':'consonant'} ${used?'used':''}" ${disabled?'disabled':''} onclick="wofPickLetter('${ch}')">${ch}</button>`;
+  }
+  return html;
+}
+
+function wofCheckSolved(){
+  const s=gameState;
+  const phrase=s.puzzle.phrase;
+  for(const ch of phrase){
+    if(/[A-Z]/.test(ch)&&!s.revealedLetters.has(ch))return false;
+  }
+  return true;
+}
+
+function wofCountLetter(ch){
+  return gameState.puzzle.phrase.split('').filter(c=>c===ch).length;
+}
+
+function renderWOF(){
+  const s=gameState;
+  const el=document.getElementById('playContent');
+  const team=s.teams[s.currentPlayer];
+  const allVowelsGuessed=[...'AEIOU'].every(v=>s.guessedLetters.has(v));
+  const canBuyVowel=team.roundBank>=250&&!s.buyingVowel&&!allVowelsGuessed&&(s.phase==='pick_letter'||s.phase==='spun'||s.phase==='spin');
+  const canSolve=s.phase==='pick_letter'||s.phase==='spun'||s.phase==='spin';
+
+  el.innerHTML=`
+    ${renderTeamScoreBar(s.teams, s.currentPlayer)}
+    <div class="wof-category">📂 ${s.puzzle.cat}</div>
+    <div class="wof-board" id="wofBoard">${wofRenderBoard()}</div>
+    <div class="wof-player-bank">💰 Round Bank: $${team.roundBank||0}</div>
+    <div style="text-align:center;font-size:12px;color:var(--text3)">Round ${s.round} of ${s.rounds}</div>
+    <div class="wof-wheel-wrap">
+      <div class="wof-pointer"></div>
+      <canvas id="wofCanvas" width="280" height="280" style="border-radius:50%"></canvas>
+      <button class="wof-spin-btn" id="wofSpinBtn" ${(s.phase!=='spin'&&s.phase!=='spun')||s.spinning?'disabled':''} onclick="wofDoSpin()">SPIN</button>
+    </div>
+    ${s.lastResult?`<div class="wof-result-banner" style="background:${s.lastResultColor};color:${s.lastResultTextColor||'white'}">${s.lastResult}</div>`:''}
+    <div class="wof-letters">${wofRenderLetterButtons()}</div>
+    <div class="wof-actions">
+      <button class="btn btn-sm" style="background:rgba(234,179,8,0.2);color:var(--yellow)" ${!canBuyVowel||s.phase==='spin'||s.spinning?'disabled':''} onclick="wofBuyVowel()">Buy Vowel ($250)</button>
+      <button class="btn btn-sm btn-primary" ${!canSolve||s.spinning?'disabled':''} onclick="wofTrySolve()">Solve!</button>
+    </div>
+  `;
+  // draw wheel
+  const canvas=document.getElementById('wofCanvas');
+  if(canvas)wofDrawWheel(canvas,s.wheelRotation||0);
+}
+
+function wofDoSpin(){
+  const s=gameState;
+  if((s.phase!=='spin'&&s.phase!=='spun')||s.spinning)return;
+  s.phase='spin';
+  s.lastResult='';
+  wofSpinWheel((segment)=>{
+    if(segment==='BANKRUPT'){
+      sfxBuzz();
+      s.teams[s.currentPlayer].roundBank=0;
+      s.lastResult='💀 BANKRUPT!';s.lastResultColor='var(--red)';
+      setTimeout(()=>wofNextPlayer(),1500);
+      renderWOF();
+    } else if(segment==='LOSE'){
+      sfxWrong();
+      s.lastResult='⏭ Lose a Turn!';s.lastResultColor='var(--surface3)';
+      setTimeout(()=>wofNextPlayer(),1500);
+      renderWOF();
+    } else {
+      s.currentAmount=segment;
+      s.phase='pick_letter';
+      s.buyingVowel=false;
+      sfxReveal();
+      s.lastResult=`$${segment} — Pick a consonant!`;s.lastResultColor='var(--green)';
+      renderWOF();
+    }
+  });
+}
+
+function wofPickLetter(ch){
+  const s=gameState;
+  if(s.guessedLetters.has(ch))return;
+  s.guessedLetters.add(ch);
+
+  const count=wofCountLetter(ch);
+  if(count>0){
+    sfxCorrect();
+    s.revealedLetters.add(ch);
+    if(s.buyingVowel){
+      s.teams[s.currentPlayer].roundBank-=250;
+      s.lastResult=`${ch} appears ${count} time${count>1?'s':''}!`;s.lastResultColor='var(--yellow)';s.lastResultTextColor='#1a1a2e';
+    } else {
+      const earned=s.currentAmount*count;
+      s.teams[s.currentPlayer].roundBank+=earned;
+      s.lastResult=`${ch} × ${count} = +$${earned}!`;s.lastResultColor='var(--green)';s.lastResultTextColor='white';
+    }
+    s.buyingVowel=false;
+    // check if puzzle solved by revealing all letters
+    if(wofCheckSolved()){
+      wofSolveSuccess();return;
+    }
+    s.phase='spin'; // can spin again (stays their turn)
+    // actually let them spin, buy vowel, or solve
+    s.phase='spun';
+    renderWOF();
+  } else {
+    sfxWrong();
+    s.lastResult=`No ${ch}'s!`;s.lastResultColor='var(--surface3)';s.lastResultTextColor='var(--text)';
+    s.buyingVowel=false;
+    setTimeout(()=>wofNextPlayer(),1200);
+    renderWOF();
+  }
+}
+
+function wofBuyVowel(){
+  const s=gameState;
+  const team=s.teams[s.currentPlayer];
+  if(team.roundBank<250)return;
+  s.buyingVowel=true;
+  s.phase='pick_letter';
+  s.lastResult='Pick a vowel!';s.lastResultColor='rgba(234,179,8,0.3)';s.lastResultTextColor='var(--yellow)';
+  renderWOF();
+}
+
+function wofTrySolve(){
+  const s=gameState;
+  const guess=prompt('Solve the puzzle:');
+  if(!guess)return;
+  const clean=guess.toUpperCase().replace(/[^A-Z ]/g,'').trim();
+  const answer=s.puzzle.phrase.replace(/[^A-Z ]/g,'');
+  if(clean===answer){
+    wofSolveSuccess();
+  } else {
+    sfxWrong();
+    s.lastResult='Wrong guess!';s.lastResultColor='var(--red)';
+    setTimeout(()=>wofNextPlayer(),1200);
+    renderWOF();
+  }
+}
+
+function wofSolveSuccess(){
+  const s=gameState;
+  const team=s.teams[s.currentPlayer];
+  // reveal all letters
+  for(const ch of s.puzzle.phrase)if(/[A-Z]/.test(ch))s.revealedLetters.add(ch);
+  // add round bank to total score
+  team.score+=team.roundBank;
+  sfxWin();showConfetti();
+  s.lastResult=`🎉 ${team.name} solved it! +$${team.roundBank}`;s.lastResultColor='var(--green)';s.lastResultTextColor='white';
+  renderWOF();
+  setTimeout(()=>{
+    s.round++;
+    if(s.round>s.rounds){
+      wofShowResults();
+    } else {
+      wofStartRound();
+    }
+  },2500);
+}
+
+function wofNextPlayer(){
+  const s=gameState;
+  s.currentPlayer=(s.currentPlayer+1)%s.teams.length;
+  s.phase='spin';
+  s.buyingVowel=false;
+  s.lastResult='';
+  const team=s.teams[s.currentPlayer];
+  showTeamTransition(team.name,()=>{renderWOF();});
+}
+
+function wofStartRound(){
+  const s=gameState;
+  const puzzle=wofGetPuzzle();
+  s.puzzle=puzzle;
+  s.revealedLetters=new Set();
+  s.guessedLetters=new Set();
+  s.phase='spin';
+  s.buyingVowel=false;
+  s.currentAmount=0;
+  s.lastResult='';
+  s.lastResultColor='';
+  s.lastResultTextColor='';
+  // reset round banks
+  s.teams.forEach(t=>t.roundBank=0);
+  // next starting player rotates
+  s.currentPlayer=(s.roundStarter)%s.teams.length;
+  s.roundStarter++;
+  const team=s.teams[s.currentPlayer];
+  showTeamTransition(team.name,()=>{renderWOF();});
+}
+
+function wofShowResults(){
+  const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
+  const winner=teams[0];
+  sfxWin();showConfetti();
+  showScreen('results');
+  document.getElementById('resultsContent').innerHTML=`
+    <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
+      <div style="font-size:64px;margin-bottom:16px">🎡</div>
+      <h2 style="font-size:28px;font-weight:800">${winner.name} Wins!</h2>
+      <p style="color:var(--text2);margin-top:4px">with $${winner.score}</p>
+    </div>
+    <div class="scoreboard">
+      ${teams.map((t,i)=>`
+        <div class="score-row ${i===0?'highlight':''}">
+          <span class="name">${i===0?'🥇':i===1?'🥈':i===2?'🥉':'  '} ${t.name}</span>
+          <span class="pts">$${t.score}</span>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn btn-primary btn-block" style="margin-top:24px" onclick="setupGame('wheeloffortune')">Play Again</button>
+    <button class="btn btn-secondary btn-block" style="margin-top:10px" onclick="showScreen('home')">Back to Games</button>
+  `;
+}
+
+// ════════════════════════════════════════════
 //  GAME SETUP / ROUTING
 // ════════════════════════════════════════════
 function setupGame(id){
@@ -1175,6 +1593,32 @@ function setupGame(id){
     gameState.mode='teams';
     showScreen('setup');
     document.getElementById('setupContent').innerHTML=html;
+  } else if(id==='wheeloffortune'){
+    html=`
+      <div style="text-align:center;margin:40px 0 24px">
+        <div style="font-size:48px;margin-bottom:8px">${game.icon}</div>
+        <h2 style="font-size:24px;font-weight:800">${game.name}</h2>
+        <p style="color:var(--text2);margin-top:4px">Spin, guess, and solve the puzzle!</p>
+      </div>
+      <div class="setup-section">
+        <label>Players / Teams</label>
+        <div class="player-list" id="playerList"></div>
+        <button class="add-player-btn" onclick="addPlayer()">+ Add Player</button>
+      </div>
+      <div class="setup-section">
+        <label>Rounds</label>
+        <div class="mode-toggle">
+          <button class="active" onclick="setRounds(3,this)">3</button>
+          <button onclick="setRounds(5,this)">5</button>
+          <button onclick="setRounds(7,this)">7</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:24px" onclick="startGame()">Start Game</button>
+    `;
+    gameState.mode='individual';gameState.rounds=3;gameState.players=[];
+    showScreen('setup');
+    document.getElementById('setupContent').innerHTML=html;
+    addPlayer();addPlayer();
   }
 }
 
@@ -1224,6 +1668,7 @@ function startGame(){
   else if(currentGame==='wordassoc')startWordAssoc();
   else if(currentGame==='familyfeud')startFamilyFeud();
   else if(currentGame==='codenames')startCodenames();
+  else if(currentGame==='wheeloffortune')startWheelOfFortune();
 }
 
 // ════════════════════════════════════════════
@@ -2203,6 +2648,35 @@ function cnShowWinner(name){
     <button class="btn btn-primary btn-block" style="margin-top:24px" onclick="setupGame('codenames')">Play Again</button>
     <button class="btn btn-secondary btn-block" style="margin-top:10px" onclick="showScreen('home')">Back to Games</button>
   `;
+}
+
+// ════════════════════════════════════════════
+//  START WHEEL OF FORTUNE
+// ════════════════════════════════════════════
+function startWheelOfFortune(){
+  const players=getPlayers();
+  if(players.length<2){alert('Need at least 2 players!');return;}
+  if(players.length>4){alert('Maximum 4 players!');return;}
+  const s=gameState;
+  s.teams=players.map(p=>({name:p,score:0,roundBank:0}));
+  s.currentPlayer=0;
+  s.round=1;
+  s.roundStarter=0;
+  s.usedPuzzles=new Set();
+  s.wheelRotation=0;
+  s.spinning=false;
+  const puzzle=wofGetPuzzle();
+  s.puzzle=puzzle;
+  s.revealedLetters=new Set();
+  s.guessedLetters=new Set();
+  s.phase='spin';
+  s.buyingVowel=false;
+  s.currentAmount=0;
+  s.lastResult='';
+  s.lastResultColor='';
+  s.lastResultTextColor='';
+  showScreen('play');
+  showTeamTransition(s.teams[0].name,()=>{renderWOF();});
 }
 
 // ════════════════════════════════════════════
