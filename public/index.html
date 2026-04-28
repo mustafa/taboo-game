@@ -1125,9 +1125,10 @@ function wofSpinWheel(callback){
   const s=gameState;
   if(s.spinning)return;
   s.spinning=true;
+  const tok=quitToken;
   sfxClick();
   const canvas=document.getElementById('wofCanvas');
-  if(!canvas)return;
+  if(!canvas){s.spinning=false;return;}
   const totalSpin=1800+Math.random()*1800; // 5-10 full rotations
   const startRot=s.wheelRotation||0;
   const endRot=startRot+totalSpin;
@@ -1137,6 +1138,7 @@ function wofSpinWheel(callback){
   // tick sound during spin
   let lastTick=0;
   const tickInterval=setInterval(()=>{
+    if(tok!==quitToken){clearInterval(tickInterval);return;}
     const elapsed=Date.now()-startTime;
     const progress=Math.min(elapsed/duration,1);
     if(progress>0.7){
@@ -1146,6 +1148,7 @@ function wofSpinWheel(callback){
   },50);
 
   function animate(){
+    if(tok!==quitToken){clearInterval(tickInterval);return;}
     const elapsed=Date.now()-startTime;
     const progress=Math.min(elapsed/duration,1);
     // ease out cubic
@@ -1418,14 +1421,15 @@ function wofStartRound(){
 function wofShowResults(){
   const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
   const winner=teams[0];
-  const isTie=teams.length>1&&teams[1].score===winner.score;
+  const tied=teams.filter(t=>t.score===winner.score);
+  const isTie=tied.length>1;
   sfxWin();showConfetti();
   showScreen('results');
   document.getElementById('resultsContent').innerHTML=`
     <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
       <div style="font-size:64px;margin-bottom:16px">${isTie?'🤝':'🎡'}</div>
       <h2 style="font-size:28px;font-weight:800">${isTie?"It's a tie!":winner.name+' Wins!'}</h2>
-      <p style="color:var(--text2);margin-top:4px">${isTie?'tied at $'+winner.score:'with $'+winner.score}</p>
+      <p style="color:var(--text2);margin-top:4px">${isTie?'Tied between '+tied.map(t=>t.name).join(', ')+' at $'+winner.score:'with $'+winner.score}</p>
     </div>
     <div class="scoreboard">
       ${teams.map((t,i)=>`
@@ -2428,6 +2432,7 @@ function renderFeudRound(){
 function feudSkipSurvey(){
   sfxClick();
   const s=gameState;
+  if(s.phase==='steal')s.currentTeam=s.playingTeam;
   s.surveyIdx++;
   renderFeudRound();
 }
@@ -2776,7 +2781,8 @@ function showResults(){
   if(gameState.timer)clearInterval(gameState.timer);
   const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
   const winner=teams[0];
-  const isTie=teams.length>1&&teams[1].score===winner.score;
+  const tied=teams.filter(t=>t.score===winner.score);
+  const isTie=tied.length>1;
   sfxWin();showConfetti();
   showScreen('results');
   const game=GAMES.find(g=>g.id===currentGame);
@@ -2784,7 +2790,7 @@ function showResults(){
     <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
       <div style="font-size:64px;margin-bottom:16px">${isTie?'🤝':'🏆'}</div>
       <h2 style="font-size:28px;font-weight:800">${isTie?"It's a tie!":winner.name+' Wins!'}</h2>
-      <p style="color:var(--text2);margin-top:4px">${isTie?'tied at '+winner.score+' points':'with '+winner.score+' points'}</p>
+      <p style="color:var(--text2);margin-top:4px">${isTie?'Tied between '+tied.map(t=>t.name).join(', ')+' at '+winner.score+' points':'with '+winner.score+' points'}</p>
     </div>
     <div class="scoreboard">
       ${teams.map((t,i)=>`
