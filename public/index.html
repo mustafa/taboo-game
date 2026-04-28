@@ -1418,13 +1418,14 @@ function wofStartRound(){
 function wofShowResults(){
   const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
   const winner=teams[0];
+  const isTie=teams.length>1&&teams[1].score===winner.score;
   sfxWin();showConfetti();
   showScreen('results');
   document.getElementById('resultsContent').innerHTML=`
     <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
-      <div style="font-size:64px;margin-bottom:16px">🎡</div>
-      <h2 style="font-size:28px;font-weight:800">${winner.name} Wins!</h2>
-      <p style="color:var(--text2);margin-top:4px">with $${winner.score}</p>
+      <div style="font-size:64px;margin-bottom:16px">${isTie?'🤝':'🎡'}</div>
+      <h2 style="font-size:28px;font-weight:800">${isTie?"It's a tie!":winner.name+' Wins!'}</h2>
+      <p style="color:var(--text2);margin-top:4px">${isTie?'tied at $'+winner.score:'with $'+winner.score}</p>
     </div>
     <div class="scoreboard">
       ${teams.map((t,i)=>`
@@ -1830,6 +1831,7 @@ function startTrivia(){
   s.questions=shuffle([...TRIVIA_QS]).slice(0,s.rounds);
   s.qIdx=0;
   s.players=players.map(p=>({name:p,score:0}));
+  s.teams=s.players;
   s.currentPlayer=0;
   showScreen('play');
   renderTriviaQuestion();
@@ -2469,7 +2471,18 @@ function feudSubmitGuess(){
       found=true;
     }
   });
-  if(!found){
+  if(s.phase==='steal'){
+    // Steal: one guess only.
+    if(found){
+      // Steal succeeds — points to the steal team (currentTeam already set).
+      // If the guess revealed the last answer, feudRevealAnswer already awarded.
+      if(s.revealed.size<survey.answers.length)feudAwardRound();
+    } else {
+      // Steal fails — original team keeps what they had revealed.
+      s.currentTeam=s.playingTeam;
+      feudAwardRound();
+    }
+  } else if(!found){
     feudStrike();
   }
   setTimeout(()=>{const inp2=document.getElementById('feudGuess');if(inp2)inp2.focus();},50);
@@ -2521,7 +2534,6 @@ function feudAwardRound(){
         el.classList.remove('hidden');el.classList.add('revealed');
         el.style.animation='none';el.offsetHeight;el.style.animation='feudFlip 0.4s ease';
       }
-      s.roundPoints+=ans.pts;
     }
   });
   // Award points to current team
@@ -2553,13 +2565,14 @@ function feudAwardRound(){
 
 function showFeudResults(){
   const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
+  const isTie=teams[0].score===teams[1].score;
   sfxWin();showConfetti();
   showScreen('results');
   document.getElementById('resultsContent').innerHTML=`
     <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
-      <div style="font-size:64px;margin-bottom:16px">🏆</div>
-      <h2 style="font-size:28px;font-weight:800">${teams[0].name} Wins!</h2>
-      <p style="color:var(--text2);margin-top:4px">${teams[0].score} to ${teams[1].score}</p>
+      <div style="font-size:64px;margin-bottom:16px">${isTie?'🤝':'🏆'}</div>
+      <h2 style="font-size:28px;font-weight:800">${isTie?"It's a tie!":teams[0].name+' Wins!'}</h2>
+      <p style="color:var(--text2);margin-top:4px">${isTie?'tied at '+teams[0].score+' points':teams[0].score+' to '+teams[1].score}</p>
     </div>
     <div class="scoreboard">
       ${teams.map((t,i)=>`<div class="score-row ${i===0?'highlight':''}"><span class="name">${i===0?'🥇':'🥈'} ${t.name}</span><span class="pts">${t.score} pts</span></div>`).join('')}
@@ -2737,7 +2750,7 @@ function startWheelOfFortune(){
   s.teams=players.map(p=>({name:p,score:0,roundBank:0}));
   s.currentPlayer=0;
   s.round=1;
-  s.roundStarter=0;
+  s.roundStarter=1;
   s.usedPuzzles=new Set();
   s.wheelRotation=0;
   s.spinning=false;
@@ -2763,14 +2776,15 @@ function showResults(){
   if(gameState.timer)clearInterval(gameState.timer);
   const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
   const winner=teams[0];
+  const isTie=teams.length>1&&teams[1].score===winner.score;
   sfxWin();showConfetti();
   showScreen('results');
   const game=GAMES.find(g=>g.id===currentGame);
   document.getElementById('resultsContent').innerHTML=`
     <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
-      <div style="font-size:64px;margin-bottom:16px">🏆</div>
-      <h2 style="font-size:28px;font-weight:800">${winner.name} Wins!</h2>
-      <p style="color:var(--text2);margin-top:4px">with ${winner.score} points</p>
+      <div style="font-size:64px;margin-bottom:16px">${isTie?'🤝':'🏆'}</div>
+      <h2 style="font-size:28px;font-weight:800">${isTie?"It's a tie!":winner.name+' Wins!'}</h2>
+      <p style="color:var(--text2);margin-top:4px">${isTie?'tied at '+winner.score+' points':'with '+winner.score+' points'}</p>
     </div>
     <div class="scoreboard">
       ${teams.map((t,i)=>`
