@@ -206,6 +206,15 @@ input{font-family:inherit;outline:none}
 .mode-toggle button{flex:1;padding:12px;border-radius:var(--radius);background:var(--surface2);color:var(--text2);font-weight:600;font-size:14px;transition:var(--transition)}
 .mode-toggle button.active{background:var(--accent);color:white}
 
+/* Age selector */
+.age-selector{margin:0 0 24px 0}
+.age-selector-label{font-size:11px;color:var(--text3);text-align:center;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:1px}
+.age-toggle{margin:0}
+.age-toggle button{font-size:13px;padding:10px}
+.game-card.disabled{opacity:0.45;pointer-events:none;filter:grayscale(0.4)}
+.game-meta-warn{background:rgba(234,179,8,0.18) !important;color:var(--yellow) !important;font-weight:700}
+.game-meta-block{background:rgba(239,68,68,0.18) !important;color:var(--red) !important;font-weight:700}
+
 /* TEAM TRANSITION OVERLAY */
 @keyframes teamTransIn{from{opacity:0;transform:scale(1.1)}to{opacity:1;transform:scale(1)}}
 @keyframes teamCountdown{0%{transform:scale(0.5);opacity:0}50%{transform:scale(1.3);opacity:1}100%{transform:scale(1);opacity:1}}
@@ -279,6 +288,31 @@ input{font-family:inherit;outline:none}
   from{transform:rotate(0deg)}
   to{transform:rotate(var(--spin-deg))}
 }
+
+/* DINNER CONVERSATIONS */
+.dinner-screen{display:none;min-height:100dvh;flex-direction:column;animation:fadeIn 0.3s ease;overflow:hidden;position:relative;background:var(--bg)}
+.dinner-screen.active{display:flex}
+.dinner-header{padding:16px 20px;display:flex;align-items:center;gap:12px;z-index:10}
+.dinner-header .btn-icon{flex-shrink:0}
+.dinner-header h2{font-size:18px;font-weight:700;flex:1;text-align:center;margin-right:44px}
+.dinner-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;position:relative;overflow:hidden;-webkit-user-select:none;user-select:none}
+.dinner-card-container{width:100%;max-width:500px;perspective:1000px;position:relative;min-height:320px}
+.dinner-card{width:100%;min-height:320px;border-radius:var(--radius-lg);padding:40px 28px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;transition:transform 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.4s ease;transform-style:preserve-3d;box-shadow:0 8px 40px rgba(0,0,0,0.3)}
+.dinner-card.flip-out{transform:rotateY(90deg) scale(0.95);opacity:0}
+.dinner-card.flip-in{transform:rotateY(-90deg) scale(0.95);opacity:0}
+.dinner-card .dc-category{position:absolute;top:16px;left:50%;transform:translateX(-50%);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;white-space:nowrap}
+.dinner-card .dc-prompt{font-size:24px;font-weight:700;line-height:1.4;color:white;max-width:400px}
+.dinner-card .dc-number{position:absolute;bottom:16px;right:20px;font-size:12px;color:rgba(255,255,255,0.35);font-weight:600}
+.dinner-nav{display:flex;align-items:center;justify-content:center;gap:16px;padding:20px;width:100%;max-width:500px}
+.dinner-nav .btn-icon{width:52px;height:52px;font-size:22px;background:var(--surface2)}
+.dinner-nav .btn-random{padding:10px 24px;border-radius:var(--radius);background:linear-gradient(135deg,var(--accent),var(--pink));color:white;font-weight:700;font-size:14px}
+.dinner-nav .btn-random:hover{transform:translateY(-1px);box-shadow:0 4px 15px rgba(124,92,252,0.4)}
+.dinner-filters{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;padding:0 20px 24px;max-width:540px;margin:0 auto;width:100%}
+.dinner-chip{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;background:var(--surface2);color:var(--text2);cursor:pointer;transition:var(--transition);white-space:nowrap;border:2px solid transparent}
+.dinner-chip:hover{background:var(--surface3)}
+.dinner-chip.active{color:white;border-color:transparent}
+.dinner-progress{width:100%;max-width:500px;height:3px;background:var(--surface2);border-radius:2px;margin-top:12px;overflow:hidden}
+.dinner-progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--pink));transition:width 0.4s ease}
 </style>
 </head>
 <body>
@@ -289,6 +323,7 @@ input{font-family:inherit;outline:none}
     <h1>🎮 Game Night</h1>
     <p>Pick a game and let's play!</p>
   </div>
+  <div class="age-selector" id="ageSelector"></div>
   <div class="game-grid" id="gameGrid"></div>
 </div>
 
@@ -303,6 +338,26 @@ input{font-family:inherit;outline:none}
   <button class="btn-icon back-btn" onclick="confirmQuit()">←</button>
   <button class="btn-icon" style="position:fixed;top:16px;right:16px;z-index:100;font-size:16px" onclick="if(currentGame)showTutorial(currentGame)">❓</button>
   <div id="playContent"></div>
+</div>
+
+<!-- DINNER CONVERSATIONS SCREEN -->
+<div id="dinner" class="dinner-screen">
+  <div class="dinner-header">
+    <button class="btn-icon" onclick="closeDinner()">←</button>
+    <h2>🍽️ Dinner Conversations</h2>
+  </div>
+  <div class="dinner-body" id="dinnerBody">
+    <div class="dinner-card-container">
+      <div class="dinner-card" id="dinnerCard"></div>
+    </div>
+    <div class="dinner-progress"><div class="dinner-progress-fill" id="dinnerProgress"></div></div>
+    <div class="dinner-nav">
+      <button class="btn-icon" onclick="dinnerPrev()" id="dinnerPrevBtn">←</button>
+      <button class="btn-random" onclick="dinnerRandom()">🎲 Random</button>
+      <button class="btn-icon" onclick="dinnerNext()">→</button>
+    </div>
+  </div>
+  <div class="dinner-filters" id="dinnerFilters"></div>
 </div>
 
 <!-- RESULTS SCREEN -->
@@ -402,6 +457,32 @@ function showConfetti(){
 // ─── UTILS ───
 function shuffle(a){let b=[...a];for(let i=b.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0)}
+
+// ─── AGE TIER FILTERING ───
+// Tier hierarchy is monotonic: kids ⊂ family ⊂ adult.
+// Items missing the `age` field default to 'family' so untagged content is safe under Family/Adult and excluded under Kids.
+const AGE_TIERS={kids:0,family:1,adult:2};
+const AGE_KEY='gn_age_tier';
+const DEFAULT_TIER='family';
+let currentAgeTier=DEFAULT_TIER;
+function filterByAge(items,tier){
+  const max=AGE_TIERS[tier]??AGE_TIERS.family;
+  return items.filter(it=>AGE_TIERS[(it&&it.age)||'family']<=max);
+}
+function loadAgeTier(){
+  try{const v=localStorage.getItem(AGE_KEY);return ['kids','family','adult'].includes(v)?v:DEFAULT_TIER;}
+  catch(e){return DEFAULT_TIER;}
+}
+function saveAgeTier(tier){
+  try{localStorage.setItem(AGE_KEY,tier);}catch(e){}
+}
+function setAgeTier(tier){
+  if(!['kids','family','adult'].includes(tier))return;
+  currentAgeTier=tier;
+  saveAgeTier(tier);
+  sfxClick();
+  renderHome();
+}
 
 // Render a consistent team score bar with active highlighting
 function renderTeamScoreBar(teams, activeIdx){
@@ -557,10 +638,68 @@ const GAMES = [
 ];
 
 // ─── RENDER HOME ───
+const AGE_OPTIONS=[
+  {id:'kids',label:'👶 Kids'},
+  {id:'family',label:'👨‍👩‍👧 Family'},
+  {id:'adult',label:'🍷 Adult'}
+];
+function renderAgeSelector(){
+  const el=document.getElementById('ageSelector');
+  if(!el)return;
+  el.innerHTML=`
+    <div class="age-selector-label">For ages</div>
+    <div class="mode-toggle age-toggle">
+      ${AGE_OPTIONS.map(o=>`<button data-tier="${o.id}" class="${currentAgeTier===o.id?'active':''}" onclick="setAgeTier('${o.id}')">${o.label}</button>`).join('')}
+    </div>
+  `;
+}
+// Per-game pool size below which we warn; Codenames also hard-blocks.
+const GAME_THRESHOLDS={
+  taboo:12,trivia:30,charades:12,pictionary:12,wyr:20,
+  wordassoc:10,familyfeud:10,codenames:25,wheeloffortune:7
+};
+const GAME_HARD_BLOCK={codenames:25};
+function getFilteredCount(gameId){
+  const t=currentAgeTier;
+  switch(gameId){
+    case 'taboo':return filterByAge(TABOO_CARDS,t).length;
+    case 'trivia':return filterByAge(TRIVIA_QS,t).length;
+    case 'charades':return filterByAge(CHARADES_PROMPTS,t).length;
+    case 'pictionary':return filterByAge(PICTIONARY_WORDS,t).length;
+    case 'wyr':return filterByAge(WYR_QS,t).length;
+    case 'wordassoc':return filterByAge(WA_STARTERS,t).length;
+    case 'familyfeud':return filterByAge(FEUD_SURVEYS,t).length;
+    case 'codenames':return filterByAge(CN_WORDS,t).length;
+    case 'wheeloffortune':return filterByAge(WOF_PUZZLES,t).length;
+    default:return 0;
+  }
+}
 function renderHome(){
+  renderAgeSelector();
   const grid=document.getElementById('gameGrid');
-  grid.innerHTML=GAMES.map(g=>`
-    <div class="game-card" style="--card-color:${g.color}" onclick="sfxClick();setupGame('${g.id}')">
+  const dinnerCard=`
+    <div class="game-card" style="--card-color:#ec4899;border:2px solid rgba(236,72,153,0.3);background:linear-gradient(135deg,var(--surface),rgba(124,92,252,0.08))" onclick="openDinner()">
+      <div class="game-card-icon" style="background:rgba(236,72,153,0.15)">🍽️</div>
+      <h3>Dinner Conversations</h3>
+      <p>Family conversation starters — no scoring, just great discussion around the table!</p>
+      <div class="game-meta">
+        <span>👥 2+</span>
+        <span>💬 200+ prompts</span>
+        <span>No Setup</span>
+      </div>
+    </div>`;
+  grid.innerHTML=dinnerCard+GAMES.map(g=>{
+    const count=getFilteredCount(g.id);
+    const warnThreshold=GAME_THRESHOLDS[g.id]??0;
+    const hardBlock=GAME_HARD_BLOCK[g.id];
+    const blocked=hardBlock!=null&&count<hardBlock;
+    const warn=!blocked&&count<warnThreshold;
+    const badge=blocked
+      ?`<span class="game-meta-block">🚫 Need ${hardBlock}, have ${count}</span>`
+      :warn?`<span class="game-meta-warn">⚠ ${count} items</span>`:'';
+    const onClick=blocked?'':`onclick="sfxClick();setupGame('${g.id}')"`;
+    return `
+    <div class="game-card ${blocked?'disabled':''}" style="--card-color:${g.color}" ${onClick}>
       <div class="game-card-icon" style="background:${g.color}20">${g.icon}</div>
       <h3>${g.name}</h3>
       <p>${g.desc}</p>
@@ -568,10 +707,11 @@ function renderHome(){
         <span>👥 ${g.players}</span>
         <span>⏱ ${g.time}</span>
         ${g.tags.map(t=>`<span>${t}</span>`).join('')}
+        ${badge}
         <span style="cursor:pointer" onclick="event.stopPropagation();showTutorial('${g.id}')">❓ Rules</span>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 let quitToken=0;
@@ -1012,7 +1152,7 @@ const WYR_QS=[
 ];
 
 // ─── WORD ASSOCIATION STARTERS ───
-const WA_STARTERS=['Ocean','Fire','Music','Dream','Mountain','Castle','Thunder','Crystal','Shadow','Forest','Robot','Treasure','Galaxy','Diamond','Festival','Mystery','Dragon','Sunset','Carnival','Blizzard','Jungle','Volcano','Puzzle','Lightning','Carnival','Pirate','Rainbow','Astronaut','Tornado','Safari','Wizard','Dolphin','Eclipse','Adventure','Enchanted','Labyrinth','Phoenix','Starlight','Hurricane','Expedition'];
+const WA_STARTERS=['Ocean','Fire','Music','Dream','Mountain','Castle','Thunder','Crystal','Shadow','Forest','Robot','Treasure','Galaxy','Diamond','Festival','Mystery','Dragon','Sunset','Carnival','Blizzard','Jungle','Volcano','Puzzle','Lightning','Pirate','Rainbow','Astronaut','Tornado','Safari','Wizard','Dolphin','Eclipse','Adventure','Enchanted','Labyrinth','Phoenix','Starlight','Hurricane','Expedition'].map(w=>({w}));
 
 // ─── FAMILY FEUD SURVEYS ───
 const FEUD_SURVEYS=[
@@ -1044,7 +1184,7 @@ const FEUD_SURVEYS=[
 ];
 
 // ─── CODENAMES WORD POOL ───
-const CN_WORDS=['APPLE','BEACH','CASTLE','DRAGON','ENGINE','FOREST','GHOST','HAMMER','ISLAND','JUNGLE','KNIGHT','LEMON','MIRROR','NEEDLE','OCEAN','PIANO','QUEEN','ROCKET','SPIDER','TOWER','UNICORN','VIOLIN','WHALE','DIAMOND','EAGLE','FLAME','GLACIER','HARBOR','IRON','JACKET','KITE','LASER','MARBLE','NINJA','ORBIT','PENGUIN','RADAR','SHADOW','TIGER','VAMPIRE','WIZARD','ANCHOR','BRIDGE','CANDLE','DESERT','FALCON','GARDEN','HELMET','IVORY','JEWEL','LANTERN','MANGO','NOVEL','OPERA','PARROT','QUARTZ','RIVER','SPHINX','THRONE','TUNNEL','UMBRELLA','VENUS','WAFFLE','CRYSTAL','AURORA','BAMBOO','COMET','DOLPHIN','ECLIPSE','FOSSIL','GOBLIN','HORIZON','ICEBERG','JASMINE','KERNEL','LOTUS','METEOR','NEBULA','OLIVE','PHOENIX','REBEL','SAFARI','TEMPLE','URCHIN','VELVET','WALRUS','ZENITH','ATLAS','BISON','CORAL','DAGGER','EMERALD','FLUTE','GRIZZLY','HUNTER','INFERNO','JAGUAR','KIMONO','LOCKET','MAGNET','NECTAR'];
+const CN_WORDS=['APPLE','BEACH','CASTLE','DRAGON','ENGINE','FOREST','GHOST','HAMMER','ISLAND','JUNGLE','KNIGHT','LEMON','MIRROR','NEEDLE','OCEAN','PIANO','QUEEN','ROCKET','SPIDER','TOWER','UNICORN','VIOLIN','WHALE','DIAMOND','EAGLE','FLAME','GLACIER','HARBOR','IRON','JACKET','KITE','LASER','MARBLE','NINJA','ORBIT','PENGUIN','RADAR','SHADOW','TIGER','VAMPIRE','WIZARD','ANCHOR','BRIDGE','CANDLE','DESERT','FALCON','GARDEN','HELMET','IVORY','JEWEL','LANTERN','MANGO','NOVEL','OPERA','PARROT','QUARTZ','RIVER','SPHINX','THRONE','TUNNEL','UMBRELLA','VENUS','WAFFLE','CRYSTAL','AURORA','BAMBOO','COMET','DOLPHIN','ECLIPSE','FOSSIL','GOBLIN','HORIZON','ICEBERG','JASMINE','KERNEL','LOTUS','METEOR','NEBULA','OLIVE','PHOENIX','REBEL','SAFARI','TEMPLE','URCHIN','VELVET','WALRUS','ZENITH','ATLAS','BISON','CORAL','DAGGER','EMERALD','FLUTE','GRIZZLY','HUNTER','INFERNO','JAGUAR','KIMONO','LOCKET','MAGNET','NECTAR'].map(w=>({w}));
 
 // ════════════════════════════════════════════
 //  WHEEL OF FORTUNE
@@ -1175,8 +1315,10 @@ function wofSpinWheel(callback){
 
 function wofGetPuzzle(){
   const s=gameState;
-  if(s.usedPuzzles.size>=WOF_PUZZLES.length)s.usedPuzzles=new Set();
-  let pool=WOF_PUZZLES.filter((_,i)=>!s.usedPuzzles.has(i));
+  const ageOk=i=>AGE_TIERS[(WOF_PUZZLES[i]&&WOF_PUZZLES[i].age)||'family']<=AGE_TIERS[currentAgeTier];
+  const eligibleCount=WOF_PUZZLES.filter((_,i)=>ageOk(i)).length;
+  if(s.usedPuzzles.size>=eligibleCount)s.usedPuzzles=new Set();
+  let pool=WOF_PUZZLES.filter((_,i)=>ageOk(i)&&!s.usedPuzzles.has(i));
   const ri=Math.floor(Math.random()*pool.length);
   const pi=WOF_PUZZLES.indexOf(pool[ri]);
   s.usedPuzzles.add(pi);
@@ -1720,7 +1862,8 @@ function startGame(){
 function startTaboo(){
   const players=getPlayers();
   const s=gameState;
-  s.deck=shuffle([...TABOO_CARDS]);
+  s.deckPool=filterByAge(TABOO_CARDS,currentAgeTier);
+  s.deck=shuffle(s.deckPool);
   s.usedWords=new Set();
   s.cardIdx=0;
   s.round=1;
@@ -1742,9 +1885,9 @@ function startTaboo(){
 
 function getTabooCard(){
   const s=gameState;
-  if(s.usedWords.size>=TABOO_CARDS.length){s.usedWords=new Set();s.deck=shuffle([...TABOO_CARDS]);s.cardIdx=0;}
+  if(s.usedWords.size>=s.deckPool.length){s.usedWords=new Set();s.deck=shuffle(s.deckPool);s.cardIdx=0;}
   while(s.cardIdx<s.deck.length&&s.usedWords.has(s.deck[s.cardIdx].word))s.cardIdx++;
-  if(s.cardIdx>=s.deck.length){s.deck=shuffle([...TABOO_CARDS]);s.cardIdx=0;while(s.usedWords.has(s.deck[s.cardIdx].word))s.cardIdx++;}
+  if(s.cardIdx>=s.deck.length){s.deck=shuffle(s.deckPool);s.cardIdx=0;while(s.usedWords.has(s.deck[s.cardIdx].word))s.cardIdx++;}
   const card=s.deck[s.cardIdx];
   s.usedWords.add(card.word);
   s.cardIdx++;
@@ -1832,7 +1975,9 @@ function tabooNextTurn(){
 function startTrivia(){
   const players=getPlayers();
   const s=gameState;
-  s.questions=shuffle([...TRIVIA_QS]).slice(0,s.rounds);
+  const triviaPool=filterByAge(TRIVIA_QS,currentAgeTier);
+  s.questions=shuffle(triviaPool).slice(0,Math.min(s.rounds,triviaPool.length));
+  s.rounds=s.questions.length;
   s.qIdx=0;
   s.players=players.map(p=>({name:p,score:0}));
   s.teams=s.players;
@@ -1904,7 +2049,8 @@ function triviaAdvance(){
 function startCharades(){
   const players=getPlayers();
   const s=gameState;
-  s.deck=shuffle([...CHARADES_PROMPTS]);
+  s.deckPool=filterByAge(CHARADES_PROMPTS,currentAgeTier);
+  s.deck=shuffle(s.deckPool);
   s.usedWords=new Set();s.cardIdx=0;
   s.round=1;s.turnInRound=0;s.timeLeft=s.timerSec;
   if(s.mode==='teams'){
@@ -1921,9 +2067,9 @@ function startCharades(){
 
 function getCharadesCard(){
   const s=gameState;
-  if(s.usedWords.size>=CHARADES_PROMPTS.length){s.usedWords=new Set();s.deck=shuffle([...CHARADES_PROMPTS]);s.cardIdx=0;}
+  if(s.usedWords.size>=s.deckPool.length){s.usedWords=new Set();s.deck=shuffle(s.deckPool);s.cardIdx=0;}
   while(s.cardIdx<s.deck.length&&s.usedWords.has(s.deck[s.cardIdx].word))s.cardIdx++;
-  if(s.cardIdx>=s.deck.length){s.deck=shuffle([...CHARADES_PROMPTS]);s.cardIdx=0;}
+  if(s.cardIdx>=s.deck.length){s.deck=shuffle(s.deckPool);s.cardIdx=0;}
   const card=s.deck[s.cardIdx];s.usedWords.add(card.word);s.cardIdx++;
   return card;
 }
@@ -1992,7 +2138,8 @@ function charadesNextTurn(){
 function startPictionary(){
   const players=getPlayers();
   const s=gameState;
-  s.deck=shuffle([...PICTIONARY_WORDS]);
+  s.deckPool=filterByAge(PICTIONARY_WORDS,currentAgeTier);
+  s.deck=shuffle(s.deckPool);
   s.usedWords=new Set();s.cardIdx=0;
   s.round=1;s.turnInRound=0;s.timeLeft=s.timerSec;
   if(s.mode==='teams'){
@@ -2010,9 +2157,9 @@ function startPictionary(){
 
 function getPictionaryCard(){
   const s=gameState;
-  if(s.usedWords.size>=PICTIONARY_WORDS.length){s.usedWords=new Set();s.deck=shuffle([...PICTIONARY_WORDS]);s.cardIdx=0;}
+  if(s.usedWords.size>=s.deckPool.length){s.usedWords=new Set();s.deck=shuffle(s.deckPool);s.cardIdx=0;}
   while(s.cardIdx<s.deck.length&&s.usedWords.has(s.deck[s.cardIdx].word))s.cardIdx++;
-  if(s.cardIdx>=s.deck.length){s.deck=shuffle([...PICTIONARY_WORDS]);s.cardIdx=0;}
+  if(s.cardIdx>=s.deck.length){s.deck=shuffle(s.deckPool);s.cardIdx=0;}
   const card=s.deck[s.cardIdx];s.usedWords.add(card.word);s.cardIdx++;
   return card;
 }
@@ -2140,7 +2287,9 @@ function pictionaryNextTurn(){
 function startWYR(){
   const players=getPlayers();
   const s=gameState;
-  s.questions=shuffle([...WYR_QS]).slice(0,s.rounds);
+  const wyrPool=filterByAge(WYR_QS,currentAgeTier);
+  s.questions=shuffle(wyrPool).slice(0,Math.min(s.rounds,wyrPool.length));
+  s.rounds=s.questions.length;
   s.qIdx=0;
   s.players=players;
   s.votes={};
@@ -2242,7 +2391,8 @@ function startWordAssoc(){
   const s=gameState;
   s.players=players.map(p=>({name:p,alive:true}));
   s.currentPlayer=0;
-  s.chain=[shuffle(WA_STARTERS)[0]];
+  const waPool=filterByAge(WA_STARTERS,currentAgeTier);
+  s.chain=[(shuffle(waPool)[0]||{w:'Adventure'}).w];
   s.timeLeft=s.timerSec;
   s.roundNum=1;
   showScreen('play');
@@ -2356,7 +2506,8 @@ function startFamilyFeud(){
   const t2=document.getElementById('team2Name')?.value||'Team 2';
   s.teams=[{name:t1,score:0},{name:t2,score:0}];
   s.currentTeam=0;
-  s.surveys=shuffle([...FEUD_SURVEYS]);
+  s.surveyPool=filterByAge(FEUD_SURVEYS,currentAgeTier);
+  s.surveys=shuffle(s.surveyPool);
   s.surveyIdx=0;
   s.roundsPlayed=0;
   s.strikes=0;
@@ -2391,7 +2542,7 @@ function feudMatchGuess(guess, answer){
 function renderFeudRound(){
   const s=gameState;
   if(s.roundsPlayed>=s.rounds){showFeudResults();return;}
-  if(s.surveyIdx>=s.surveys.length){s.surveyIdx=0;s.surveys=shuffle([...FEUD_SURVEYS]);}
+  if(s.surveyIdx>=s.surveys.length){s.surveyIdx=0;s.surveys=shuffle(s.surveyPool);}
   const survey=s.surveys[s.surveyIdx];
   s.strikes=0;s.revealed=new Set();s.roundPoints=0;s.phase='playing';
   s.playingTeam=s.currentTeam;
@@ -2596,7 +2747,9 @@ function startCodenames(){
   const t2=document.getElementById('team2Name')?.value||'Blue Team';
   s.redName=t1;s.blueName=t2;
   // Pick 25 random words
-  const words=shuffle([...CN_WORDS]).slice(0,25);
+  const cnPool=filterByAge(CN_WORDS,currentAgeTier);
+  if(cnPool.length<25){alert('Not enough words for this age tier — try Family or Adult.');showScreen('home');return;}
+  const words=shuffle(cnPool).slice(0,25).map(x=>x.w);
   // Assign colors: 9 red, 8 blue, 7 neutral, 1 assassin (red goes first)
   const colors=shuffle([...Array(9).fill('red'),...Array(8).fill('blue'),...Array(7).fill('neutral'),'assassin']);
   s.cards=words.map((w,i)=>({word:w,color:colors[i],revealed:false}));
@@ -2805,7 +2958,406 @@ function showResults(){
   `;
 }
 
+// ─── DINNER CONVERSATIONS ───
+const DINNER_PROMPTS = [
+  // Would You Rather (35)
+  {cat:'Would You Rather',prompt:"Would you rather be able to fly or be invisible?"},
+  {cat:'Would You Rather',prompt:"Would you rather live in a treehouse or on a houseboat?"},
+  {cat:'Would You Rather',prompt:"Would you rather have a pet dragon or a pet unicorn?"},
+  {cat:'Would You Rather',prompt:"Would you rather be able to talk to animals or speak every language?"},
+  {cat:'Would You Rather',prompt:"Would you rather have super speed or super strength?"},
+  {cat:'Would You Rather',prompt:"Would you rather eat only pizza or only ice cream forever?"},
+  {cat:'Would You Rather',prompt:"Would you rather explore outer space or the deep ocean?"},
+  {cat:'Would You Rather',prompt:"Would you rather be the funniest person alive or the smartest?"},
+  {cat:'Would You Rather',prompt:"Would you rather never have homework or never have chores?"},
+  {cat:'Would You Rather',prompt:"Would you rather be a famous singer or a famous athlete?"},
+  {cat:'Would You Rather',prompt:"Would you rather have a time machine or a teleporter?"},
+  {cat:'Would You Rather',prompt:"Would you rather live 100 years in the future or 100 years in the past?"},
+  {cat:'Would You Rather',prompt:"Would you rather be able to breathe underwater or fly through clouds?"},
+  {cat:'Would You Rather',prompt:"Would you rather always have to whisper or always have to shout?"},
+  {cat:'Would You Rather',prompt:"Would you rather have spaghetti for hair or sweat maple syrup?"},
+  {cat:'Would You Rather',prompt:"Would you rather never use a phone again or never eat candy again?"},
+  {cat:'Would You Rather',prompt:"Would you rather be a wizard or a superhero?"},
+  {cat:'Would You Rather',prompt:"Would you rather control fire or control water?"},
+  {cat:'Would You Rather',prompt:"Would you rather live where it's always summer or always winter?"},
+  {cat:'Would You Rather',prompt:"Would you rather have a robot butler or a magic carpet?"},
+  {cat:'Would You Rather',prompt:"Would you rather visit every country or go to the moon once?"},
+  {cat:'Would You Rather',prompt:"Would you rather have unlimited LEGO or unlimited art supplies?"},
+  {cat:'Would You Rather',prompt:"Would you rather be the world's best cook or the world's best dancer?"},
+  {cat:'Would You Rather',prompt:"Would you rather have x-ray vision or the ability to read minds?"},
+  {cat:'Would You Rather',prompt:"Would you rather meet your future self or your past self?"},
+  {cat:'Would You Rather',prompt:"Would you rather never have to sleep or never have to eat?"},
+  {cat:'Would You Rather',prompt:"Would you rather swim with dolphins or ride an elephant?"},
+  {cat:'Would You Rather',prompt:"Would you rather always be 10 minutes late or 20 minutes early?"},
+  {cat:'Would You Rather',prompt:"Would you rather have a personal chef or a personal chauffeur?"},
+  {cat:'Would You Rather',prompt:"Would you rather discover a new planet or invent something useful?"},
+  {cat:'Would You Rather',prompt:"Would you rather live in a castle or on a private island?"},
+  {cat:'Would You Rather',prompt:"Would you rather be able to pause time or rewind time by 10 seconds?"},
+  {cat:'Would You Rather',prompt:"Would you rather have the power to heal others or the power to make anyone laugh?"},
+  {cat:'Would You Rather',prompt:"Would you rather be famous now or be remembered 500 years from now?"},
+  {cat:'Would You Rather',prompt:"Would you rather always have to hop everywhere or walk backwards?"},
+
+  // Family Questions (35)
+  {cat:'Family',prompt:"What's the best thing that happened to you today?"},
+  {cat:'Family',prompt:"If our family had a superpower, what should it be?"},
+  {cat:'Family',prompt:"What's your favorite family memory from this year?"},
+  {cat:'Family',prompt:"What's one thing you'd like us to do together this weekend?"},
+  {cat:'Family',prompt:"What made you laugh really hard recently?"},
+  {cat:'Family',prompt:"If you could teach everyone in the family one skill, what would it be?"},
+  {cat:'Family',prompt:"What's something nice someone did for you this week?"},
+  {cat:'Family',prompt:"If our family started a band, who would play what instrument?"},
+  {cat:'Family',prompt:"What's the silliest rule you'd make if you were in charge of the house?"},
+  {cat:'Family',prompt:"What's a new food you'd like our family to try cooking together?"},
+  {cat:'Family',prompt:"If we could add any room to our house, what would it be?"},
+  {cat:'Family',prompt:"What's something you're proud of someone else in this family for?"},
+  {cat:'Family',prompt:"What's a tradition you'd like to start as a family?"},
+  {cat:'Family',prompt:"If our family was in a movie, what genre would it be?"},
+  {cat:'Family',prompt:"What's the funniest thing that happened at school/work this week?"},
+  {cat:'Family',prompt:"If you could switch lives with another family member for a day, who and why?"},
+  {cat:'Family',prompt:"What's something about our family that makes you happy?"},
+  {cat:'Family',prompt:"What's a challenge you're working through right now?"},
+  {cat:'Family',prompt:"If our family had a theme song, what would it be?"},
+  {cat:'Family',prompt:"What's one goal you have for this month?"},
+  {cat:'Family',prompt:"What's your earliest family memory?"},
+  {cat:'Family',prompt:"If you could relive one family vacation day, which would it be?"},
+  {cat:'Family',prompt:"What's something new you learned this week?"},
+  {cat:'Family',prompt:"If we had a family mascot, what animal would it be?"},
+  {cat:'Family',prompt:"What's the kindest thing you saw someone do today?"},
+  {cat:'Family',prompt:"Who is someone outside our family you admire and why?"},
+  {cat:'Family',prompt:"What game should we play together this weekend?"},
+  {cat:'Family',prompt:"If we wrote a family motto, what should it say?"},
+  {cat:'Family',prompt:"What did you daydream about today?"},
+  {cat:'Family',prompt:"What's something you wish you had more time for?"},
+  {cat:'Family',prompt:"If our family had a YouTube channel, what would it be about?"},
+  {cat:'Family',prompt:"What's one thing you want to learn how to do this year?"},
+  {cat:'Family',prompt:"What's the best compliment you've ever received?"},
+  {cat:'Family',prompt:"If you could plan tomorrow's family dinner, what would we eat?"},
+  {cat:'Family',prompt:"What's one word that describes our family?"},
+
+  // Hypotheticals (30)
+  {cat:'Hypotheticals',prompt:"If you could have dinner with anyone in history, who would you pick?"},
+  {cat:'Hypotheticals',prompt:"If you won a million dollars, what's the first thing you'd do?"},
+  {cat:'Hypotheticals',prompt:"If you could live inside any book or movie, which one?"},
+  {cat:'Hypotheticals',prompt:"If you could wake up tomorrow with a new skill, what would it be?"},
+  {cat:'Hypotheticals',prompt:"If you could only eat one cuisine for the rest of your life, which one?"},
+  {cat:'Hypotheticals',prompt:"If you could invent something, what problem would it solve?"},
+  {cat:'Hypotheticals',prompt:"If animals could run for president, who would win?"},
+  {cat:'Hypotheticals',prompt:"If you could time-travel to any era, when and where would you go?"},
+  {cat:'Hypotheticals',prompt:"If you had a store, what would you sell?"},
+  {cat:'Hypotheticals',prompt:"If you could create a new holiday, what would it celebrate?"},
+  {cat:'Hypotheticals',prompt:"If our house was a vehicle, what should it be?"},
+  {cat:'Hypotheticals',prompt:"If you could redesign school, what would you change?"},
+  {cat:'Hypotheticals',prompt:"If you found a magic lamp, what 3 wishes would you make?"},
+  {cat:'Hypotheticals',prompt:"If you could build your dream playground, what would be in it?"},
+  {cat:'Hypotheticals',prompt:"If you were a chef on a cooking show, what would your signature dish be?"},
+  {cat:'Hypotheticals',prompt:"If you could make one rule that everyone in the world had to follow, what would it be?"},
+  {cat:'Hypotheticals',prompt:"If you were an architect, what kind of building would you design?"},
+  {cat:'Hypotheticals',prompt:"If you could bring one fictional character to life, who?"},
+  {cat:'Hypotheticals',prompt:"If you had to live in another country for a year, where would you go?"},
+  {cat:'Hypotheticals',prompt:"If our family opened a restaurant, what would we serve?"},
+  {cat:'Hypotheticals',prompt:"If you could be any age for a week, what age would you pick?"},
+  {cat:'Hypotheticals',prompt:"If you could add a subject to school, what would it be?"},
+  {cat:'Hypotheticals',prompt:"If your life had a soundtrack, what song would play the most?"},
+  {cat:'Hypotheticals',prompt:"If you could shrink down and explore anywhere, where would you go?"},
+  {cat:'Hypotheticals',prompt:"If you could have any job for a day, what would you try?"},
+  {cat:'Hypotheticals',prompt:"If you were invisible for a day, what would you do?"},
+  {cat:'Hypotheticals',prompt:"If money didn't exist, what would you spend your time doing?"},
+  {cat:'Hypotheticals',prompt:"If you could send a message to your future self, what would it say?"},
+  {cat:'Hypotheticals',prompt:"If you could combine two animals into one, which two and why?"},
+  {cat:'Hypotheticals',prompt:"If our family was stranded on a desert island, what 3 things would we need?"},
+
+  // This or That (25)
+  {cat:'This or That',prompt:"Beach vacation or mountain vacation?"},
+  {cat:'This or That',prompt:"Morning person or night owl?"},
+  {cat:'This or That',prompt:"Sweet snacks or salty snacks?"},
+  {cat:'This or That',prompt:"Board games or video games?"},
+  {cat:'This or That',prompt:"Summer or winter?"},
+  {cat:'This or That',prompt:"Books or movies?"},
+  {cat:'This or That',prompt:"Camping or hotel?"},
+  {cat:'This or That',prompt:"Cooking at home or eating out?"},
+  {cat:'This or That',prompt:"Cats or dogs?"},
+  {cat:'This or That',prompt:"Roller coaster or water slide?"},
+  {cat:'This or That',prompt:"Call or text?"},
+  {cat:'This or That',prompt:"Big party or small gathering?"},
+  {cat:'This or That',prompt:"Sunrise or sunset?"},
+  {cat:'This or That',prompt:"City life or country life?"},
+  {cat:'This or That',prompt:"Pancakes or waffles?"},
+  {cat:'This or That',prompt:"Flying car or underwater car?"},
+  {cat:'This or That',prompt:"Be too hot or too cold?"},
+  {cat:'This or That',prompt:"Superpowers or super gadgets?"},
+  {cat:'This or That',prompt:"Rain or snow?"},
+  {cat:'This or That',prompt:"Theme park or zoo?"},
+  {cat:'This or That',prompt:"Watch sports or play sports?"},
+  {cat:'This or That',prompt:"Invisibility cloak or flying broom?"},
+  {cat:'This or That',prompt:"Talent show or science fair?"},
+  {cat:'This or That',prompt:"Road trip or plane ride?"},
+  {cat:'This or That',prompt:"Early bird or sleeping in?"},
+
+  // Deep Questions (25)
+  {cat:'Deep Questions',prompt:"What's something you changed your mind about recently?"},
+  {cat:'Deep Questions',prompt:"What would you want to be known for?"},
+  {cat:'Deep Questions',prompt:"What does being brave mean to you?"},
+  {cat:'Deep Questions',prompt:"If you could fix one problem in the world, what would it be?"},
+  {cat:'Deep Questions',prompt:"What's something you're curious about right now?"},
+  {cat:'Deep Questions',prompt:"What makes a good friend?"},
+  {cat:'Deep Questions',prompt:"What's the most important thing you've learned this year?"},
+  {cat:'Deep Questions',prompt:"What does success mean to you?"},
+  {cat:'Deep Questions',prompt:"How do you want people to feel when they're around you?"},
+  {cat:'Deep Questions',prompt:"What's a mistake that taught you something valuable?"},
+  {cat:'Deep Questions',prompt:"What's something you believe that not everyone agrees with?"},
+  {cat:'Deep Questions',prompt:"If you could give advice to your younger self, what would it be?"},
+  {cat:'Deep Questions',prompt:"What's the difference between being happy and being content?"},
+  {cat:'Deep Questions',prompt:"What's something you'd like to understand better?"},
+  {cat:'Deep Questions',prompt:"What does 'home' mean to you beyond a physical place?"},
+  {cat:'Deep Questions',prompt:"What quality do you most admire in other people?"},
+  {cat:'Deep Questions',prompt:"How do you decide if something is the right thing to do?"},
+  {cat:'Deep Questions',prompt:"What's something small that makes your day better?"},
+  {cat:'Deep Questions',prompt:"What would you attempt if you knew you couldn't fail?"},
+  {cat:'Deep Questions',prompt:"What's one thing about growing up that surprises you?"},
+  {cat:'Deep Questions',prompt:"Who has influenced you the most and how?"},
+  {cat:'Deep Questions',prompt:"What does courage look like in everyday life?"},
+  {cat:'Deep Questions',prompt:"What's something you're still figuring out?"},
+  {cat:'Deep Questions',prompt:"What makes our family different from other families?"},
+  {cat:'Deep Questions',prompt:"What's a question you wish someone would ask you?"},
+
+  // Fun & Silly (35)
+  {cat:'Fun & Silly',prompt:"If animals could talk, which would be the rudest?"},
+  {cat:'Fun & Silly',prompt:"What's the weirdest food combo you secretly like?"},
+  {cat:'Fun & Silly',prompt:"If you had to wear one outfit for the rest of your life, what would it be?"},
+  {cat:'Fun & Silly',prompt:"What would your rapper name be?"},
+  {cat:'Fun & Silly',prompt:"If you were a vegetable, which one would you be?"},
+  {cat:'Fun & Silly',prompt:"What's the most useless superpower you can think of?"},
+  {cat:'Fun & Silly',prompt:"If your life was a TV show, what would the title be?"},
+  {cat:'Fun & Silly',prompt:"What sound effect plays when you walk into a room?"},
+  {cat:'Fun & Silly',prompt:"If you had to eat the same meal every day, what would it be?"},
+  {cat:'Fun & Silly',prompt:"What would your autobiography be called?"},
+  {cat:'Fun & Silly',prompt:"If you were a flavor of ice cream, which one would you be?"},
+  {cat:'Fun & Silly',prompt:"What's the worst possible name for a pet?"},
+  {cat:'Fun & Silly',prompt:"If you could make up a new word, what would it mean?"},
+  {cat:'Fun & Silly',prompt:"What would be the worst thing to find in your shoe?"},
+  {cat:'Fun & Silly',prompt:"If our family had a secret handshake, what moves should be in it?"},
+  {cat:'Fun & Silly',prompt:"What's the funniest thing you can do with a banana?"},
+  {cat:'Fun & Silly',prompt:"If you were a emoji, which one would you be?"},
+  {cat:'Fun & Silly',prompt:"What's the worst pizza topping combination possible?"},
+  {cat:'Fun & Silly',prompt:"If you could rename any day of the week, what would you call it?"},
+  {cat:'Fun & Silly',prompt:"What's the most random fact you know?"},
+  {cat:'Fun & Silly',prompt:"If you had to explain tennis to an alien, how would you do it?"},
+  {cat:'Fun & Silly',prompt:"What would you do if you woke up 10 feet tall?"},
+  {cat:'Fun & Silly',prompt:"If a genie gave you the worst wish ever, what would it be?"},
+  {cat:'Fun & Silly',prompt:"What's the silliest thing you've ever been scared of?"},
+  {cat:'Fun & Silly',prompt:"If our house could talk, what would it complain about?"},
+  {cat:'Fun & Silly',prompt:"What would you name a dinosaur if you had one as a pet?"},
+  {cat:'Fun & Silly',prompt:"If you could only communicate in song for a day, how would that go?"},
+  {cat:'Fun & Silly',prompt:"What's the strangest thing you've ever Googled?"},
+  {cat:'Fun & Silly',prompt:"If our family was a group of superheroes, what would your power be?"},
+  {cat:'Fun & Silly',prompt:"What would be the hardest food to eat while skydiving?"},
+  {cat:'Fun & Silly',prompt:"If you could swap voices with anyone for a day, who?"},
+  {cat:'Fun & Silly',prompt:"What would a museum about your life include?"},
+  {cat:'Fun & Silly',prompt:"If clouds were edible, what flavor would they be?"},
+  {cat:'Fun & Silly',prompt:"What's the most dramatic way to eat a sandwich?"},
+  {cat:'Fun & Silly',prompt:"If our pets could text us, what would they say?"},
+
+  // Gratitude (25)
+  {cat:'Gratitude',prompt:"Name 3 things you're grateful for right now."},
+  {cat:'Gratitude',prompt:"Who made you smile today and why?"},
+  {cat:'Gratitude',prompt:"What's something about your home that you appreciate?"},
+  {cat:'Gratitude',prompt:"What's a simple pleasure you enjoyed today?"},
+  {cat:'Gratitude',prompt:"Who is someone that makes your life better?"},
+  {cat:'Gratitude',prompt:"What's a food you're grateful to have access to?"},
+  {cat:'Gratitude',prompt:"What's something about this week that went really well?"},
+  {cat:'Gratitude',prompt:"What's a skill or talent you're thankful you have?"},
+  {cat:'Gratitude',prompt:"What's a recent experience that made you feel lucky?"},
+  {cat:'Gratitude',prompt:"What's something in nature that you appreciate?"},
+  {cat:'Gratitude',prompt:"Who is a teacher or mentor you're grateful for?"},
+  {cat:'Gratitude',prompt:"What's a memory from today that you want to remember?"},
+  {cat:'Gratitude',prompt:"What's a comfort you sometimes take for granted?"},
+  {cat:'Gratitude',prompt:"What's something about your body you're grateful for?"},
+  {cat:'Gratitude',prompt:"What's the best thing about being part of this family?"},
+  {cat:'Gratitude',prompt:"What's a book, show, or song you're glad exists?"},
+  {cat:'Gratitude',prompt:"What's something about the weather today you appreciated?"},
+  {cat:'Gratitude',prompt:"Who made a positive difference in your life recently?"},
+  {cat:'Gratitude',prompt:"What's something about dinnertime that you like?"},
+  {cat:'Gratitude',prompt:"What's a technology or invention you're thankful for?"},
+  {cat:'Gratitude',prompt:"What's something your sibling or parent did that you appreciated?"},
+  {cat:'Gratitude',prompt:"What's a place you're grateful to have visited?"},
+  {cat:'Gratitude',prompt:"What's something fun you got to do recently?"},
+  {cat:'Gratitude',prompt:"What's a friendship you value and why?"},
+  {cat:'Gratitude',prompt:"What made today better than yesterday?"},
+
+  // Travel & Adventure (25)
+  {cat:'Travel & Adventure',prompt:"If we could go anywhere in the world tomorrow, where should we go?"},
+  {cat:'Travel & Adventure',prompt:"What's the best trip we've ever taken as a family?"},
+  {cat:'Travel & Adventure',prompt:"What country's food would you most like to try?"},
+  {cat:'Travel & Adventure',prompt:"If you could live abroad for a year, where would you choose?"},
+  {cat:'Travel & Adventure',prompt:"What's on your travel bucket list?"},
+  {cat:'Travel & Adventure',prompt:"Would you rather explore ancient ruins or a futuristic city?"},
+  {cat:'Travel & Adventure',prompt:"What's the most adventurous thing you've ever done?"},
+  {cat:'Travel & Adventure',prompt:"If you could take a road trip anywhere, where would you drive?"},
+  {cat:'Travel & Adventure',prompt:"What's a place you've visited that surprised you?"},
+  {cat:'Travel & Adventure',prompt:"If we planned a family adventure day tomorrow, what should we do?"},
+  {cat:'Travel & Adventure',prompt:"Beach, mountain, forest, or desert — which is your vibe?"},
+  {cat:'Travel & Adventure',prompt:"What souvenir do you always look for when traveling?"},
+  {cat:'Travel & Adventure',prompt:"If you could take a train anywhere in the world, where to?"},
+  {cat:'Travel & Adventure',prompt:"What's the coolest hotel or place you've stayed?"},
+  {cat:'Travel & Adventure',prompt:"If you could learn any adventure sport, what would it be?"},
+  {cat:'Travel & Adventure',prompt:"What's a local place we haven't explored yet but should?"},
+  {cat:'Travel & Adventure',prompt:"If you could plan our next family trip, where would we go?"},
+  {cat:'Travel & Adventure',prompt:"Window seat or aisle seat — and why?"},
+  {cat:'Travel & Adventure',prompt:"What's the longest you'd want to be away from home?"},
+  {cat:'Travel & Adventure',prompt:"If you could visit any landmark, which one?"},
+  {cat:'Travel & Adventure',prompt:"Cruise, camping, or resort — what's your ideal vacation?"},
+  {cat:'Travel & Adventure',prompt:"What's the best meal you've ever had while traveling?"},
+  {cat:'Travel & Adventure',prompt:"If you could teleport to one place right now for an hour, where?"},
+  {cat:'Travel & Adventure',prompt:"What's a trip we should take before the kids grow up?"},
+  {cat:'Travel & Adventure',prompt:"If we could host a foreign exchange student, where should they be from?"}
+];
+
+const DINNER_CATEGORIES = [...new Set(DINNER_PROMPTS.map(p=>p.cat))];
+const DINNER_CAT_COLORS = {
+  'Would You Rather':'#7c5cfc',
+  'Family':'#ec4899',
+  'Hypotheticals':'#3b82f6',
+  'This or That':'#f97316',
+  'Deep Questions':'#14b8a6',
+  'Fun & Silly':'#eab308',
+  'Gratitude':'#22c55e',
+  'Travel & Adventure':'#06b6d4'
+};
+
+let dinnerState = {
+  activeFilter: null,
+  pool: [],
+  shown: [],
+  currentIndex: -1
+};
+
+function shuffleArray(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function openDinner(){
+  sfxClick();
+  dinnerState.activeFilter=null;
+  dinnerState.pool=shuffleArray(DINNER_PROMPTS);
+  dinnerState.shown=[];
+  dinnerState.currentIndex=-1;
+  document.querySelectorAll('.screen,.dinner-screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('dinner').classList.add('active');
+  renderDinnerFilters();
+  dinnerNext();
+}
+
+function closeDinner(){
+  sfxClick();
+  document.getElementById('dinner').classList.remove('active');
+  document.getElementById('home').classList.add('active');
+}
+
+function renderDinnerFilters(){
+  const el=document.getElementById('dinnerFilters');
+  el.innerHTML=`<button class="dinner-chip ${!dinnerState.activeFilter?'active':''}" style="${!dinnerState.activeFilter?'background:var(--accent);color:white':''}" onclick="filterDinner(null)">All</button>`+
+    DINNER_CATEGORIES.map(c=>{
+      const color=DINNER_CAT_COLORS[c];
+      const isActive=dinnerState.activeFilter===c;
+      return `<button class="dinner-chip ${isActive?'active':''}" style="${isActive?`background:${color};color:white`:''}" onclick="filterDinner('${c}')">${c}</button>`;
+    }).join('');
+}
+
+function filterDinner(cat){
+  sfxClick();
+  dinnerState.activeFilter=cat;
+  const source=cat?DINNER_PROMPTS.filter(p=>p.cat===cat):DINNER_PROMPTS;
+  dinnerState.pool=shuffleArray(source);
+  dinnerState.shown=[];
+  dinnerState.currentIndex=-1;
+  renderDinnerFilters();
+  dinnerNext();
+}
+
+function dinnerNext(){
+  if(dinnerState.currentIndex<dinnerState.shown.length-1){
+    dinnerState.currentIndex++;
+  } else {
+    if(dinnerState.pool.length===0){
+      const source=dinnerState.activeFilter?DINNER_PROMPTS.filter(p=>p.cat===dinnerState.activeFilter):DINNER_PROMPTS;
+      dinnerState.pool=shuffleArray(source);
+    }
+    const next=dinnerState.pool.pop();
+    dinnerState.shown.push(next);
+    dinnerState.currentIndex=dinnerState.shown.length-1;
+  }
+  animateDinnerCard('next');
+}
+
+function dinnerPrev(){
+  if(dinnerState.currentIndex>0){
+    dinnerState.currentIndex--;
+    animateDinnerCard('prev');
+  }
+}
+
+function dinnerRandom(){
+  sfxClick();
+  const source=dinnerState.activeFilter?DINNER_PROMPTS.filter(p=>p.cat===dinnerState.activeFilter):DINNER_PROMPTS;
+  const pick=source[Math.floor(Math.random()*source.length)];
+  dinnerState.shown.push(pick);
+  dinnerState.currentIndex=dinnerState.shown.length-1;
+  animateDinnerCard('next');
+}
+
+function animateDinnerCard(dir){
+  const card=document.getElementById('dinnerCard');
+  card.classList.add(dir==='next'?'flip-out':'flip-out');
+  setTimeout(()=>{
+    renderDinnerCard();
+    card.classList.remove('flip-out','flip-in');
+    card.classList.add('flip-in');
+    requestAnimationFrame(()=>requestAnimationFrame(()=>card.classList.remove('flip-in')));
+  },200);
+}
+
+function renderDinnerCard(){
+  const item=dinnerState.shown[dinnerState.currentIndex];
+  if(!item)return;
+  const color=DINNER_CAT_COLORS[item.cat]||'var(--accent)';
+  const card=document.getElementById('dinnerCard');
+  card.style.background=`linear-gradient(135deg, ${color}dd, ${color}88)`;
+  card.innerHTML=`
+    <span class="dc-category" style="background:rgba(0,0,0,0.3);color:white">${item.cat}</span>
+    <p class="dc-prompt">${item.prompt}</p>
+    <span class="dc-number">${dinnerState.currentIndex+1} / ${dinnerState.shown.length}</span>
+  `;
+  // Update progress
+  const total=dinnerState.activeFilter?DINNER_PROMPTS.filter(p=>p.cat===dinnerState.activeFilter).length:DINNER_PROMPTS.length;
+  const pct=Math.min((dinnerState.shown.length/total)*100,100);
+  document.getElementById('dinnerProgress').style.width=pct+'%';
+  // Update prev button
+  document.getElementById('dinnerPrevBtn').style.opacity=dinnerState.currentIndex>0?'1':'0.3';
+}
+
+// Touch swipe support for dinner cards
+(function(){
+  let startX=0,startY=0,swiping=false;
+  document.addEventListener('DOMContentLoaded',()=>{
+    const body=document.getElementById('dinnerBody');
+    if(!body)return;
+    body.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;startY=e.touches[0].clientY;swiping=true},{passive:true});
+    body.addEventListener('touchend',e=>{
+      if(!swiping||!document.getElementById('dinner').classList.contains('active'))return;
+      swiping=false;
+      const dx=e.changedTouches[0].clientX-startX;
+      const dy=e.changedTouches[0].clientY-startY;
+      if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>50){
+        if(dx<0)dinnerNext();else dinnerPrev();
+      }
+    },{passive:true});
+  });
+})();
+
 // ─── INIT ───
+currentAgeTier=loadAgeTier();
 renderHome();
 </script>
 </body>
