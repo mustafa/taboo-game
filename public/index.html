@@ -3151,20 +3151,32 @@ function feudAwardRound(){
   // Update displayed scores
   const ptsEl=document.getElementById('feudPts');
   if(ptsEl)ptsEl.textContent=s.roundPoints+' pts this round';
-  // Disable input
+  // Update status to reflect the round is over and the full board is showing
+  const status=document.getElementById('feudStatus');
+  if(status){status.textContent='All answers revealed — '+s.roundPoints+' pts to '+s.teams[s.currentTeam].name;status.style.color='var(--text2)';status.style.fontWeight='600';status.style.fontSize='14px';}
+  // Replace the guess input with a Next button so the family controls when to move on.
+  const isLast=(s.roundsPlayed+1)>=s.rounds;
   const controls=document.getElementById('feudControls');
-  if(controls)controls.style.display='none';
-  safeTimeout(()=>{
-    banner.remove();
-    s.surveyIdx++;
-    s.roundsPlayed++;
-    s.currentTeam=s.roundsPlayed%2;
-    if(s.roundsPlayed<s.rounds){
-      showTeamTransition(s.teams[s.currentTeam].name, renderFeudRound);
-    } else {
-      renderFeudRound(); // will trigger showFeudResults
-    }
-  },2500);
+  if(controls){
+    controls.innerHTML=`<button class="btn btn-primary" onclick="feudNextRound()" style="font-size:16px;padding:12px 28px">${isLast?'See Final Results 🏆':'Next Round →'}</button>`;
+    controls.style.display='flex';
+  }
+  // Let the banner flash for a moment, then clear it so the full board stays readable.
+  // The board no longer auto-advances — the family clicks Next when everyone's done reading.
+  safeTimeout(()=>{ if(banner&&banner.parentNode)banner.remove(); },2500);
+}
+
+function feudNextRound(){
+  sfxClick();
+  const s=gameState;
+  s.surveyIdx++;
+  s.roundsPlayed++;
+  s.currentTeam=s.roundsPlayed%2;
+  if(s.roundsPlayed<s.rounds){
+    showTeamTransition(s.teams[s.currentTeam].name, renderFeudRound);
+  } else {
+    renderFeudRound(); // will trigger showFeudResults
+  }
 }
 
 function showFeudResults(){
