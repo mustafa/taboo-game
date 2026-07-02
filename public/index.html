@@ -256,6 +256,63 @@ input{font-family:inherit;outline:none}
 .feud-answer.revealed{animation:feudFlip 0.4s ease;transform-origin:center}
 .feud-x.slam{animation:strikeSlam 0.35s ease}
 
+/* FAMILY FEUD — STRIKE OVERLAY (TV-style giant X flash) */
+@keyframes strikeFlash{0%{opacity:0;transform:scale(0.3)}25%{opacity:1;transform:scale(1.15)}70%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.05)}}
+.strike-overlay{position:fixed;inset:0;z-index:350;display:flex;align-items:center;justify-content:center;gap:16px;background:rgba(0,0,0,0.7);pointer-events:none;animation:strikeFlash 0.9s ease forwards}
+.strike-overlay span{font-size:110px;font-weight:900;color:var(--red);text-shadow:0 0 50px rgba(239,68,68,0.9);line-height:1}
+
+/* SURPRISE ME BUTTON */
+.surprise-btn{width:100%;margin:0 0 20px;padding:14px;border-radius:var(--radius);background:linear-gradient(135deg,var(--accent),var(--pink));color:white;font-weight:800;font-size:15px;letter-spacing:0.5px;transition:var(--transition);box-shadow:0 4px 15px rgba(124,92,252,0.3)}
+.surprise-btn:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(124,92,252,0.5)}
+.surprise-btn:active{transform:translateY(0)}
+
+/* GAME NIGHT STATS */
+.stats-btn{background:var(--surface2);color:var(--text2);font-size:13px;font-weight:600;padding:7px 16px;border-radius:20px;margin-top:10px;transition:var(--transition)}
+.stats-btn:hover{background:var(--surface3);color:var(--text)}
+.recent-badge{background:rgba(20,184,166,0.18) !important;color:var(--teal) !important;font-weight:700}
+
+/* HOT SEAT */
+.hotseat-q{font-size:24px;font-weight:800;text-align:center;line-height:1.35;color:white;animation:pop 0.25s ease;padding:0 8px}
+
+/* SCORE COUNT-UP BUMP */
+@keyframes scoreBump{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+.score-bump{animation:scoreBump 0.45s ease;display:inline-block}
+
+/* WHEEL OF FORTUNE — dramatic flash + tile reveal */
+@keyframes wofFlashKf{0%{opacity:0;transform:scale(0.4)}20%{opacity:1;transform:scale(1.1)}75%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.05)}}
+.wof-flash{position:fixed;inset:0;z-index:340;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.72);pointer-events:none;animation:wofFlashKf 1.6s ease forwards}
+.wof-flash span{font-size:52px;font-weight:900;text-shadow:0 0 40px rgba(0,0,0,0.8);text-align:center;padding:0 20px}
+@keyframes wofTilePop{0%{transform:scale(0.3) rotateX(90deg);box-shadow:0 0 0 rgba(234,179,8,0)}55%{transform:scale(1.18) rotateX(0);box-shadow:0 0 22px rgba(234,179,8,0.85)}100%{transform:scale(1) rotateX(0);box-shadow:0 0 0 rgba(234,179,8,0)}}
+.wof-tile.pending{background:linear-gradient(135deg,#eab308,#f59e0b)!important;color:transparent}
+
+/* HOME — TONIGHT'S SCORES */
+.tonight-panel{background:var(--surface);border-radius:var(--radius-lg);padding:18px 18px 14px;margin-top:22px;box-shadow:var(--shadow);border:1px solid rgba(124,92,252,0.18)}
+.tonight-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.tonight-head h3{font-size:16px;font-weight:800}
+.tonight-clear{background:var(--surface2);color:var(--text2);font-size:12px;font-weight:600;padding:5px 12px;border-radius:16px;transition:var(--transition)}
+.tonight-clear:hover{background:var(--surface3);color:var(--text)}
+.tonight-champs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tonight-champ{font-size:12px;font-weight:700;padding:5px 11px;border-radius:16px;background:var(--surface2);color:var(--text2)}
+.tonight-champ.lead{background:rgba(234,179,8,0.18);color:#fbbf24}
+.tonight-list{display:flex;flex-direction:column;gap:6px}
+.tonight-row{display:flex;align-items:center;justify-content:space-between;font-size:13px;color:var(--text2);padding:7px 12px;background:var(--surface2);border-radius:var(--radius-sm)}
+.tonight-row b{color:var(--text)}
+.tonight-note{text-align:center;font-size:11px;color:var(--text3);margin-top:10px}
+
+/* HOT SEAT — reveal & guesses */
+.hs-topic{font-size:26px;font-weight:800;text-align:center;line-height:1.3;color:white;animation:pop 0.25s ease;padding:0 6px}
+.hs-answer-box{background:linear-gradient(135deg,#7c2d12,#c2410c);border-radius:var(--radius);padding:16px;text-align:center;margin:14px 0;font-size:20px;font-weight:800;color:#ffedd5;animation:pop 0.3s ease}
+.hs-guess-row{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface2);border-radius:var(--radius);border:2px solid transparent;transition:var(--transition);cursor:pointer;margin-bottom:8px}
+.hs-guess-row .hs-who{font-size:12px;color:var(--text3);font-weight:700;min-width:74px}
+.hs-guess-row .hs-what{flex:1;font-weight:600}
+.hs-guess-row .hs-mark{font-size:20px;opacity:0.3}
+.hs-guess-row.correct{background:rgba(34,197,94,0.16);border-color:var(--green)}
+.hs-guess-row.correct .hs-mark{opacity:1}
+.hs-progress{display:flex;gap:5px;justify-content:center;margin:10px 0}
+.hs-dot{width:9px;height:9px;border-radius:50%;background:var(--surface3)}
+.hs-dot.done{background:var(--orange)}
+.hs-dot.active{background:var(--orange);box-shadow:0 0 10px var(--orange)}
+
 /* Overlay */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:200;padding:20px;animation:fadeIn 0.2s ease}
 .overlay-card{background:var(--surface);border-radius:var(--radius-lg);padding:32px;max-width:400px;width:100%;text-align:center;animation:slideUp 0.3s ease}
@@ -332,7 +389,9 @@ input{font-family:inherit;outline:none}
     <p>Pick a game and let's play!</p>
   </div>
   <div class="age-selector" id="ageSelector"></div>
+  <button class="surprise-btn" onclick="surpriseMe()">🎲 Surprise Me — pick a random game!</button>
   <div class="game-grid" id="gameGrid"></div>
+  <div id="tonightScores"></div>
 </div>
 
 <!-- GENERIC SETUP SCREEN -->
@@ -376,25 +435,70 @@ input{font-family:inherit;outline:none}
 <script>
 // ─── AUDIO ───
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
-let audioCtx;
-function ensureAudio(){if(!audioCtx)audioCtx=new AudioCtx()}
-function playTone(freq,dur,type='sine',vol=0.15){
+let audioCtx, masterGain;
+function ensureAudio(){
+  if(!audioCtx){
+    audioCtx=new AudioCtx();
+    masterGain=audioCtx.createGain();
+    masterGain.gain.value=0.85;
+    // A gentle compressor tames stacked-tone peaks so chords feel warm, never harsh.
+    const comp=audioCtx.createDynamicsCompressor();
+    comp.threshold.value=-18;comp.knee.value=24;comp.ratio.value=3;
+    comp.attack.value=0.003;comp.release.value=0.2;
+    masterGain.connect(comp);comp.connect(audioCtx.destination);
+  }
+  if(audioCtx.state==='suspended')audioCtx.resume();
+}
+// One tone with a soft attack + smooth exponential decay — no clicky onsets.
+function playTone(freq,dur,type='sine',vol=0.15,attack=0.012){
   ensureAudio();
+  const t=audioCtx.currentTime;
   const o=audioCtx.createOscillator(),g=audioCtx.createGain();
   o.type=type;o.frequency.value=freq;
-  g.gain.setValueAtTime(vol,audioCtx.currentTime);
-  g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+dur);
-  o.connect(g);g.connect(audioCtx.destination);
-  o.start();o.stop(audioCtx.currentTime+dur);
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(vol,t+attack);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g);g.connect(masterGain);
+  o.start(t);o.stop(t+dur+0.03);
 }
-function sfxCorrect(){playTone(523,0.1);setTimeout(()=>playTone(659,0.1),100);setTimeout(()=>playTone(784,0.15),200)}
-function sfxWrong(){playTone(200,0.2,'sawtooth',0.1);setTimeout(()=>playTone(160,0.3,'sawtooth',0.1),150)}
-function sfxClick(){playTone(800,0.05,'sine',0.08)}
-function sfxBuzz(){playTone(150,0.4,'square',0.12)}
-function sfxTick(){playTone(1000,0.03,'sine',0.06)}
-function sfxWin(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>playTone(f,0.15),i*100))}
-function sfxReveal(){playTone(440,0.08);setTimeout(()=>playTone(554,0.08),80);setTimeout(()=>playTone(659,0.12),160)}
-function sfxDramatic(){playTone(220,0.3,'triangle',0.12);setTimeout(()=>playTone(277,0.3,'triangle',0.12),300);setTimeout(()=>playTone(330,0.4,'triangle',0.15),600)}
+function slideTone(f1,f2,dur,type='sawtooth',vol=0.15){
+  ensureAudio();
+  const t=audioCtx.currentTime;
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.type=type;
+  o.frequency.setValueAtTime(f1,t);
+  o.frequency.exponentialRampToValueAtTime(Math.max(f2,20),t+dur);
+  g.gain.setValueAtTime(0.0001,t);
+  g.gain.exponentialRampToValueAtTime(vol,t+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g);g.connect(masterGain);
+  o.start(t);o.stop(t+dur+0.03);
+}
+// Warm rising major arpeggio topped with a soft octave sparkle — a satisfying "yes!"
+function sfxCorrect(){playTone(523.25,0.12,'triangle',0.16);setTimeout(()=>playTone(659.25,0.12,'triangle',0.16),90);setTimeout(()=>{playTone(783.99,0.22,'triangle',0.17);playTone(1046.5,0.22,'sine',0.05)},180)}
+// Soft descending minor "aww" — clearly a miss, but friendly, not a jarring buzzer.
+function sfxWrong(){playTone(392,0.16,'triangle',0.14);setTimeout(()=>playTone(311.13,0.3,'triangle',0.14),130)}
+function sfxClick(){playTone(660,0.05,'triangle',0.07)}
+function sfxBuzz(){playTone(160,0.35,'square',0.1);playTone(120,0.35,'sawtooth',0.06)}
+function sfxTick(){playTone(1100,0.035,'triangle',0.06)}
+// Urgent two-note beep for the final seconds on a countdown.
+function sfxWarn(){playTone(880,0.09,'square',0.09);setTimeout(()=>playTone(880,0.13,'square',0.09),130)}
+// Triumphant ascending run capped by a bright major chord.
+function sfxWin(){[523.25,659.25,783.99,1046.5].forEach((f,i)=>setTimeout(()=>playTone(f,0.16,'triangle',0.16),i*110));setTimeout(()=>{playTone(1046.5,0.5,'triangle',0.13);playTone(1318.5,0.5,'triangle',0.09);playTone(1568,0.5,'sine',0.05)},520)}
+function sfxReveal(){playTone(440,0.08,'triangle',0.13);setTimeout(()=>playTone(554.37,0.08,'triangle',0.13),80);setTimeout(()=>playTone(659.25,0.14,'triangle',0.14),160)}
+function sfxDramatic(){playTone(220,0.3,'triangle',0.12);setTimeout(()=>playTone(277.18,0.3,'triangle',0.12),300);setTimeout(()=>playTone(329.63,0.42,'triangle',0.15),600)}
+// Classic game-show bell "DING!" — bright bell with a shimmer overtone
+function sfxDing(){playTone(1318,0.4,'triangle',0.18);playTone(2637,0.3,'sine',0.07);setTimeout(()=>playTone(1976,0.25,'sine',0.05),40)}
+// Family Feud strike buzzer — harsh dissonant double-sawtooth
+function sfxFeudStrike(){playTone(92,0.7,'sawtooth',0.16);playTone(98,0.7,'sawtooth',0.16);playTone(185,0.5,'square',0.06)}
+// Wheel of Fortune bankrupt — sad descending womp
+function sfxBankrupt(){slideTone(500,60,0.9,'sawtooth',0.14);setTimeout(()=>playTone(55,0.5,'square',0.1),500)}
+// Big win fanfare — triumphant arpeggio + final chord
+function sfxFanfare(){
+  [[523,0],[659,90],[784,180],[1047,270],[784,420],[1047,500],[1319,600]].forEach(([f,t])=>setTimeout(()=>playTone(f,0.22,'triangle',0.16),t));
+  setTimeout(()=>{playTone(1047,0.7,'triangle',0.14);playTone(1319,0.7,'triangle',0.1);playTone(1568,0.7,'triangle',0.08)},780);
+}
+function sfxWhoosh(){slideTone(200,900,0.25,'sine',0.08)}
 
 // ─── PASS THE PHONE ───
 function showPassScreen(playerName,subtitle,onReady){
@@ -455,7 +559,12 @@ function showConfetti(){
     const dur=Math.random()*2+2;
     const delay=Math.random()*1.5;
     const shape=Math.random()>0.5?'50%':'0';
-    piece.style.cssText=`left:${left}%;width:${size}px;height:${size}px;background:${color};border-radius:${shape};animation-duration:${dur}s;animation-delay:${delay}s;`;
+    if(Math.random()<0.18){
+      piece.textContent=['⭐','🎉','✨','🏆','🎊'][Math.floor(Math.random()*5)];
+      piece.style.cssText=`left:${left}%;font-size:${size+8}px;background:none;width:auto;height:auto;animation-duration:${dur}s;animation-delay:${delay}s;`;
+    } else {
+      piece.style.cssText=`left:${left}%;width:${size}px;height:${size}px;background:${color};border-radius:${shape};animation-duration:${dur}s;animation-delay:${delay}s;`;
+    }
     container.appendChild(piece);
   }
   document.body.appendChild(container);
@@ -556,6 +665,12 @@ const TUTORIALS={
     {h:'How to Play',list:['The Spymaster gives a one-word clue and a number (how many cards it relates to).','The team taps cards they think match the clue.','Correct guess = keep guessing (up to the number + 1 bonus).','Wrong color = turn ends immediately.','Hit the ASSASSIN = instant loss!']},
     {h:'Winning',p:'First team to reveal all their agents wins. Or the other team loses by hitting the assassin.'},
     {tip:'Spymasters: try clues that connect multiple words at once. "Aquatic 3" could link Ocean, Whale, and Dolphin!'}
+  ]},
+  hotseat:{icon:'🔥',title:'How to Play Hot Seat',sections:[
+    {h:'Objective',p:'How well do you know each other? One player is in the "hot seat" each round. Everyone else guesses what that player would say — score points for reading their mind!'},
+    {h:'How It Works',list:['Each round, one player is in the hot seat (it rotates every round).','Pass the phone to each other player one at a time — they secretly type their guess for what the hot-seat player will say.','Then pass to the hot-seat player. They reveal their real answer out loud (and can type it in).','The hot-seat player taps every guess that matched.','Each correct guess = 2 points for that guesser. The hot-seat player earns 1 point per person who guessed them right!']},
+    {h:'Winning',p:'After all rounds, the player with the most points wins. Great for families who know each other well!'},
+    {tip:'Answer the way the group expects, not the fancy answer — being predictable earns the hot-seat player points too!'}
   ]}
 };
 
@@ -642,8 +757,91 @@ const GAMES = [
     id:'wheeloffortune',name:'Wheel of Fortune',icon:'🎡',color:'#22c55e',
     desc:'Spin the wheel, guess letters, and solve the puzzle before your opponents!',
     players:'2-4',time:'~20 min',tags:['Word Game','Turns']
+  },
+  {
+    id:'hotseat',name:'Hot Seat',icon:'🔥',color:'#f97316',
+    desc:'One person is in the hot seat — can everyone guess what they\'ll say? Points for reading each other\'s minds!',
+    players:'2+',time:'~15 min',tags:['Get to Know You','Guessing']
   }
 ];
+
+// ─── TONIGHT'S SCORES (session-only — resets when the app/tab closes) ───
+const STATS_KEY='gn_tonight';
+function loadTonight(){try{return JSON.parse(sessionStorage.getItem(STATS_KEY)||'[]')||[]}catch(e){return[]}}
+function recordWin(gameId,winnerName){
+  try{
+    const st=loadTonight();
+    st.push({g:gameId,w:winnerName||'Tie',ts:Date.now()});
+    sessionStorage.setItem(STATS_KEY,JSON.stringify(st.slice(-100)));
+  }catch(e){}
+  const panel=document.getElementById('tonightScores');
+  if(panel)panel.innerHTML=renderTonightScores();
+}
+function clearTonight(){
+  try{sessionStorage.removeItem(STATS_KEY)}catch(e){}
+  const panel=document.getElementById('tonightScores');
+  if(panel)panel.innerHTML=renderTonightScores();
+}
+// Builds the "Tonight's Scores" card shown at the bottom of the home screen.
+function renderTonightScores(){
+  const st=loadTonight();
+  if(!st.length)return '';
+  const gameName=id=>{const g=GAMES.find(x=>x.id===id);return g?g.icon+' '+g.name:id;};
+  const counts={};
+  st.forEach(r=>{if(r.w&&r.w!=='Tie')counts[r.w]=(counts[r.w]||0)+1;});
+  const board=Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+  const recent=[...st].reverse();
+  return `<div class="tonight-panel">
+    <div class="tonight-head"><h3>🌙 Tonight's Scores</h3><button class="tonight-clear" onclick="sfxClick();clearTonight()">Clear</button></div>
+    ${board.length?`<div class="tonight-champs">${board.map(([n,c],i)=>`<span class="tonight-champ ${i===0?'lead':''}">${i===0?'👑':'⭐'} ${n} · ${c} win${c!==1?'s':''}</span>`).join('')}</div>`:''}
+    <div class="tonight-list">${recent.map(r=>`<div class="tonight-row"><span>${gameName(r.g)}</span><b>${r.w==='Tie'?'🤝 Tie':'🏆 '+r.w}</b></div>`).join('')}</div>
+    <p class="tonight-note">Resets when you close the app</p>
+  </div>`;
+}
+
+// ─── RECENTLY PLAYED ───
+const RECENT_KEY='gn_recent';
+function loadRecent(){try{return JSON.parse(localStorage.getItem(RECENT_KEY)||'[]')||[]}catch(e){return[]}}
+function markRecent(id){
+  try{
+    const r=loadRecent().filter(x=>x!==id);
+    r.unshift(id);
+    localStorage.setItem(RECENT_KEY,JSON.stringify(r.slice(0,2)));
+  }catch(e){}
+}
+
+// ─── SURPRISE ME (random game roulette) ───
+function surpriseMe(){
+  ensureAudio();sfxWhoosh();
+  const eligible=GAMES.filter(g=>{
+    const c=getFilteredCount(g.id);
+    const hb=GAME_HARD_BLOCK[g.id];
+    return !(hb!=null&&c<hb);
+  });
+  if(!eligible.length)return;
+  const pick=eligible[Math.floor(Math.random()*eligible.length)];
+  const overlay=document.createElement('div');
+  overlay.className='team-transition';
+  overlay.innerHTML=`
+    <div class="tt-icon" id="surpriseIcon">🎲</div>
+    <div class="tt-name" id="surpriseName">Choosing...</div>
+    <div class="tt-subtitle">Fate is picking your game</div>
+  `;
+  document.body.appendChild(overlay);
+  let i=Math.floor(Math.random()*eligible.length),ticks=0;
+  const total=12+Math.floor(Math.random()*6);
+  function spin(){
+    if(!overlay.parentNode)return;
+    const g=ticks<total?eligible[i%eligible.length]:pick;
+    const icon=document.getElementById('surpriseIcon'),name=document.getElementById('surpriseName');
+    if(icon)icon.textContent=g.icon;
+    if(name)name.textContent=g.name;
+    sfxTick();i++;ticks++;
+    if(ticks<=total){setTimeout(spin,60+ticks*20);}
+    else{sfxDing();setTimeout(()=>{overlay.remove();setupGame(pick.id);},900);}
+  }
+  spin();
+}
 
 // ─── RENDER HOME ───
 const AGE_OPTIONS=[
@@ -664,7 +862,7 @@ function renderAgeSelector(){
 // Per-game pool size below which we warn; Codenames also hard-blocks.
 const GAME_THRESHOLDS={
   taboo:12,trivia:30,charades:12,pictionary:12,wyr:20,
-  wordassoc:10,familyfeud:10,codenames:25,wheeloffortune:7
+  wordassoc:10,familyfeud:10,codenames:25,wheeloffortune:7,hotseat:15
 };
 const GAME_HARD_BLOCK={codenames:25};
 function getFilteredCount(gameId){
@@ -679,11 +877,13 @@ function getFilteredCount(gameId){
     case 'familyfeud':return filterByAge(FEUD_SURVEYS,t).length;
     case 'codenames':return filterByAge(CN_WORDS,t).length;
     case 'wheeloffortune':return filterByAge(WOF_PUZZLES,t).length;
+    case 'hotseat':return filterByAge(HOTSEAT_QS,t).length;
     default:return 0;
   }
 }
 function renderHome(){
   renderAgeSelector();
+  const recentIds=loadRecent();
   const grid=document.getElementById('gameGrid');
   const dinnerCard=`
     <div class="game-card" style="--card-color:#ec4899;border:2px solid rgba(236,72,153,0.3);background:linear-gradient(135deg,var(--surface),rgba(124,92,252,0.08))" onclick="openDinner()">
@@ -705,6 +905,7 @@ function renderHome(){
     const badge=blocked
       ?`<span class="game-meta-block">🚫 Need ${hardBlock}, have ${count}</span>`
       :warn?`<span class="game-meta-warn">⚠ ${count} items</span>`:'';
+    const recentBadge=recentIds.includes(g.id)?'<span class="recent-badge">🕘 Recently played</span>':'';
     const onClick=blocked?'':`onclick="sfxClick();setupGame('${g.id}')"`;
     return `
     <div class="game-card ${blocked?'disabled':''}" style="--card-color:${g.color}" ${onClick}>
@@ -715,11 +916,14 @@ function renderHome(){
         <span>👥 ${g.players}</span>
         <span>⏱ ${g.time}</span>
         ${g.tags.map(t=>`<span>${t}</span>`).join('')}
+        ${recentBadge}
         ${badge}
         <span style="cursor:pointer" onclick="event.stopPropagation();showTutorial('${g.id}')">❓ Rules</span>
       </div>
     </div>`;
   }).join('');
+  const tonight=document.getElementById('tonightScores');
+  if(tonight)tonight.innerHTML=renderTonightScores();
 }
 
 let quitToken=0;
@@ -731,7 +935,7 @@ function confirmQuit(){
   if(confirm('Quit this game and go back?')){
     quitToken++;
     if(gameState.timer)clearInterval(gameState.timer);
-    document.querySelectorAll('.pass-screen,.team-transition,.feud-banner,.confetti-container').forEach(n=>{
+    document.querySelectorAll('.pass-screen,.team-transition,.feud-banner,.confetti-container,.strike-overlay,.wof-flash').forEach(n=>{
       if(n._interval)clearInterval(n._interval);
       n.remove();
     });
@@ -1713,18 +1917,43 @@ function wofDrawWheel(canvas,rotation){
   ctx.restore();
 }
 
+// Fullscreen flash for big wheel moments (bankrupt / lose a turn)
+function wofFlash(text,color){
+  const div=document.createElement('div');
+  div.className='wof-flash';
+  div.innerHTML=`<span style="color:${color}">${text}</span>`;
+  document.body.appendChild(div);
+  setTimeout(()=>div.remove(),1600);
+}
+// Reveal the tiles for a freshly-guessed letter one-by-one, TV-style, with a rising ping each.
+function wofRevealAnim(ch){
+  const tiles=document.querySelectorAll('.wof-tile.revealed[data-ch="'+ch+'"]');
+  const tok=quitToken;
+  tiles.forEach((tile,i)=>{
+    tile.style.animation='none';
+    tile.classList.add('pending');
+    safeTimeout(()=>{
+      if(tok!==quitToken)return;
+      tile.classList.remove('pending');
+      tile.style.animation='wofTilePop 0.45s ease';
+      playTone(587.33+i*60,0.14,'triangle',0.13);
+      playTone(1174.66+i*120,0.09,'sine',0.04);
+    },180+i*230);
+  });
+}
+
 function wofSpinWheel(callback){
   const s=gameState;
   if(s.spinning)return;
   s.spinning=true;
   const tok=quitToken;
-  sfxClick();
+  sfxWhoosh();
   const canvas=document.getElementById('wofCanvas');
   if(!canvas){s.spinning=false;return;}
-  const totalSpin=1800+Math.random()*1800; // 5-10 full rotations
+  const totalSpin=2520+Math.random()*1800; // 7-12 full rotations for a meatier spin
   const startRot=s.wheelRotation||0;
   const endRot=startRot+totalSpin;
-  const duration=4000;
+  const duration=4600;
   const startTime=Date.now();
 
   // tick sound during spin
@@ -1743,8 +1972,8 @@ function wofSpinWheel(callback){
     if(tok!==quitToken){clearInterval(tickInterval);return;}
     const elapsed=Date.now()-startTime;
     const progress=Math.min(elapsed/duration,1);
-    // ease out cubic
-    const eased=1-Math.pow(1-progress,3);
+    // ease-out quart: fast launch, long suspenseful crawl into its final click
+    const eased=1-Math.pow(1-progress,4);
     const currentRot=startRot+totalSpin*eased;
     wofDrawWheel(canvas,currentRot);
     if(progress<1){
@@ -1788,7 +2017,7 @@ function wofRenderBoard(){
       if(!/[A-Z]/.test(ch)){
         html+=`<div class="wof-tile punct">${ch}</div>`;
       } else if(s.revealedLetters.has(ch)){
-        html+=`<div class="wof-tile revealed">${ch}</div>`;
+        html+=`<div class="wof-tile revealed" data-ch="${ch}">${ch}</div>`;
       } else {
         html+='<div class="wof-tile blank"></div>';
       }
@@ -1862,14 +2091,16 @@ function wofDoSpin(){
   s.lastResult='';
   wofSpinWheel((segment)=>{
     if(segment==='BANKRUPT'){
-      sfxBuzz();
+      sfxBankrupt();
+      wofFlash('💀 BANKRUPT!','var(--red)');
       s.teams[s.currentPlayer].roundBank=0;
       s.lastResult='💀 BANKRUPT!';s.lastResultColor='var(--red)';
       s.transitioning=true;
-      safeTimeout(()=>wofNextPlayer(),1500);
+      safeTimeout(()=>wofNextPlayer(),1800);
       renderWOF();
     } else if(segment==='LOSE'){
       sfxWrong();
+      wofFlash('⏭ Lose a Turn','var(--text2)');
       s.lastResult='⏭ Lose a Turn!';s.lastResultColor='var(--surface3)';
       s.transitioning=true;
       safeTimeout(()=>wofNextPlayer(),1500);
@@ -1912,6 +2143,7 @@ function wofPickLetter(ch){
     // actually let them spin, buy vowel, or solve
     s.phase='spun';
     renderWOF();
+    wofRevealAnim(ch);
   } else {
     sfxWrong();
     s.lastResult=`No ${ch}'s!`;s.lastResultColor='var(--surface3)';s.lastResultTextColor='var(--text)';
@@ -2017,6 +2249,7 @@ function wofShowResults(){
   const winner=teams[0];
   const tied=teams.filter(t=>t.score===winner.score);
   const isTie=tied.length>1;
+  recordWin('wheeloffortune',isTie?'Tie':winner.name);
   sfxWin();showConfetti();
   showScreen('results');
   document.getElementById('resultsContent').innerHTML=`
@@ -2043,8 +2276,9 @@ function wofShowResults(){
 // ════════════════════════════════════════════
 function setupGame(id){
   quitToken++;
+  markRecent(id);
   if(gameState&&gameState.timer)clearInterval(gameState.timer);
-  document.querySelectorAll('.pass-screen,.team-transition,.feud-banner,.confetti-container').forEach(n=>{
+  document.querySelectorAll('.pass-screen,.team-transition,.feud-banner,.confetti-container,.strike-overlay,.wof-flash').forEach(n=>{
     if(n._interval)clearInterval(n._interval);
     n.remove();
   });
@@ -2256,6 +2490,32 @@ function setupGame(id){
     showScreen('setup');
     document.getElementById('setupContent').innerHTML=html;
     addPlayer();addPlayer();
+  } else if(id==='hotseat'){
+    html=`
+      <div style="text-align:center;margin:40px 0 24px">
+        <div style="font-size:48px;margin-bottom:8px">${game.icon}</div>
+        <h2 style="font-size:24px;font-weight:800">${game.name}</h2>
+        <p style="color:var(--text2);margin-top:4px">One player's in the hot seat. Everyone else guesses what they'll say — then they reveal the truth!</p>
+      </div>
+      <div class="setup-section">
+        <label>Players</label>
+        <div class="player-list" id="playerList"></div>
+        <button class="add-player-btn" onclick="addPlayer()">+ Add Player</button>
+      </div>
+      <div class="setup-section">
+        <label>Rounds</label>
+        <div class="mode-toggle">
+          <button onclick="setRounds(5,this)">5</button>
+          <button class="active" onclick="setRounds(10,this)">10</button>
+          <button onclick="setRounds(15,this)">15</button>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-block" style="margin-top:24px" onclick="startGame()">Start Game</button>
+    `;
+    gameState.mode='individual';gameState.rounds=10;gameState.players=[];
+    showScreen('setup');
+    document.getElementById('setupContent').innerHTML=html;
+    addPlayer();addPlayer();
   }
 }
 
@@ -2306,6 +2566,7 @@ function startGame(){
   else if(currentGame==='familyfeud')startFamilyFeud();
   else if(currentGame==='codenames')startCodenames();
   else if(currentGame==='wheeloffortune')startWheelOfFortune();
+  else if(currentGame==='hotseat')startHotSeat();
 }
 
 // ════════════════════════════════════════════
@@ -2381,16 +2642,32 @@ function renderTabooTurn(){
     const txt=document.getElementById('timerText');
     if(bar){bar.style.width=pct+'%';bar.style.background=pct>30?'var(--green)':pct>10?'var(--yellow)':'var(--red)';}
     if(txt)txt.textContent=s.timeLeft+'s';
-    if(s.timeLeft<=5&&s.timeLeft>0)sfxTick();
+    if(s.timeLeft<=3&&s.timeLeft>0)sfxWarn();else if(s.timeLeft<=5&&s.timeLeft>0)sfxTick();
     if(s.timeLeft<=0){clearInterval(s.timer);sfxBuzz();tabooNextTurn();}
   },1000);
+}
+
+// Animate a number counting up/down with a little scale bump
+function animateCount(el,to,prefix='',suffix=''){
+  if(!el)return;
+  const from=parseInt((el.textContent||'').replace(/[^\-0-9]/g,''),10)||0;
+  if(from===to){el.textContent=prefix+to+suffix;return;}
+  el.classList.remove('score-bump');void el.offsetWidth;el.classList.add('score-bump');
+  const start=performance.now(),dur=550;
+  function step(now){
+    const p=Math.min((now-start)/dur,1);
+    const eased=1-Math.pow(1-p,3);
+    el.textContent=prefix+Math.round(from+(to-from)*eased)+suffix;
+    if(p<1)requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 }
 
 function updateTeamScoreBar(){
   const s=gameState;
   if(!s.teams)return;
   document.querySelectorAll('.team-score-box').forEach((box,i)=>{
-    if(s.teams[i]){box.querySelector('.team-pts').textContent=s.teams[i].score;}
+    if(s.teams[i]){animateCount(box.querySelector('.team-pts'),s.teams[i].score);}
   });
 }
 function tabooCorrect(){sfxCorrect();gameState.teams[gameState.currentTeam].score++;updateTeamScoreBar();tabooNextCard();}
@@ -2996,7 +3273,7 @@ function renderFeudRound(){
   if(s.roundsPlayed>=s.rounds){showFeudResults();return;}
   if(s.surveyIdx>=s.surveys.length){s.surveyIdx=0;s.surveys=shuffle(s.surveyPool);}
   const survey=s.surveys[s.surveyIdx];
-  s.strikes=0;s.revealed=new Set();s.roundPoints=0;s.phase='playing';
+  s.strikes=0;s.revealed=new Set();s.roundPoints=0;s.phase='playing';s.roundOver=false;
   s.playingTeam=s.currentTeam;
   const team=s.teams[s.currentTeam];
   const el=document.getElementById('playContent');
@@ -3033,8 +3310,9 @@ function renderFeudRound(){
 }
 
 function feudSkipSurvey(){
-  sfxClick();
   const s=gameState;
+  if(s.roundOver)return;
+  sfxClick();
   if(s.phase==='steal')s.currentTeam=s.playingTeam;
   s.surveyIdx++;
   renderFeudRound();
@@ -3056,9 +3334,8 @@ function feudRevealAnswer(idx){
     el.style.animation='none';el.offsetHeight;el.style.animation='feudFlip 0.4s ease';
   }
   s.roundPoints+=ans.pts;
-  const ptsEl=document.getElementById('feudPts');
-  if(ptsEl)ptsEl.textContent=s.roundPoints+' pts this round';
-  sfxReveal();
+  animateCount(document.getElementById('feudPts'),s.roundPoints,'',' pts this round');
+  sfxDing();
   // Check if all revealed
   if(s.revealed.size===survey.answers.length){
     feudAwardRound();
@@ -3066,11 +3343,12 @@ function feudRevealAnswer(idx){
 }
 
 function feudSubmitGuess(){
+  const s=gameState;
+  if(s.roundOver)return;
   const inp=document.getElementById('feudGuess');
   const guess=inp?.value.trim();
   if(!guess)return;
   inp.value='';
-  const s=gameState;
   const survey=s.surveys[s.surveyIdx];
   let found=false;
   survey.answers.forEach((ans,i)=>{
@@ -3096,13 +3374,23 @@ function feudSubmitGuess(){
   setTimeout(()=>{const inp2=document.getElementById('feudGuess');if(inp2)inp2.focus();},50);
 }
 
+// TV-style fullscreen X flash — one giant X per strike so far
+function showStrikeOverlay(n){
+  const div=document.createElement('div');
+  div.className='strike-overlay';
+  div.innerHTML=Array(Math.max(1,Math.min(n,3))).fill('<span>✕</span>').join('');
+  document.body.appendChild(div);
+  setTimeout(()=>div.remove(),950);
+}
+
 function feudStrike(){
   const s=gameState;
   if(s.strikes>=3)return; // prevent extra strikes
   const sx=document.getElementById('strike'+s.strikes);
   if(sx){sx.classList.add('active');sx.classList.add('slam');sx.style.animation='none';sx.offsetHeight;sx.style.animation='strikeSlam 0.35s ease';}
   s.strikes++;
-  sfxWrong();
+  sfxFeudStrike();
+  showStrikeOverlay(s.strikes);
   if(s.strikes>=3){
     if(s.phase==='playing'){
       // Other team gets a chance to steal
@@ -3128,12 +3416,18 @@ function feudStrike(){
 
 function feudAwardRound(){
   const s=gameState;
-  // Reveal all remaining
+  if(s.roundOver)return;
+  s.roundOver=true;
   const survey=s.surveys[s.surveyIdx];
+  // Collect the remaining hidden answers, then reveal them one-by-one, TV-style
+  const hidden=[];
   survey.answers.forEach((ans,i)=>{
-    if(!s.revealed.has(i)){
-      s.revealed.add(i);
-      const el=document.getElementById('feud-a-'+i);
+    if(!s.revealed.has(i)){s.revealed.add(i);hidden.push(i);}
+  });
+  hidden.forEach((idx,k)=>{
+    safeTimeout(()=>{
+      const ans=survey.answers[idx];
+      const el=document.getElementById('feud-a-'+idx);
       if(el){
         const txt=el.querySelector('.feud-text');
         const pts=el.querySelector('.feud-pts');
@@ -3142,32 +3436,36 @@ function feudAwardRound(){
         el.classList.remove('hidden');el.classList.add('revealed');
         el.style.animation='none';el.offsetHeight;el.style.animation='feudFlip 0.4s ease';
       }
-    }
+      playTone(740,0.15,'triangle',0.1);playTone(1480,0.1,'sine',0.04);
+    },350+k*450);
   });
+  const revealDone=hidden.length?350+hidden.length*450:0;
   // Award points to current team
   s.teams[s.currentTeam].score+=s.roundPoints;
-  // Show banner
-  const banner=document.createElement('div');
-  banner.className='feud-banner';
-  banner.textContent='SURVEY SAYS! '+s.roundPoints+' pts to '+s.teams[s.currentTeam].name+'!';
-  document.body.appendChild(banner);
-  sfxDramatic();
-  // Update displayed scores
-  const ptsEl=document.getElementById('feudPts');
-  if(ptsEl)ptsEl.textContent=s.roundPoints+' pts this round';
-  // Update status to reflect the round is over and the full board is showing
-  const status=document.getElementById('feudStatus');
-  if(status){status.textContent='All answers revealed — '+s.roundPoints+' pts to '+s.teams[s.currentTeam].name;status.style.color='var(--text2)';status.style.fontWeight='600';status.style.fontSize='14px';}
-  // Replace the guess input with a Next button so the family controls when to move on.
-  const isLast=(s.roundsPlayed+1)>=s.rounds;
-  const controls=document.getElementById('feudControls');
-  if(controls){
-    controls.innerHTML=`<button class="btn btn-primary" onclick="feudNextRound()" style="font-size:16px;padding:12px 28px">${isLast?'See Final Results 🏆':'Next Round →'}</button>`;
-    controls.style.display='flex';
-  }
-  // Let the banner flash for a moment, then clear it so the full board stays readable.
-  // The board no longer auto-advances — the family clicks Next when everyone's done reading.
-  safeTimeout(()=>{ if(banner&&banner.parentNode)banner.remove(); },2500);
+  safeTimeout(()=>{
+    // Show banner
+    const banner=document.createElement('div');
+    banner.className='feud-banner';
+    banner.textContent='SURVEY SAYS! '+s.roundPoints+' pts to '+s.teams[s.currentTeam].name+'!';
+    document.body.appendChild(banner);
+    sfxDramatic();
+    if(s.roundPoints>=60)showConfetti();
+    // Update displayed scores (animated count-up in the team bar)
+    updateTeamScoreBar();
+    animateCount(document.getElementById('feudPts'),s.roundPoints,'',' pts this round');
+    // Update status to reflect the round is over and the full board is showing
+    const status=document.getElementById('feudStatus');
+    if(status){status.textContent='All answers revealed — '+s.roundPoints+' pts to '+s.teams[s.currentTeam].name;status.style.color='var(--text2)';status.style.fontWeight='600';status.style.fontSize='14px';}
+    // Replace the guess input with a Next button so the family controls when to move on.
+    const isLast=(s.roundsPlayed+1)>=s.rounds;
+    const controls=document.getElementById('feudControls');
+    if(controls){
+      controls.innerHTML=`<button class="btn btn-primary" onclick="feudNextRound()" style="font-size:16px;padding:12px 28px">${isLast?'See Final Results 🏆':'Next Round →'}</button>`;
+      controls.style.display='flex';
+    }
+    // Let the banner flash for a moment, then clear it so the full board stays readable.
+    safeTimeout(()=>{ if(banner&&banner.parentNode)banner.remove(); },2500);
+  },revealDone);
 }
 
 function feudNextRound(){
@@ -3186,6 +3484,7 @@ function feudNextRound(){
 function showFeudResults(){
   const teams=[...gameState.teams].sort((a,b)=>b.score-a.score);
   const isTie=teams[0].score===teams[1].score;
+  recordWin('familyfeud',isTie?'Tie':teams[0].name);
   sfxWin();showConfetti();
   showScreen('results');
   document.getElementById('resultsContent').innerHTML=`
@@ -3296,6 +3595,7 @@ function cnClickCard(idx){
     s.gameOver=true;
     const loser=s.turn;
     const winner=loser==='red'?s.blueName:s.redName;
+    recordWin('codenames',winner);
     safeTimeout(()=>{
       showScreen('results');
       document.getElementById('resultsContent').innerHTML=`
@@ -3349,6 +3649,7 @@ function cnEndTurn(){
 }
 
 function cnShowWinner(name){
+  recordWin('codenames',name);
   showScreen('results');
   document.getElementById('resultsContent').innerHTML=`
     <div style="text-align:center;margin:60px 0 24px;animation:pop 0.3s ease">
@@ -3392,6 +3693,221 @@ function startWheelOfFortune(){
 }
 
 // ════════════════════════════════════════════
+//  HOT SEAT
+// ════════════════════════════════════════════
+// Each question is a template with a {P} placeholder for the hot-seat player's name.
+const HOTSEAT_QS=[
+  {q:'What would {P} say is their favorite ice cream flavor?',age:'kids'},
+  {q:'What would {P} say is the best pizza topping?',age:'kids'},
+  {q:'What animal would {P} say they\'d want to be for a day?',age:'kids'},
+  {q:'What superpower would {P} say they\'d pick?',age:'kids'},
+  {q:'What would {P} say is their favorite movie?',age:'kids'},
+  {q:'What would {P} say is the best thing to do on a rainy day?',age:'kids'},
+  {q:'What would {P} say is their favorite game to play?',age:'kids'},
+  {q:'Cats or dogs — what would {P} pick?',age:'kids'},
+  {q:'What would {P} say is the yummiest dessert ever?',age:'kids'},
+  {q:'What would {P} say is their favorite season?',age:'kids'},
+  {q:'What would {P} say they\'d build with a million LEGO bricks?',age:'kids'},
+  {q:'What would {P} say is their favorite color?',age:'kids'},
+  {q:'What would {P} say they want to be when they grow up?',age:'kids'},
+  {q:'Beach day or snow day — what would {P} choose?',age:'kids'},
+  {q:'What would {P} say is their favorite school subject?',age:'kids'},
+  {q:'What would {P} name a brand-new puppy?',age:'kids'},
+  {q:'Pancakes or waffles — what would {P} pick?',age:'kids'},
+  {q:'What would {P} say is their favorite cartoon or show?',age:'kids'},
+  {q:'What would {P} say is their dream vacation spot?'},
+  {q:'What would {P} say is their go-to karaoke song?'},
+  {q:'What meal would {P} say they could eat every single day?'},
+  {q:'What would {P} say they can\'t start the morning without?'},
+  {q:'What would {P} say is their biggest pet peeve?'},
+  {q:'What would {P} say is their hidden talent?'},
+  {q:'What would {P} say is the best gift they\'ve ever received?'},
+  {q:'What would {P} say is their favorite family memory?'},
+  {q:'What would {P} say they\'d do first if they won the lottery?'},
+  {q:'Mountains or ocean — what would {P} choose?'},
+  {q:'What would {P} say is their most-used emoji?'},
+  {q:'What would {P} say is their ultimate comfort food?'},
+  {q:'What would {P} say is their favorite holiday?'},
+  {q:'What show would {P} say they could rewatch forever?'},
+  {q:'What food would {P} say they refuse to eat?'},
+  {q:'Sweet or salty snacks — what would {P} pick?'},
+  {q:'What skill would {P} say they\'d love to master instantly?'},
+  {q:'What would {P} say is their favorite way to relax?'},
+  {q:'What would {P} say makes them laugh the hardest?'},
+  {q:'What would {P} say is their all-time favorite song?'},
+  {q:'What would {P} say would be their dream job?'},
+  {q:'If {P} could have any pet in the world, what would they pick?'},
+];
+
+function esc(str){return String(str==null?'':str).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+function startHotSeat(){
+  const players=getPlayers();
+  if(players.length<2){alert('Need at least 2 players');return;}
+  const s=gameState;
+  s.teams=players.map(p=>({name:p,score:0}));
+  s.rounds=s.rounds||10;
+  s.round=1;
+  s.hotIdx=0;
+  s.qPool=filterByAge(HOTSEAT_QS,currentAgeTier);
+  s.qDeck=shuffle(s.qPool);
+  s.qIdx=0;
+  showScreen('play');
+  hotseatBeginRound();
+}
+
+function hotseatNextTemplate(){
+  const s=gameState;
+  if(!s.qDeck.length)return {q:'What would {P} say is their favorite thing?'}.q;
+  if(s.qIdx>=s.qDeck.length){s.qDeck=shuffle(s.qPool);s.qIdx=0;}
+  return s.qDeck[s.qIdx++].q;
+}
+
+// Intro card for a round — names who's in the hot seat before guessing starts.
+function hotseatBeginRound(){
+  const s=gameState;
+  if(s.round>s.rounds){showResults();return;}
+  const n=s.teams.length;
+  s.hotSeat=s.hotIdx%n;
+  const hot=s.teams[s.hotSeat];
+  s.template=hotseatNextTemplate();
+  s.question=s.template.replace(/\{P\}/g,hot.name);
+  s.guessers=s.teams.map((_,i)=>i).filter(i=>i!==s.hotSeat);
+  s.gi=0;
+  s.guesses=[];
+  s.real='';
+  s.scored=false;
+  const el=document.getElementById('playContent');
+  el.innerHTML=`
+    <div style="text-align:center;margin-top:20px">
+      <div class="score-display">Round ${s.round} of ${s.rounds}</div>
+      <div style="font-size:56px;margin:16px 0 8px">🔥</div>
+      <div class="badge" style="background:rgba(249,115,22,0.2);color:#fb923c;font-size:13px">${esc(hot.name)} is in the Hot Seat</div>
+      <p style="color:var(--text2);margin:16px auto;max-width:340px;line-height:1.5">Everyone else secretly guesses what <b style="color:var(--text)">${esc(hot.name)}</b> will say. ${esc(hot.name)} — no peeking at the guesses!</p>
+    </div>
+    <button class="btn btn-primary btn-block" style="background:var(--orange);margin-top:12px" onclick="hotseatNextGuesser()">Start Guessing →</button>
+    <div class="scoreboard" style="margin-top:24px">
+      ${s.teams.map((p,i)=>`<div class="score-row ${i===s.hotSeat?'highlight':''}"><span class="name">${i===s.hotSeat?'🔥':'👤'} ${esc(p.name)}</span><span class="pts">${p.score} pts</span></div>`).join('')}
+    </div>
+  `;
+}
+
+function hotseatNextGuesser(){
+  const s=gameState;
+  if(s.gi>=s.guessers.length){hotseatRevealPhase();return;}
+  const guesser=s.teams[s.guessers[s.gi]];
+  const hot=s.teams[s.hotSeat];
+  showPassScreen(guesser.name,`Guess what ${hot.name} will say — ${hot.name}, look away!`,renderGuessInput);
+}
+
+function renderGuessInput(){
+  const s=gameState;
+  const guesser=s.teams[s.guessers[s.gi]];
+  const hot=s.teams[s.hotSeat];
+  const el=document.getElementById('playContent');
+  el.innerHTML=`
+    <div style="text-align:center;margin-top:12px">
+      <div class="badge" style="background:rgba(249,115,22,0.2);color:#fb923c">🔥 ${esc(hot.name)} in the Hot Seat</div>
+      <div class="score-display">${esc(guesser.name)} guessing — ${s.gi+1} of ${s.guessers.length}</div>
+    </div>
+    <div class="card" style="background:linear-gradient(135deg,#7c2d12,#c2410c);margin:16px 0;min-height:150px;display:flex;align-items:center;justify-content:center">
+      <div class="hs-topic">${esc(s.question)}</div>
+    </div>
+    <input class="input" id="hsGuess" placeholder="Your guess for ${esc(hot.name)}..." onkeydown="if(event.key==='Enter')hotseatSubmitGuess()" autocomplete="off">
+    <button class="btn btn-primary btn-block" style="background:var(--orange);margin-top:14px" onclick="hotseatSubmitGuess()">Lock In Guess →</button>
+  `;
+  setTimeout(()=>{const i=document.getElementById('hsGuess');if(i)i.focus();},60);
+}
+
+function hotseatSubmitGuess(){
+  const s=gameState;
+  const inp=document.getElementById('hsGuess');
+  const val=(inp?inp.value:'').trim();
+  if(!val){if(inp){inp.style.animation='none';inp.offsetHeight;inp.style.animation='shake 0.3s ease';}return;}
+  sfxClick();
+  s.guesses.push({who:s.teams[s.guessers[s.gi]].name,guess:val,correct:false});
+  s.gi++;
+  hotseatNextGuesser();
+}
+
+function hotseatRevealPhase(){
+  const s=gameState;
+  const hot=s.teams[s.hotSeat];
+  showPassScreen(hot.name,'Your moment! Reveal what you\'d really say.',renderHotSeatReveal);
+}
+
+function renderHotSeatReveal(){
+  const s=gameState;
+  const hot=s.teams[s.hotSeat];
+  const el=document.getElementById('playContent');
+  el.innerHTML=`
+    <div style="text-align:center;margin-top:12px">
+      <div class="badge" style="background:rgba(249,115,22,0.2);color:#fb923c">🔥 ${esc(hot.name)} — moment of truth</div>
+      <div class="score-display">Round ${s.round} of ${s.rounds}</div>
+    </div>
+    <div class="hs-topic" style="color:var(--text);margin:16px 0">${esc(s.question)}</div>
+    ${s.real?`<div class="hs-answer-box">💬 ${esc(s.real)}</div>`:`
+    <div style="display:flex;gap:8px;margin:12px 0">
+      <input class="input" id="hsReal" placeholder="Type your real answer (optional)" autocomplete="off" onkeydown="if(event.key==='Enter')hotseatRevealAnswer()">
+      <button class="btn btn-secondary btn-sm" onclick="hotseatRevealAnswer()">Reveal</button>
+    </div>`}
+    <p style="color:var(--text2);font-size:13px;text-align:center;margin:6px 0 12px">${s.scored?'Round scored! ✓ = correct guesses':'Tap every guess that matches your real answer:'}</p>
+    <div id="hsGuessList">
+      ${s.guesses.length?s.guesses.map((g,i)=>`<div class="hs-guess-row ${g.correct?'correct':''}" ${s.scored?'':`onclick="hotseatToggleGuess(${i})"`}>
+        <span class="hs-who">${esc(g.who)}</span>
+        <span class="hs-what">${esc(g.guess)}</span>
+        <span class="hs-mark">${g.correct?'✓':'○'}</span>
+      </div>`).join(''):'<p style="text-align:center;color:var(--text3)">No guesses this round.</p>'}
+    </div>
+    ${s.scored
+      ?`<button class="btn btn-primary btn-block" style="margin-top:16px" onclick="hotseatNext()">${s.round>=s.rounds?'See Final Results 🏆':'Next Round →'}</button>`
+      :`<button class="btn btn-primary btn-block" style="background:var(--orange);margin-top:16px" onclick="hotseatScoreRound()">Score This Round →</button>`}
+  `;
+}
+
+function hotseatRevealAnswer(){
+  const s=gameState;
+  const inp=document.getElementById('hsReal');
+  const val=(inp?inp.value:'').trim();
+  if(!val)return;
+  s.real=val;
+  const norm=x=>x.toLowerCase().replace(/[^a-z0-9]/g,'');
+  const nv=norm(val);
+  // Auto-mark exact-ish matches; the hot-seat player can still tap to adjust.
+  s.guesses.forEach(g=>{if(nv&&norm(g.guess)===nv)g.correct=true;});
+  sfxDing();
+  renderHotSeatReveal();
+}
+
+function hotseatToggleGuess(i){
+  const s=gameState;
+  if(s.scored)return;
+  s.guesses[i].correct=!s.guesses[i].correct;
+  sfxClick();
+  const row=document.querySelectorAll('#hsGuessList .hs-guess-row')[i];
+  if(row){row.classList.toggle('correct',s.guesses[i].correct);const m=row.querySelector('.hs-mark');if(m)m.textContent=s.guesses[i].correct?'✓':'○';}
+}
+
+function hotseatScoreRound(){
+  const s=gameState;
+  if(s.scored)return;
+  s.scored=true;
+  const hot=s.teams[s.hotSeat];
+  const correct=s.guesses.filter(g=>g.correct);
+  correct.forEach(g=>{const t=s.teams.find(t=>t.name===g.who);if(t)t.score+=2;});
+  hot.score+=correct.length; // bonus for being an open book
+  if(correct.length){sfxCorrect();if(s.guessers.length&&correct.length===s.guessers.length)showConfetti();}else{sfxWrong();}
+  renderHotSeatReveal();
+}
+
+function hotseatNext(){
+  const s=gameState;
+  s.round++;
+  s.hotIdx++;
+  hotseatBeginRound();
+}
+
+// ════════════════════════════════════════════
 //  GENERIC RESULTS
 // ════════════════════════════════════════════
 function showResults(){
@@ -3400,6 +3916,7 @@ function showResults(){
   const winner=teams[0];
   const tied=teams.filter(t=>t.score===winner.score);
   const isTie=tied.length>1;
+  recordWin(currentGame,isTie?'Tie':winner.name);
   sfxWin();showConfetti();
   showScreen('results');
   const game=GAMES.find(g=>g.id===currentGame);
